@@ -1,8 +1,8 @@
-# Beancount v3 核心命令 bean-check 研究报告
+# Beancount 核心命令 bean-check 研究报告
 
 ## 1. 研究概述
 
-本文档研究 Beancount v3 Python 实现中的 `bean-check` 命令，分析其依赖库、运行逻辑和执行步骤，为 Kotlin/JVM 迁移提供参考。
+本文档研究 Beancount (master 分支) Python 实现中的 `bean-check` 命令，分析其依赖库、运行逻辑和执行步骤，为 Kotlin/JVM 迁移提供参考。
 
 ---
 
@@ -34,7 +34,7 @@
 
 ### 2.4 标准库使用
 
-Beancount v3 大量使用 Python 标准库：
+Beancount 大量使用 Python 标准库：
 
 - `logging` - 日志记录（`bean-check -v` 开启 INFO 级别）
 - `pickle` - 缓存序列化（`.filename.picklecache`）
@@ -336,7 +336,7 @@ Python 使用 `click`，Kotlin/JVM 可考虑：
 
 ## 11. 参考资源
 
-- **源码仓库**: https://github.com/beancount/beancount/tree/v3
+- **源码仓库**: https://github.com/beancount/beancount/tree/master
 - **核心入口**: `beancount/scripts/check.py`
 - **加载逻辑**: `beancount/loader.py`
 - **验证逻辑**: `beancount/ops/validation.py`
@@ -346,4 +346,4 @@ Python 使用 `click`，Kotlin/JVM 可考虑：
 ---
 
 *文档生成时间: 2026-05-23*
-*基于 beancount v3 分支研究*
+*基于 beancount master 分支研究*

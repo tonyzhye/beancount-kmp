@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
  */
 class PluginTest {
 
-    private fun createMeta(filename: String = "test.bean", lineno: Int = 1) = mapOf(
+    private fun createMeta(filename: String = "example.beancount", lineno: Int = 1) = mapOf(
         "filename" to filename,
         "lineno" to lineno
     )

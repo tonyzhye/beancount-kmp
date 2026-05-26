@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
  * Integration tests that compare Kotlin beancount output with Python beancount.
  * 
  * These tests verify that our Kotlin implementation produces the same results
- * as the reference Python beancount implementation (v3).
+ * as the reference Python beancount implementation (master branch).
  * 
  * Tests are skipped if Python or beancount is not available.
  */

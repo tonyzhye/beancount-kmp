@@ -399,7 +399,7 @@ class BeanCheckCommand : CliktCommand(
   - `beancount/ops/validation.py`
   - `beancount/parser/booking.py`
 - 已有研究文档：
-  - `doc/20260523-research-beancount-v3-bean-check.md`
+  - `doc/20260523-research-beancount-bean-check.md`
 
 ---
 

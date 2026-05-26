@@ -15,7 +15,7 @@ class BookingTest {
     @Test
     fun `should complete single missing posting`() {
         val transaction = Transaction(
-            meta = mapOf("filename" to "test.bean", "lineno" to 1),
+            meta = mapOf("filename" to "example.beancount", "lineno" to 1),
             date = LocalDate(2023, 1, 15),
             flag = "*",
             narration = "Grocery shopping",
@@ -42,7 +42,7 @@ class BookingTest {
     @Test
     fun `should not modify complete transaction`() {
         val transaction = Transaction(
-            meta = mapOf("filename" to "test.bean", "lineno" to 1),
+            meta = mapOf("filename" to "example.beancount", "lineno" to 1),
             date = LocalDate(2023, 1, 15),
             flag = "*",
             narration = "Grocery shopping",
@@ -64,7 +64,7 @@ class BookingTest {
     @Test
     fun `should report error for multiple missing postings`() {
         val transaction = Transaction(
-            meta = mapOf("filename" to "test.bean", "lineno" to 1),
+            meta = mapOf("filename" to "example.beancount", "lineno" to 1),
             date = LocalDate(2023, 1, 15),
             flag = "*",
             narration = "Grocery shopping",
@@ -83,7 +83,7 @@ class BookingTest {
     @Test
     fun `should handle transaction with payee and missing posting`() {
         val transaction = Transaction(
-            meta = mapOf("filename" to "test.bean", "lineno" to 1),
+            meta = mapOf("filename" to "example.beancount", "lineno" to 1),
             date = LocalDate(2023, 1, 31),
             flag = "*",
             payee = "Employer",
@@ -107,7 +107,7 @@ class BookingTest {
     @Test
     fun `should handle three postings with one missing`() {
         val transaction = Transaction(
-            meta = mapOf("filename" to "test.bean", "lineno" to 1),
+            meta = mapOf("filename" to "example.beancount", "lineno" to 1),
             date = LocalDate(2023, 1, 15),
             flag = "*",
             narration = "Split expense",
@@ -131,8 +131,8 @@ class BookingTest {
     @Test
     fun `should leave non-transaction entries unchanged`() {
         val entries = listOf(
-            Open(mapOf("filename" to "test.bean", "lineno" to 1), LocalDate(2023, 1, 1), "Assets:Cash", listOf("USD")),
-            Balance(mapOf("filename" to "test.bean", "lineno" to 2), LocalDate(2023, 1, 15), "Assets:Cash", Amount(Decimal("100"), "USD"))
+            Open(mapOf("filename" to "example.beancount", "lineno" to 1), LocalDate(2023, 1, 1), "Assets:Cash", listOf("USD")),
+            Balance(mapOf("filename" to "example.beancount", "lineno" to 2), LocalDate(2023, 1, 15), "Assets:Cash", Amount(Decimal("100"), "USD"))
         )
         
         val (completed, errors) = Booking.book(entries, Options())

@@ -1,13 +1,13 @@
 # Beancount JVM
 
-Kotlin Multiplatform implementation of [Beancount v3](https://github.com/beancount/beancount/tree/v3), compatible with both Java and Kotlin.
+Kotlin Multiplatform implementation of [Beancount](https://github.com/beancount/beancount/tree/master) (based on master branch), compatible with both Java and Kotlin.
 
 ## Project Overview
 
 Beancount JVM is a project that migrates the Python Beancount accounting system to the JVM ecosystem. It uses the Kotlin Multiplatform (KMP) technology stack, with core logic written in `commonMain` for sharing, and the JVM platform providing production-grade implementation.
 
 **Design Goals:**
-- Semantic compatibility with Python Beancount v3
+- Semantic compatibility with Python Beancount (master branch, version 3.2.3)
 - Zero runtime dependencies (core library)
 - Kotlin/Java bilingual API compatibility
 - High-performance parsing for large ledger files (MB-level)
@@ -191,7 +191,7 @@ java -jar modules/cli/build/libs/cli-0.1.0-SNAPSHOT-all.jar ledger.bean
 
 ### Check ledger
 ```bash
-./gradlew :cli:run --args="examples/test.bean --verbose"
+./gradlew :cli:run --args="examples/example.beancount --verbose"
 ```
 
 ## Usage Examples
@@ -249,7 +249,7 @@ if (!result.getErrors().isEmpty()) {
 ./gradlew :loader:jvmTest
 
 # Run CLI manual test
-./gradlew :cli:run --args="examples/test.bean"
+./gradlew :cli:run --args="examples/example.beancount"
 ```
 
 **Test Statistics:**

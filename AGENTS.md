@@ -1,7 +1,7 @@
 # AGENTS.md - Beancount JVM
 
 ## Project Goal
-Migrate [beancount v3](https://github.com/beancount/beancount/tree/v3) to the JVM, implemented in Kotlin, with interfaces compatible with both Java and Kotlin.
+Migrate [beancount master](https://github.com/beancount/beancount/tree/master) to the JVM, implemented in Kotlin, with interfaces compatible with both Java and Kotlin.
 
 ## Build System
 - **Build Tool**: Gradle + Kotlin Multiplatform Plugin
@@ -202,7 +202,7 @@ implementation("org.beancount.jvm:core:1.0.0")  // Automatically resolves core-j
 ## Reference Resources
 
 - [Beancount Docs](https://beancount.github.io/docs/)
-- [Beancount v3 GitHub](https://github.com/beancount/beancount/tree/v3)
+- [Beancount GitHub](https://github.com/beancount/beancount/tree/master)
 - [Kotlin Docs](https://kotlinlang.org/docs/)
 - [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html)
 

@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
  */
 class PrinterTest {
 
-    private fun createMeta(filename: String = "test.bean", lineno: Int = 1) = mapOf(
+    private fun createMeta(filename: String = "example.beancount", lineno: Int = 1) = mapOf(
         "filename" to filename,
         "lineno" to lineno
     )
@@ -32,23 +32,23 @@ class PrinterTest {
     @Test
     fun `formatError should format error without entry`() {
         val error = ValidationError(
-            createMeta("test.bean", 10),
+            createMeta("example.beancount", 10),
             "Something went wrong"
         )
         val result = formatError(error)
-        assertEquals("test.bean:10: Something went wrong\n", result)
+        assertEquals("example.beancount:10: Something went wrong\n", result)
     }
 
     @Test
     fun `formatError should format error with entry`() {
-        val entry = Open(createMeta("test.bean", 5), LocalDate(2023, 1, 1), "Assets:Cash")
+        val entry = Open(createMeta("example.beancount", 5), LocalDate(2023, 1, 1), "Assets:Cash")
         val error = ValidationError(
-            createMeta("test.bean", 10),
+            createMeta("example.beancount", 10),
             "Duplicate open",
             entry
         )
         val result = formatError(error)
-        assertTrue(result.contains("test.bean:10: Duplicate open"))
+        assertTrue(result.contains("example.beancount:10: Duplicate open"))
         assertTrue(result.contains("2023-01-01 open Assets:Cash"))
     }
 
@@ -295,7 +295,7 @@ class PrinterTest {
     @Test
     fun `formatEntry should include metadata`() {
         val meta = mapOf(
-            "filename" to "test.bean",
+            "filename" to "example.beancount",
             "lineno" to 1,
             "location" to "New York"
         )
