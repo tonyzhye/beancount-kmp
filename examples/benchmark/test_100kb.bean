@@ -1,0 +1,5348 @@
+option "title" "Benchmark Test Ledger"
+option "operating_currency" "USD"
+
+; Commodities
+2000-01-01 commodity USD
+2000-01-01 commodity EUR
+2000-01-01 commodity JPY
+2000-01-01 commodity BTC
+2000-01-01 commodity AAPL
+
+; Accounts
+2000-01-01 open Assets:Cash USD,EUR
+2000-01-01 open Assets:Bank USD
+2000-01-01 open Assets:Investment USD,AAPL
+2000-01-01 open Liabilities:CreditCard USD
+2000-01-01 open Income:Salary USD
+2000-01-01 open Income:Investments USD
+2000-01-01 open Expenses:Food USD
+2000-01-01 open Expenses:Rent USD
+2000-01-01 open Expenses:Transport USD
+2000-01-01 open Expenses:Utilities USD
+2000-01-01 open Expenses:Entertainment USD
+2000-01-01 open Equity:OpeningBalances USD
+
+2023-01-01 * "Salary"
+  Assets:Bank  1819.36 USD
+  Income:Salary
+
+2023-01-02 * "Movie night"
+  Expenses:Entertainment  4756.33 USD
+  Assets:Cash
+
+2023-01-03 * "Credit card payment"
+  Liabilities:CreditCard  4738.86 USD
+  Assets:Bank
+
+2023-01-04 * "Salary"
+  Assets:Bank  968.11 USD
+  Income:Salary
+
+2023-01-05 * "Electric bill"
+  Expenses:Utilities  783.18 USD
+  Assets:Bank
+
+2023-01-06 * "Monthly rent"
+  Expenses:Rent  4223.70 USD
+  Assets:Bank
+
+2023-01-07 * "Grocery shopping"
+  Expenses:Food  2543.37 USD
+  Assets:Cash
+
+2023-01-08 * "Salary"
+  Assets:Bank  3313.03 USD
+  Income:Salary
+
+2023-01-09 * "Salary"
+  Assets:Bank  2990.26 USD
+  Income:Salary
+
+2023-01-10 * "Salary"
+  Assets:Bank  819.61 USD
+  Income:Salary
+
+2023-01-11 * "Grocery shopping"
+  Expenses:Food  3608.70 USD
+  Assets:Cash
+
+2023-01-12 * "Gas station"
+  Expenses:Transport  2060.18 USD
+  Assets:Cash
+
+2023-01-13 * "Electric bill"
+  Expenses:Utilities  4848.25 USD
+  Assets:Bank
+
+2023-01-14 * "Credit card payment"
+  Liabilities:CreditCard  3764.43 USD
+  Assets:Bank
+
+2023-01-15 * "Gas station"
+  Expenses:Transport  1177.67 USD
+  Assets:Cash
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  1554.24 USD
+  Assets:Bank
+
+2023-01-17 * "Gas station"
+  Expenses:Transport  4520.83 USD
+  Assets:Cash
+
+2023-01-18 * "Credit card payment"
+  Liabilities:CreditCard  1845.53 USD
+  Assets:Bank
+
+2023-01-19 * "Electric bill"
+  Expenses:Utilities  2313.78 USD
+  Assets:Bank
+
+2023-01-20 * "Stock purchase"
+  Assets:Investment  3892.84 USD
+  Assets:Bank
+
+2023-01-21 * "Gas station"
+  Expenses:Transport  4831.68 USD
+  Assets:Cash
+
+2023-01-22 * "Salary"
+  Assets:Bank  4008.28 USD
+  Income:Salary
+
+2023-01-23 * "Grocery shopping"
+  Expenses:Food  4366.28 USD
+  Assets:Cash
+
+2023-01-24 * "Movie night"
+  Expenses:Entertainment  3209.48 USD
+  Assets:Cash
+
+2023-01-25 * "Monthly rent"
+  Expenses:Rent  2777.16 USD
+  Assets:Bank
+
+2023-01-26 * "Monthly rent"
+  Expenses:Rent  3559.89 USD
+  Assets:Bank
+
+2023-01-27 * "Salary"
+  Assets:Bank  1432.46 USD
+  Income:Salary
+
+2023-01-28 * "Salary"
+  Assets:Bank  1371.23 USD
+  Income:Salary
+
+2023-01-01 * "Monthly rent"
+  Expenses:Rent  4156.92 USD
+  Assets:Bank
+
+2023-01-02 * "Gas station"
+  Expenses:Transport  4732.60 USD
+  Assets:Cash
+
+2023-01-03 * "Movie night"
+  Expenses:Entertainment  4085.35 USD
+  Assets:Cash
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  4653.05 USD
+  Assets:Bank
+
+2023-01-05 * "Movie night"
+  Expenses:Entertainment  275.75 USD
+  Assets:Cash
+
+2023-01-06 * "Monthly rent"
+  Expenses:Rent  1186.53 USD
+  Assets:Bank
+
+2023-01-07 * "Grocery shopping"
+  Expenses:Food  1880.81 USD
+  Assets:Cash
+
+2023-01-08 * "Monthly rent"
+  Expenses:Rent  1600.24 USD
+  Assets:Bank
+
+2023-01-09 * "Movie night"
+  Expenses:Entertainment  4197.49 USD
+  Assets:Cash
+
+2023-01-10 * "Salary"
+  Assets:Bank  3958.99 USD
+  Income:Salary
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  201.13 USD
+  Assets:Bank
+
+2023-01-12 * "Salary"
+  Assets:Bank  3483.40 USD
+  Income:Salary
+
+2023-01-13 * "Credit card payment"
+  Liabilities:CreditCard  3796.62 USD
+  Assets:Bank
+
+2023-01-14 * "Grocery shopping"
+  Expenses:Food  2248.52 USD
+  Assets:Cash
+
+2023-01-15 * "Grocery shopping"
+  Expenses:Food  4530.23 USD
+  Assets:Cash
+
+2023-01-16 * "Salary"
+  Assets:Bank  1287.06 USD
+  Income:Salary
+
+2023-01-17 * "Stock purchase"
+  Assets:Investment  2748.53 USD
+  Assets:Bank
+
+2023-01-18 * "Electric bill"
+  Expenses:Utilities  564.82 USD
+  Assets:Bank
+
+2023-01-19 * "Monthly rent"
+  Expenses:Rent  1195.82 USD
+  Assets:Bank
+
+2023-01-20 * "Stock purchase"
+  Assets:Investment  248.27 USD
+  Assets:Bank
+
+2023-01-21 * "Credit card payment"
+  Liabilities:CreditCard  3198.37 USD
+  Assets:Bank
+
+2023-01-22 * "Credit card payment"
+  Liabilities:CreditCard  323.41 USD
+  Assets:Bank
+
+2023-01-23 * "Grocery shopping"
+  Expenses:Food  2987.73 USD
+  Assets:Cash
+
+2023-01-24 * "Gas station"
+  Expenses:Transport  3163.46 USD
+  Assets:Cash
+
+2023-01-25 * "Electric bill"
+  Expenses:Utilities  3595.54 USD
+  Assets:Bank
+
+2023-01-26 * "Movie night"
+  Expenses:Entertainment  2151.90 USD
+  Assets:Cash
+
+2023-01-27 * "Stock purchase"
+  Assets:Investment  1210.42 USD
+  Assets:Bank
+
+2023-01-28 * "Monthly rent"
+  Expenses:Rent  944.70 USD
+  Assets:Bank
+
+2023-01-01 * "Movie night"
+  Expenses:Entertainment  2622.19 USD
+  Assets:Cash
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  347.72 USD
+  Assets:Cash
+
+2023-01-03 * "Credit card payment"
+  Liabilities:CreditCard  1958.36 USD
+  Assets:Bank
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  227.24 USD
+  Assets:Bank
+
+2023-01-05 * "Electric bill"
+  Expenses:Utilities  4905.39 USD
+  Assets:Bank
+
+2023-01-06 * "Movie night"
+  Expenses:Entertainment  3739.11 USD
+  Assets:Cash
+
+2023-01-07 * "Movie night"
+  Expenses:Entertainment  3944.71 USD
+  Assets:Cash
+
+2023-01-08 * "Monthly rent"
+  Expenses:Rent  1213.22 USD
+  Assets:Bank
+
+2023-01-09 * "Movie night"
+  Expenses:Entertainment  3859.79 USD
+  Assets:Cash
+
+2023-01-10 * "Movie night"
+  Expenses:Entertainment  675.71 USD
+  Assets:Cash
+
+2023-01-11 * "Salary"
+  Assets:Bank  2734.61 USD
+  Income:Salary
+
+2023-01-12 * "Credit card payment"
+  Liabilities:CreditCard  4153.61 USD
+  Assets:Bank
+
+2023-01-13 * "Credit card payment"
+  Liabilities:CreditCard  4904.29 USD
+  Assets:Bank
+
+2023-01-14 * "Salary"
+  Assets:Bank  3162.36 USD
+  Income:Salary
+
+2023-01-15 * "Credit card payment"
+  Liabilities:CreditCard  324.87 USD
+  Assets:Bank
+
+2023-01-16 * "Gas station"
+  Expenses:Transport  194.55 USD
+  Assets:Cash
+
+2023-01-17 * "Gas station"
+  Expenses:Transport  228.59 USD
+  Assets:Cash
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  4430.09 USD
+  Assets:Cash
+
+2023-01-19 * "Stock purchase"
+  Assets:Investment  4667.52 USD
+  Assets:Bank
+
+2023-01-20 * "Credit card payment"
+  Liabilities:CreditCard  4945.72 USD
+  Assets:Bank
+
+2023-01-21 * "Gas station"
+  Expenses:Transport  1274.04 USD
+  Assets:Cash
+
+2023-01-22 * "Grocery shopping"
+  Expenses:Food  1437.69 USD
+  Assets:Cash
+
+2023-01-23 * "Movie night"
+  Expenses:Entertainment  4330.33 USD
+  Assets:Cash
+
+2023-01-24 * "Movie night"
+  Expenses:Entertainment  1373.35 USD
+  Assets:Cash
+
+2023-01-25 * "Stock purchase"
+  Assets:Investment  2190.39 USD
+  Assets:Bank
+
+2023-01-26 * "Stock purchase"
+  Assets:Investment  3719.11 USD
+  Assets:Bank
+
+2023-01-27 * "Salary"
+  Assets:Bank  1701.79 USD
+  Income:Salary
+
+2023-01-28 * "Credit card payment"
+  Liabilities:CreditCard  2486.05 USD
+  Assets:Bank
+
+2023-01-01 * "Electric bill"
+  Expenses:Utilities  1843.06 USD
+  Assets:Bank
+
+2023-01-02 * "Stock purchase"
+  Assets:Investment  4007.73 USD
+  Assets:Bank
+
+2023-01-03 * "Salary"
+  Assets:Bank  403.85 USD
+  Income:Salary
+
+2023-01-04 * "Movie night"
+  Expenses:Entertainment  2731.92 USD
+  Assets:Cash
+
+2023-01-05 * "Movie night"
+  Expenses:Entertainment  521.96 USD
+  Assets:Cash
+
+2023-01-06 * "Electric bill"
+  Expenses:Utilities  3307.99 USD
+  Assets:Bank
+
+2023-01-07 * "Stock purchase"
+  Assets:Investment  2235.12 USD
+  Assets:Bank
+
+2023-01-08 * "Credit card payment"
+  Liabilities:CreditCard  841.56 USD
+  Assets:Bank
+
+2023-01-09 * "Grocery shopping"
+  Expenses:Food  1764.22 USD
+  Assets:Cash
+
+2023-01-10 * "Movie night"
+  Expenses:Entertainment  3636.80 USD
+  Assets:Cash
+
+2023-01-11 * "Stock purchase"
+  Assets:Investment  3078.11 USD
+  Assets:Bank
+
+2023-01-12 * "Grocery shopping"
+  Expenses:Food  1380.03 USD
+  Assets:Cash
+
+2023-01-13 * "Stock purchase"
+  Assets:Investment  384.46 USD
+  Assets:Bank
+
+2023-01-14 * "Salary"
+  Assets:Bank  1822.92 USD
+  Income:Salary
+
+2023-01-15 * "Salary"
+  Assets:Bank  4764.42 USD
+  Income:Salary
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  4244.86 USD
+  Assets:Bank
+
+2023-01-17 * "Monthly rent"
+  Expenses:Rent  183.65 USD
+  Assets:Bank
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  1187.62 USD
+  Assets:Cash
+
+2023-01-19 * "Grocery shopping"
+  Expenses:Food  1817.13 USD
+  Assets:Cash
+
+2023-01-20 * "Credit card payment"
+  Liabilities:CreditCard  3029.42 USD
+  Assets:Bank
+
+2023-01-21 * "Movie night"
+  Expenses:Entertainment  4744.63 USD
+  Assets:Cash
+
+2023-01-22 * "Monthly rent"
+  Expenses:Rent  2225.26 USD
+  Assets:Bank
+
+2023-01-23 * "Movie night"
+  Expenses:Entertainment  2873.87 USD
+  Assets:Cash
+
+2023-01-24 * "Electric bill"
+  Expenses:Utilities  1996.19 USD
+  Assets:Bank
+
+2023-01-25 * "Monthly rent"
+  Expenses:Rent  1255.56 USD
+  Assets:Bank
+
+2023-01-26 * "Salary"
+  Assets:Bank  139.31 USD
+  Income:Salary
+
+2023-01-27 * "Stock purchase"
+  Assets:Investment  2500.23 USD
+  Assets:Bank
+
+2023-01-28 * "Monthly rent"
+  Expenses:Rent  4568.58 USD
+  Assets:Bank
+
+2023-01-01 * "Electric bill"
+  Expenses:Utilities  1316.27 USD
+  Assets:Bank
+
+2023-01-02 * "Gas station"
+  Expenses:Transport  3523.15 USD
+  Assets:Cash
+
+2023-01-03 * "Electric bill"
+  Expenses:Utilities  4981.86 USD
+  Assets:Bank
+
+2023-01-04 * "Credit card payment"
+  Liabilities:CreditCard  3472.96 USD
+  Assets:Bank
+
+2023-01-05 * "Salary"
+  Assets:Bank  1008.89 USD
+  Income:Salary
+
+2023-01-06 * "Credit card payment"
+  Liabilities:CreditCard  4265.60 USD
+  Assets:Bank
+
+2023-01-07 * "Credit card payment"
+  Liabilities:CreditCard  871.56 USD
+  Assets:Bank
+
+2023-01-08 * "Movie night"
+  Expenses:Entertainment  4986.34 USD
+  Assets:Cash
+
+2023-01-09 * "Monthly rent"
+  Expenses:Rent  3342.52 USD
+  Assets:Bank
+
+2023-01-10 * "Electric bill"
+  Expenses:Utilities  2754.49 USD
+  Assets:Bank
+
+2023-01-11 * "Salary"
+  Assets:Bank  4457.75 USD
+  Income:Salary
+
+2023-01-12 * "Salary"
+  Assets:Bank  3561.93 USD
+  Income:Salary
+
+2023-01-13 * "Gas station"
+  Expenses:Transport  3970.54 USD
+  Assets:Cash
+
+2023-01-14 * "Gas station"
+  Expenses:Transport  615.60 USD
+  Assets:Cash
+
+2023-01-15 * "Gas station"
+  Expenses:Transport  3962.41 USD
+  Assets:Cash
+
+2023-01-16 * "Grocery shopping"
+  Expenses:Food  3953.96 USD
+  Assets:Cash
+
+2023-01-17 * "Movie night"
+  Expenses:Entertainment  1810.87 USD
+  Assets:Cash
+
+2023-01-18 * "Salary"
+  Assets:Bank  2342.36 USD
+  Income:Salary
+
+2023-01-19 * "Monthly rent"
+  Expenses:Rent  3063.62 USD
+  Assets:Bank
+
+2023-01-20 * "Stock purchase"
+  Assets:Investment  338.08 USD
+  Assets:Bank
+
+2023-01-21 * "Credit card payment"
+  Liabilities:CreditCard  4997.98 USD
+  Assets:Bank
+
+2023-01-22 * "Stock purchase"
+  Assets:Investment  2633.22 USD
+  Assets:Bank
+
+2023-01-23 * "Monthly rent"
+  Expenses:Rent  4118.46 USD
+  Assets:Bank
+
+2023-01-24 * "Movie night"
+  Expenses:Entertainment  635.38 USD
+  Assets:Cash
+
+2023-01-25 * "Credit card payment"
+  Liabilities:CreditCard  3215.27 USD
+  Assets:Bank
+
+2023-01-26 * "Movie night"
+  Expenses:Entertainment  2334.51 USD
+  Assets:Cash
+
+2023-01-27 * "Salary"
+  Assets:Bank  650.39 USD
+  Income:Salary
+
+2023-01-28 * "Salary"
+  Assets:Bank  3841.23 USD
+  Income:Salary
+
+2023-01-01 * "Grocery shopping"
+  Expenses:Food  2168.77 USD
+  Assets:Cash
+
+2023-01-02 * "Salary"
+  Assets:Bank  4158.64 USD
+  Income:Salary
+
+2023-01-03 * "Salary"
+  Assets:Bank  1527.58 USD
+  Income:Salary
+
+2023-01-04 * "Gas station"
+  Expenses:Transport  1620.08 USD
+  Assets:Cash
+
+2023-01-05 * "Electric bill"
+  Expenses:Utilities  1736.66 USD
+  Assets:Bank
+
+2023-01-06 * "Electric bill"
+  Expenses:Utilities  4231.21 USD
+  Assets:Bank
+
+2023-01-07 * "Electric bill"
+  Expenses:Utilities  989.55 USD
+  Assets:Bank
+
+2023-01-08 * "Electric bill"
+  Expenses:Utilities  634.60 USD
+  Assets:Bank
+
+2023-01-09 * "Monthly rent"
+  Expenses:Rent  3076.00 USD
+  Assets:Bank
+
+2023-01-10 * "Salary"
+  Assets:Bank  2517.84 USD
+  Income:Salary
+
+2023-01-11 * "Salary"
+  Assets:Bank  2963.12 USD
+  Income:Salary
+
+2023-01-12 * "Movie night"
+  Expenses:Entertainment  864.29 USD
+  Assets:Cash
+
+2023-01-13 * "Grocery shopping"
+  Expenses:Food  4214.22 USD
+  Assets:Cash
+
+2023-01-14 * "Grocery shopping"
+  Expenses:Food  4127.93 USD
+  Assets:Cash
+
+2023-01-15 * "Electric bill"
+  Expenses:Utilities  415.30 USD
+  Assets:Bank
+
+2023-01-16 * "Stock purchase"
+  Assets:Investment  3259.14 USD
+  Assets:Bank
+
+2023-01-17 * "Grocery shopping"
+  Expenses:Food  3094.36 USD
+  Assets:Cash
+
+2023-01-18 * "Electric bill"
+  Expenses:Utilities  2495.21 USD
+  Assets:Bank
+
+2023-01-19 * "Electric bill"
+  Expenses:Utilities  3213.12 USD
+  Assets:Bank
+
+2023-01-20 * "Stock purchase"
+  Assets:Investment  2419.89 USD
+  Assets:Bank
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  1494.20 USD
+  Assets:Bank
+
+2023-01-22 * "Salary"
+  Assets:Bank  3446.18 USD
+  Income:Salary
+
+2023-01-23 * "Credit card payment"
+  Liabilities:CreditCard  2203.63 USD
+  Assets:Bank
+
+2023-01-24 * "Movie night"
+  Expenses:Entertainment  2327.57 USD
+  Assets:Cash
+
+2023-01-25 * "Movie night"
+  Expenses:Entertainment  3037.23 USD
+  Assets:Cash
+
+2023-01-26 * "Movie night"
+  Expenses:Entertainment  4308.81 USD
+  Assets:Cash
+
+2023-01-27 * "Movie night"
+  Expenses:Entertainment  3673.66 USD
+  Assets:Cash
+
+2023-01-28 * "Salary"
+  Assets:Bank  4877.12 USD
+  Income:Salary
+
+2023-01-01 * "Monthly rent"
+  Expenses:Rent  3805.72 USD
+  Assets:Bank
+
+2023-01-02 * "Credit card payment"
+  Liabilities:CreditCard  1602.39 USD
+  Assets:Bank
+
+2023-01-03 * "Credit card payment"
+  Liabilities:CreditCard  621.38 USD
+  Assets:Bank
+
+2023-01-04 * "Monthly rent"
+  Expenses:Rent  1247.12 USD
+  Assets:Bank
+
+2023-01-05 * "Stock purchase"
+  Assets:Investment  262.52 USD
+  Assets:Bank
+
+2023-01-06 * "Stock purchase"
+  Assets:Investment  4322.18 USD
+  Assets:Bank
+
+2023-01-07 * "Salary"
+  Assets:Bank  1248.87 USD
+  Income:Salary
+
+2023-01-08 * "Movie night"
+  Expenses:Entertainment  4069.25 USD
+  Assets:Cash
+
+2023-01-09 * "Salary"
+  Assets:Bank  957.27 USD
+  Income:Salary
+
+2023-01-10 * "Credit card payment"
+  Liabilities:CreditCard  2496.35 USD
+  Assets:Bank
+
+2023-01-11 * "Electric bill"
+  Expenses:Utilities  2498.81 USD
+  Assets:Bank
+
+2023-01-12 * "Monthly rent"
+  Expenses:Rent  2491.88 USD
+  Assets:Bank
+
+2023-01-13 * "Credit card payment"
+  Liabilities:CreditCard  4726.71 USD
+  Assets:Bank
+
+2023-01-14 * "Gas station"
+  Expenses:Transport  4833.77 USD
+  Assets:Cash
+
+2023-01-15 * "Grocery shopping"
+  Expenses:Food  2920.89 USD
+  Assets:Cash
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  262.20 USD
+  Assets:Bank
+
+2023-01-17 * "Credit card payment"
+  Liabilities:CreditCard  2991.62 USD
+  Assets:Bank
+
+2023-01-18 * "Grocery shopping"
+  Expenses:Food  1435.88 USD
+  Assets:Cash
+
+2023-01-19 * "Stock purchase"
+  Assets:Investment  4237.39 USD
+  Assets:Bank
+
+2023-01-20 * "Electric bill"
+  Expenses:Utilities  678.34 USD
+  Assets:Bank
+
+2023-01-21 * "Stock purchase"
+  Assets:Investment  3640.27 USD
+  Assets:Bank
+
+2023-01-22 * "Stock purchase"
+  Assets:Investment  1836.03 USD
+  Assets:Bank
+
+2023-01-23 * "Gas station"
+  Expenses:Transport  265.28 USD
+  Assets:Cash
+
+2023-01-24 * "Electric bill"
+  Expenses:Utilities  1818.99 USD
+  Assets:Bank
+
+2023-01-25 * "Credit card payment"
+  Liabilities:CreditCard  376.92 USD
+  Assets:Bank
+
+2023-01-26 * "Electric bill"
+  Expenses:Utilities  3824.38 USD
+  Assets:Bank
+
+2023-01-27 * "Monthly rent"
+  Expenses:Rent  4128.30 USD
+  Assets:Bank
+
+2023-01-28 * "Monthly rent"
+  Expenses:Rent  652.03 USD
+  Assets:Bank
+
+2023-01-01 * "Movie night"
+  Expenses:Entertainment  1975.58 USD
+  Assets:Cash
+
+2023-01-02 * "Movie night"
+  Expenses:Entertainment  2793.58 USD
+  Assets:Cash
+
+2023-01-03 * "Gas station"
+  Expenses:Transport  3777.28 USD
+  Assets:Cash
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  3016.29 USD
+  Assets:Bank
+
+2023-01-05 * "Grocery shopping"
+  Expenses:Food  2505.39 USD
+  Assets:Cash
+
+2023-01-06 * "Movie night"
+  Expenses:Entertainment  204.18 USD
+  Assets:Cash
+
+2023-01-07 * "Credit card payment"
+  Liabilities:CreditCard  4021.79 USD
+  Assets:Bank
+
+2023-01-08 * "Salary"
+  Assets:Bank  753.21 USD
+  Income:Salary
+
+2023-01-09 * "Movie night"
+  Expenses:Entertainment  1646.55 USD
+  Assets:Cash
+
+2023-01-10 * "Electric bill"
+  Expenses:Utilities  820.89 USD
+  Assets:Bank
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  2972.69 USD
+  Assets:Bank
+
+2023-01-12 * "Electric bill"
+  Expenses:Utilities  3546.61 USD
+  Assets:Bank
+
+2023-01-13 * "Grocery shopping"
+  Expenses:Food  2379.71 USD
+  Assets:Cash
+
+2023-01-14 * "Monthly rent"
+  Expenses:Rent  1848.11 USD
+  Assets:Bank
+
+2023-01-15 * "Electric bill"
+  Expenses:Utilities  4899.69 USD
+  Assets:Bank
+
+2023-01-16 * "Grocery shopping"
+  Expenses:Food  3985.81 USD
+  Assets:Cash
+
+2023-01-17 * "Electric bill"
+  Expenses:Utilities  2988.58 USD
+  Assets:Bank
+
+2023-01-18 * "Gas station"
+  Expenses:Transport  4835.68 USD
+  Assets:Cash
+
+2023-01-19 * "Credit card payment"
+  Liabilities:CreditCard  3609.79 USD
+  Assets:Bank
+
+2023-01-20 * "Stock purchase"
+  Assets:Investment  860.86 USD
+  Assets:Bank
+
+2023-01-21 * "Gas station"
+  Expenses:Transport  747.40 USD
+  Assets:Cash
+
+2023-01-22 * "Monthly rent"
+  Expenses:Rent  167.54 USD
+  Assets:Bank
+
+2023-01-23 * "Credit card payment"
+  Liabilities:CreditCard  962.01 USD
+  Assets:Bank
+
+2023-01-24 * "Salary"
+  Assets:Bank  1575.33 USD
+  Income:Salary
+
+2023-01-25 * "Gas station"
+  Expenses:Transport  2070.67 USD
+  Assets:Cash
+
+2023-01-26 * "Credit card payment"
+  Liabilities:CreditCard  2057.78 USD
+  Assets:Bank
+
+2023-01-27 * "Grocery shopping"
+  Expenses:Food  4365.36 USD
+  Assets:Cash
+
+2023-01-28 * "Gas station"
+  Expenses:Transport  3531.82 USD
+  Assets:Cash
+
+2023-01-01 * "Credit card payment"
+  Liabilities:CreditCard  2808.82 USD
+  Assets:Bank
+
+2023-01-02 * "Movie night"
+  Expenses:Entertainment  2632.13 USD
+  Assets:Cash
+
+2023-01-03 * "Credit card payment"
+  Liabilities:CreditCard  4783.86 USD
+  Assets:Bank
+
+2023-01-04 * "Movie night"
+  Expenses:Entertainment  4561.50 USD
+  Assets:Cash
+
+2023-01-05 * "Electric bill"
+  Expenses:Utilities  2735.90 USD
+  Assets:Bank
+
+2023-01-06 * "Gas station"
+  Expenses:Transport  3054.28 USD
+  Assets:Cash
+
+2023-01-07 * "Electric bill"
+  Expenses:Utilities  4787.11 USD
+  Assets:Bank
+
+2023-01-08 * "Gas station"
+  Expenses:Transport  2794.85 USD
+  Assets:Cash
+
+2023-01-09 * "Electric bill"
+  Expenses:Utilities  4708.01 USD
+  Assets:Bank
+
+2023-01-10 * "Gas station"
+  Expenses:Transport  3858.16 USD
+  Assets:Cash
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  3454.30 USD
+  Assets:Bank
+
+2023-01-12 * "Movie night"
+  Expenses:Entertainment  1592.03 USD
+  Assets:Cash
+
+2023-01-13 * "Electric bill"
+  Expenses:Utilities  2806.83 USD
+  Assets:Bank
+
+2023-01-14 * "Stock purchase"
+  Assets:Investment  1446.07 USD
+  Assets:Bank
+
+2023-01-15 * "Stock purchase"
+  Assets:Investment  4479.84 USD
+  Assets:Bank
+
+2023-01-16 * "Salary"
+  Assets:Bank  4093.70 USD
+  Income:Salary
+
+2023-01-17 * "Electric bill"
+  Expenses:Utilities  1459.36 USD
+  Assets:Bank
+
+2023-01-18 * "Monthly rent"
+  Expenses:Rent  4777.02 USD
+  Assets:Bank
+
+2023-01-19 * "Credit card payment"
+  Liabilities:CreditCard  1738.35 USD
+  Assets:Bank
+
+2023-01-20 * "Credit card payment"
+  Liabilities:CreditCard  3283.30 USD
+  Assets:Bank
+
+2023-01-21 * "Electric bill"
+  Expenses:Utilities  1077.79 USD
+  Assets:Bank
+
+2023-01-22 * "Electric bill"
+  Expenses:Utilities  4665.79 USD
+  Assets:Bank
+
+2023-01-23 * "Gas station"
+  Expenses:Transport  694.99 USD
+  Assets:Cash
+
+2023-01-24 * "Gas station"
+  Expenses:Transport  1219.87 USD
+  Assets:Cash
+
+2023-01-25 * "Grocery shopping"
+  Expenses:Food  3193.34 USD
+  Assets:Cash
+
+2023-01-26 * "Movie night"
+  Expenses:Entertainment  509.99 USD
+  Assets:Cash
+
+2023-01-27 * "Monthly rent"
+  Expenses:Rent  3589.62 USD
+  Assets:Bank
+
+2023-01-28 * "Salary"
+  Assets:Bank  3409.15 USD
+  Income:Salary
+
+2023-01-01 * "Salary"
+  Assets:Bank  35.86 USD
+  Income:Salary
+
+2023-01-02 * "Credit card payment"
+  Liabilities:CreditCard  2040.47 USD
+  Assets:Bank
+
+2023-01-03 * "Gas station"
+  Expenses:Transport  2392.47 USD
+  Assets:Cash
+
+2023-01-04 * "Electric bill"
+  Expenses:Utilities  3782.00 USD
+  Assets:Bank
+
+2023-01-05 * "Grocery shopping"
+  Expenses:Food  1612.63 USD
+  Assets:Cash
+
+2023-01-06 * "Monthly rent"
+  Expenses:Rent  4540.61 USD
+  Assets:Bank
+
+2023-01-07 * "Gas station"
+  Expenses:Transport  3264.97 USD
+  Assets:Cash
+
+2023-01-08 * "Grocery shopping"
+  Expenses:Food  2680.41 USD
+  Assets:Cash
+
+2023-01-09 * "Salary"
+  Assets:Bank  4567.02 USD
+  Income:Salary
+
+2023-01-10 * "Salary"
+  Assets:Bank  2095.25 USD
+  Income:Salary
+
+2023-01-11 * "Grocery shopping"
+  Expenses:Food  4670.27 USD
+  Assets:Cash
+
+2023-01-12 * "Stock purchase"
+  Assets:Investment  4985.89 USD
+  Assets:Bank
+
+2023-01-13 * "Salary"
+  Assets:Bank  3941.92 USD
+  Income:Salary
+
+2023-01-14 * "Electric bill"
+  Expenses:Utilities  4683.68 USD
+  Assets:Bank
+
+2023-01-15 * "Grocery shopping"
+  Expenses:Food  4384.95 USD
+  Assets:Cash
+
+2023-01-16 * "Monthly rent"
+  Expenses:Rent  1498.98 USD
+  Assets:Bank
+
+2023-01-17 * "Movie night"
+  Expenses:Entertainment  4642.99 USD
+  Assets:Cash
+
+2023-01-18 * "Credit card payment"
+  Liabilities:CreditCard  1429.96 USD
+  Assets:Bank
+
+2023-01-19 * "Salary"
+  Assets:Bank  4447.41 USD
+  Income:Salary
+
+2023-01-20 * "Credit card payment"
+  Liabilities:CreditCard  4256.79 USD
+  Assets:Bank
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  1371.46 USD
+  Assets:Bank
+
+2023-01-22 * "Credit card payment"
+  Liabilities:CreditCard  1660.11 USD
+  Assets:Bank
+
+2023-01-23 * "Salary"
+  Assets:Bank  3244.94 USD
+  Income:Salary
+
+2023-01-24 * "Movie night"
+  Expenses:Entertainment  80.28 USD
+  Assets:Cash
+
+2023-01-25 * "Gas station"
+  Expenses:Transport  3955.93 USD
+  Assets:Cash
+
+2023-01-26 * "Stock purchase"
+  Assets:Investment  885.72 USD
+  Assets:Bank
+
+2023-01-27 * "Movie night"
+  Expenses:Entertainment  4136.68 USD
+  Assets:Cash
+
+2023-01-28 * "Monthly rent"
+  Expenses:Rent  442.82 USD
+  Assets:Bank
+
+2023-01-01 * "Salary"
+  Assets:Bank  932.06 USD
+  Income:Salary
+
+2023-01-02 * "Gas station"
+  Expenses:Transport  2392.50 USD
+  Assets:Cash
+
+2023-01-03 * "Stock purchase"
+  Assets:Investment  44.08 USD
+  Assets:Bank
+
+2023-01-04 * "Electric bill"
+  Expenses:Utilities  1185.25 USD
+  Assets:Bank
+
+2023-01-05 * "Electric bill"
+  Expenses:Utilities  4770.63 USD
+  Assets:Bank
+
+2023-01-06 * "Grocery shopping"
+  Expenses:Food  2916.48 USD
+  Assets:Cash
+
+2023-01-07 * "Movie night"
+  Expenses:Entertainment  1315.15 USD
+  Assets:Cash
+
+2023-01-08 * "Grocery shopping"
+  Expenses:Food  3466.92 USD
+  Assets:Cash
+
+2023-01-09 * "Credit card payment"
+  Liabilities:CreditCard  3342.25 USD
+  Assets:Bank
+
+2023-01-10 * "Stock purchase"
+  Assets:Investment  1540.96 USD
+  Assets:Bank
+
+2023-01-11 * "Electric bill"
+  Expenses:Utilities  3433.51 USD
+  Assets:Bank
+
+2023-01-12 * "Electric bill"
+  Expenses:Utilities  3454.55 USD
+  Assets:Bank
+
+2023-01-13 * "Gas station"
+  Expenses:Transport  1844.04 USD
+  Assets:Cash
+
+2023-01-14 * "Salary"
+  Assets:Bank  1103.45 USD
+  Income:Salary
+
+2023-01-15 * "Credit card payment"
+  Liabilities:CreditCard  2396.13 USD
+  Assets:Bank
+
+2023-01-16 * "Movie night"
+  Expenses:Entertainment  3741.20 USD
+  Assets:Cash
+
+2023-01-17 * "Credit card payment"
+  Liabilities:CreditCard  2085.07 USD
+  Assets:Bank
+
+2023-01-18 * "Gas station"
+  Expenses:Transport  3789.18 USD
+  Assets:Cash
+
+2023-01-19 * "Monthly rent"
+  Expenses:Rent  3811.68 USD
+  Assets:Bank
+
+2023-01-20 * "Movie night"
+  Expenses:Entertainment  2632.28 USD
+  Assets:Cash
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  399.73 USD
+  Assets:Bank
+
+2023-01-22 * "Gas station"
+  Expenses:Transport  318.17 USD
+  Assets:Cash
+
+2023-01-23 * "Salary"
+  Assets:Bank  2867.78 USD
+  Income:Salary
+
+2023-01-24 * "Credit card payment"
+  Liabilities:CreditCard  831.04 USD
+  Assets:Bank
+
+2023-01-25 * "Gas station"
+  Expenses:Transport  590.04 USD
+  Assets:Cash
+
+2023-01-26 * "Credit card payment"
+  Liabilities:CreditCard  3587.42 USD
+  Assets:Bank
+
+2023-01-27 * "Credit card payment"
+  Liabilities:CreditCard  463.80 USD
+  Assets:Bank
+
+2023-01-28 * "Credit card payment"
+  Liabilities:CreditCard  4045.37 USD
+  Assets:Bank
+
+2023-01-01 * "Stock purchase"
+  Assets:Investment  668.40 USD
+  Assets:Bank
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  2289.42 USD
+  Assets:Cash
+
+2023-01-03 * "Electric bill"
+  Expenses:Utilities  2798.40 USD
+  Assets:Bank
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  3619.17 USD
+  Assets:Bank
+
+2023-01-05 * "Grocery shopping"
+  Expenses:Food  1279.74 USD
+  Assets:Cash
+
+2023-01-06 * "Monthly rent"
+  Expenses:Rent  3731.56 USD
+  Assets:Bank
+
+2023-01-07 * "Movie night"
+  Expenses:Entertainment  236.00 USD
+  Assets:Cash
+
+2023-01-08 * "Grocery shopping"
+  Expenses:Food  3504.92 USD
+  Assets:Cash
+
+2023-01-09 * "Monthly rent"
+  Expenses:Rent  4673.57 USD
+  Assets:Bank
+
+2023-01-10 * "Credit card payment"
+  Liabilities:CreditCard  4930.82 USD
+  Assets:Bank
+
+2023-01-11 * "Stock purchase"
+  Assets:Investment  168.36 USD
+  Assets:Bank
+
+2023-01-12 * "Salary"
+  Assets:Bank  908.11 USD
+  Income:Salary
+
+2023-01-13 * "Stock purchase"
+  Assets:Investment  3831.48 USD
+  Assets:Bank
+
+2023-01-14 * "Stock purchase"
+  Assets:Investment  1878.56 USD
+  Assets:Bank
+
+2023-01-15 * "Stock purchase"
+  Assets:Investment  2248.20 USD
+  Assets:Bank
+
+2023-01-16 * "Salary"
+  Assets:Bank  1884.47 USD
+  Income:Salary
+
+2023-01-17 * "Movie night"
+  Expenses:Entertainment  3271.14 USD
+  Assets:Cash
+
+2023-01-18 * "Stock purchase"
+  Assets:Investment  601.98 USD
+  Assets:Bank
+
+2023-01-19 * "Gas station"
+  Expenses:Transport  2648.92 USD
+  Assets:Cash
+
+2023-01-20 * "Grocery shopping"
+  Expenses:Food  4175.76 USD
+  Assets:Cash
+
+2023-01-21 * "Credit card payment"
+  Liabilities:CreditCard  4892.67 USD
+  Assets:Bank
+
+2023-01-22 * "Stock purchase"
+  Assets:Investment  3370.76 USD
+  Assets:Bank
+
+2023-01-23 * "Gas station"
+  Expenses:Transport  2664.35 USD
+  Assets:Cash
+
+2023-01-24 * "Movie night"
+  Expenses:Entertainment  1245.09 USD
+  Assets:Cash
+
+2023-01-25 * "Gas station"
+  Expenses:Transport  784.06 USD
+  Assets:Cash
+
+2023-01-26 * "Monthly rent"
+  Expenses:Rent  4687.68 USD
+  Assets:Bank
+
+2023-01-27 * "Stock purchase"
+  Assets:Investment  170.76 USD
+  Assets:Bank
+
+2023-01-28 * "Grocery shopping"
+  Expenses:Food  3078.47 USD
+  Assets:Cash
+
+2023-01-01 * "Monthly rent"
+  Expenses:Rent  1210.92 USD
+  Assets:Bank
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  513.47 USD
+  Assets:Cash
+
+2023-01-03 * "Grocery shopping"
+  Expenses:Food  2237.74 USD
+  Assets:Cash
+
+2023-01-04 * "Grocery shopping"
+  Expenses:Food  1231.22 USD
+  Assets:Cash
+
+2023-01-05 * "Gas station"
+  Expenses:Transport  2017.30 USD
+  Assets:Cash
+
+2023-01-06 * "Grocery shopping"
+  Expenses:Food  2703.40 USD
+  Assets:Cash
+
+2023-01-07 * "Electric bill"
+  Expenses:Utilities  709.28 USD
+  Assets:Bank
+
+2023-01-08 * "Movie night"
+  Expenses:Entertainment  1178.47 USD
+  Assets:Cash
+
+2023-01-09 * "Movie night"
+  Expenses:Entertainment  2891.60 USD
+  Assets:Cash
+
+2023-01-10 * "Salary"
+  Assets:Bank  1192.15 USD
+  Income:Salary
+
+2023-01-11 * "Gas station"
+  Expenses:Transport  4928.62 USD
+  Assets:Cash
+
+2023-01-12 * "Electric bill"
+  Expenses:Utilities  2073.67 USD
+  Assets:Bank
+
+2023-01-13 * "Salary"
+  Assets:Bank  314.18 USD
+  Income:Salary
+
+2023-01-14 * "Stock purchase"
+  Assets:Investment  3133.71 USD
+  Assets:Bank
+
+2023-01-15 * "Grocery shopping"
+  Expenses:Food  2783.69 USD
+  Assets:Cash
+
+2023-01-16 * "Stock purchase"
+  Assets:Investment  4861.73 USD
+  Assets:Bank
+
+2023-01-17 * "Movie night"
+  Expenses:Entertainment  3931.16 USD
+  Assets:Cash
+
+2023-01-18 * "Stock purchase"
+  Assets:Investment  3484.58 USD
+  Assets:Bank
+
+2023-01-19 * "Stock purchase"
+  Assets:Investment  754.60 USD
+  Assets:Bank
+
+2023-01-20 * "Credit card payment"
+  Liabilities:CreditCard  927.56 USD
+  Assets:Bank
+
+2023-01-21 * "Gas station"
+  Expenses:Transport  1212.43 USD
+  Assets:Cash
+
+2023-01-22 * "Salary"
+  Assets:Bank  1510.67 USD
+  Income:Salary
+
+2023-01-23 * "Grocery shopping"
+  Expenses:Food  4030.82 USD
+  Assets:Cash
+
+2023-01-24 * "Stock purchase"
+  Assets:Investment  2816.31 USD
+  Assets:Bank
+
+2023-01-25 * "Salary"
+  Assets:Bank  2790.86 USD
+  Income:Salary
+
+2023-01-26 * "Electric bill"
+  Expenses:Utilities  1948.21 USD
+  Assets:Bank
+
+2023-01-27 * "Monthly rent"
+  Expenses:Rent  1024.65 USD
+  Assets:Bank
+
+2023-01-28 * "Movie night"
+  Expenses:Entertainment  4611.91 USD
+  Assets:Cash
+
+2023-01-01 * "Gas station"
+  Expenses:Transport  471.40 USD
+  Assets:Cash
+
+2023-01-02 * "Stock purchase"
+  Assets:Investment  267.17 USD
+  Assets:Bank
+
+2023-01-03 * "Grocery shopping"
+  Expenses:Food  3371.62 USD
+  Assets:Cash
+
+2023-01-04 * "Gas station"
+  Expenses:Transport  4369.37 USD
+  Assets:Cash
+
+2023-01-05 * "Gas station"
+  Expenses:Transport  4025.21 USD
+  Assets:Cash
+
+2023-01-06 * "Movie night"
+  Expenses:Entertainment  2402.18 USD
+  Assets:Cash
+
+2023-01-07 * "Grocery shopping"
+  Expenses:Food  1522.91 USD
+  Assets:Cash
+
+2023-01-08 * "Gas station"
+  Expenses:Transport  1066.92 USD
+  Assets:Cash
+
+2023-01-09 * "Monthly rent"
+  Expenses:Rent  4810.77 USD
+  Assets:Bank
+
+2023-01-10 * "Credit card payment"
+  Liabilities:CreditCard  3736.93 USD
+  Assets:Bank
+
+2023-01-11 * "Gas station"
+  Expenses:Transport  4573.06 USD
+  Assets:Cash
+
+2023-01-12 * "Gas station"
+  Expenses:Transport  1989.19 USD
+  Assets:Cash
+
+2023-01-13 * "Electric bill"
+  Expenses:Utilities  2764.88 USD
+  Assets:Bank
+
+2023-01-14 * "Movie night"
+  Expenses:Entertainment  1909.50 USD
+  Assets:Cash
+
+2023-01-15 * "Movie night"
+  Expenses:Entertainment  1549.03 USD
+  Assets:Cash
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  2568.95 USD
+  Assets:Bank
+
+2023-01-17 * "Credit card payment"
+  Liabilities:CreditCard  2335.36 USD
+  Assets:Bank
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  3810.53 USD
+  Assets:Cash
+
+2023-01-19 * "Movie night"
+  Expenses:Entertainment  4572.51 USD
+  Assets:Cash
+
+2023-01-20 * "Grocery shopping"
+  Expenses:Food  1571.48 USD
+  Assets:Cash
+
+2023-01-21 * "Gas station"
+  Expenses:Transport  2817.00 USD
+  Assets:Cash
+
+2023-01-22 * "Grocery shopping"
+  Expenses:Food  3708.85 USD
+  Assets:Cash
+
+2023-01-23 * "Stock purchase"
+  Assets:Investment  1311.26 USD
+  Assets:Bank
+
+2023-01-24 * "Gas station"
+  Expenses:Transport  1483.01 USD
+  Assets:Cash
+
+2023-01-25 * "Stock purchase"
+  Assets:Investment  1656.03 USD
+  Assets:Bank
+
+2023-01-26 * "Gas station"
+  Expenses:Transport  2853.25 USD
+  Assets:Cash
+
+2023-01-27 * "Movie night"
+  Expenses:Entertainment  2501.51 USD
+  Assets:Cash
+
+2023-01-28 * "Credit card payment"
+  Liabilities:CreditCard  1294.06 USD
+  Assets:Bank
+
+2023-01-01 * "Credit card payment"
+  Liabilities:CreditCard  4832.88 USD
+  Assets:Bank
+
+2023-01-02 * "Movie night"
+  Expenses:Entertainment  2309.54 USD
+  Assets:Cash
+
+2023-01-03 * "Credit card payment"
+  Liabilities:CreditCard  854.64 USD
+  Assets:Bank
+
+2023-01-04 * "Grocery shopping"
+  Expenses:Food  928.40 USD
+  Assets:Cash
+
+2023-01-05 * "Monthly rent"
+  Expenses:Rent  2624.48 USD
+  Assets:Bank
+
+2023-01-06 * "Grocery shopping"
+  Expenses:Food  4726.49 USD
+  Assets:Cash
+
+2023-01-07 * "Stock purchase"
+  Assets:Investment  3824.05 USD
+  Assets:Bank
+
+2023-01-08 * "Gas station"
+  Expenses:Transport  696.08 USD
+  Assets:Cash
+
+2023-01-09 * "Salary"
+  Assets:Bank  349.16 USD
+  Income:Salary
+
+2023-01-10 * "Credit card payment"
+  Liabilities:CreditCard  55.62 USD
+  Assets:Bank
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  1872.27 USD
+  Assets:Bank
+
+2023-01-12 * "Grocery shopping"
+  Expenses:Food  3299.83 USD
+  Assets:Cash
+
+2023-01-13 * "Stock purchase"
+  Assets:Investment  43.00 USD
+  Assets:Bank
+
+2023-01-14 * "Electric bill"
+  Expenses:Utilities  69.14 USD
+  Assets:Bank
+
+2023-01-15 * "Electric bill"
+  Expenses:Utilities  2683.33 USD
+  Assets:Bank
+
+2023-01-16 * "Stock purchase"
+  Assets:Investment  95.54 USD
+  Assets:Bank
+
+2023-01-17 * "Salary"
+  Assets:Bank  4032.78 USD
+  Income:Salary
+
+2023-01-18 * "Monthly rent"
+  Expenses:Rent  544.01 USD
+  Assets:Bank
+
+2023-01-19 * "Gas station"
+  Expenses:Transport  2626.68 USD
+  Assets:Cash
+
+2023-01-20 * "Electric bill"
+  Expenses:Utilities  967.74 USD
+  Assets:Bank
+
+2023-01-21 * "Electric bill"
+  Expenses:Utilities  4077.92 USD
+  Assets:Bank
+
+2023-01-22 * "Monthly rent"
+  Expenses:Rent  3976.73 USD
+  Assets:Bank
+
+2023-01-23 * "Stock purchase"
+  Assets:Investment  1871.53 USD
+  Assets:Bank
+
+2023-01-24 * "Gas station"
+  Expenses:Transport  2300.40 USD
+  Assets:Cash
+
+2023-01-25 * "Gas station"
+  Expenses:Transport  4951.26 USD
+  Assets:Cash
+
+2023-01-26 * "Monthly rent"
+  Expenses:Rent  1506.87 USD
+  Assets:Bank
+
+2023-01-27 * "Grocery shopping"
+  Expenses:Food  3272.14 USD
+  Assets:Cash
+
+2023-01-28 * "Stock purchase"
+  Assets:Investment  476.57 USD
+  Assets:Bank
+
+2023-01-01 * "Credit card payment"
+  Liabilities:CreditCard  1892.08 USD
+  Assets:Bank
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  290.01 USD
+  Assets:Cash
+
+2023-01-03 * "Monthly rent"
+  Expenses:Rent  3517.20 USD
+  Assets:Bank
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  2504.29 USD
+  Assets:Bank
+
+2023-01-05 * "Movie night"
+  Expenses:Entertainment  3228.09 USD
+  Assets:Cash
+
+2023-01-06 * "Monthly rent"
+  Expenses:Rent  2833.62 USD
+  Assets:Bank
+
+2023-01-07 * "Grocery shopping"
+  Expenses:Food  4475.01 USD
+  Assets:Cash
+
+2023-01-08 * "Credit card payment"
+  Liabilities:CreditCard  1156.53 USD
+  Assets:Bank
+
+2023-01-09 * "Monthly rent"
+  Expenses:Rent  1362.76 USD
+  Assets:Bank
+
+2023-01-10 * "Electric bill"
+  Expenses:Utilities  3425.30 USD
+  Assets:Bank
+
+2023-01-11 * "Grocery shopping"
+  Expenses:Food  4497.57 USD
+  Assets:Cash
+
+2023-01-12 * "Movie night"
+  Expenses:Entertainment  904.98 USD
+  Assets:Cash
+
+2023-01-13 * "Gas station"
+  Expenses:Transport  88.13 USD
+  Assets:Cash
+
+2023-01-14 * "Stock purchase"
+  Assets:Investment  2939.31 USD
+  Assets:Bank
+
+2023-01-15 * "Electric bill"
+  Expenses:Utilities  4645.09 USD
+  Assets:Bank
+
+2023-01-16 * "Gas station"
+  Expenses:Transport  820.63 USD
+  Assets:Cash
+
+2023-01-17 * "Stock purchase"
+  Assets:Investment  2837.81 USD
+  Assets:Bank
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  3388.40 USD
+  Assets:Cash
+
+2023-01-19 * "Salary"
+  Assets:Bank  1925.39 USD
+  Income:Salary
+
+2023-01-20 * "Monthly rent"
+  Expenses:Rent  3954.59 USD
+  Assets:Bank
+
+2023-01-21 * "Movie night"
+  Expenses:Entertainment  2508.96 USD
+  Assets:Cash
+
+2023-01-22 * "Stock purchase"
+  Assets:Investment  277.95 USD
+  Assets:Bank
+
+2023-01-23 * "Monthly rent"
+  Expenses:Rent  1168.40 USD
+  Assets:Bank
+
+2023-01-24 * "Stock purchase"
+  Assets:Investment  1709.56 USD
+  Assets:Bank
+
+2023-01-25 * "Movie night"
+  Expenses:Entertainment  4844.91 USD
+  Assets:Cash
+
+2023-01-26 * "Electric bill"
+  Expenses:Utilities  157.83 USD
+  Assets:Bank
+
+2023-01-27 * "Credit card payment"
+  Liabilities:CreditCard  3919.91 USD
+  Assets:Bank
+
+2023-01-28 * "Movie night"
+  Expenses:Entertainment  2458.11 USD
+  Assets:Cash
+
+2023-01-01 * "Stock purchase"
+  Assets:Investment  2769.66 USD
+  Assets:Bank
+
+2023-01-02 * "Stock purchase"
+  Assets:Investment  2164.92 USD
+  Assets:Bank
+
+2023-01-03 * "Electric bill"
+  Expenses:Utilities  437.61 USD
+  Assets:Bank
+
+2023-01-04 * "Monthly rent"
+  Expenses:Rent  3992.30 USD
+  Assets:Bank
+
+2023-01-05 * "Salary"
+  Assets:Bank  419.37 USD
+  Income:Salary
+
+2023-01-06 * "Salary"
+  Assets:Bank  1906.20 USD
+  Income:Salary
+
+2023-01-07 * "Movie night"
+  Expenses:Entertainment  3700.88 USD
+  Assets:Cash
+
+2023-01-08 * "Monthly rent"
+  Expenses:Rent  1809.89 USD
+  Assets:Bank
+
+2023-01-09 * "Electric bill"
+  Expenses:Utilities  35.92 USD
+  Assets:Bank
+
+2023-01-10 * "Electric bill"
+  Expenses:Utilities  2229.23 USD
+  Assets:Bank
+
+2023-01-11 * "Monthly rent"
+  Expenses:Rent  520.13 USD
+  Assets:Bank
+
+2023-01-12 * "Credit card payment"
+  Liabilities:CreditCard  945.08 USD
+  Assets:Bank
+
+2023-01-13 * "Stock purchase"
+  Assets:Investment  2789.36 USD
+  Assets:Bank
+
+2023-01-14 * "Monthly rent"
+  Expenses:Rent  525.43 USD
+  Assets:Bank
+
+2023-01-15 * "Monthly rent"
+  Expenses:Rent  1776.03 USD
+  Assets:Bank
+
+2023-01-16 * "Movie night"
+  Expenses:Entertainment  2988.65 USD
+  Assets:Cash
+
+2023-01-17 * "Grocery shopping"
+  Expenses:Food  4319.95 USD
+  Assets:Cash
+
+2023-01-18 * "Stock purchase"
+  Assets:Investment  1466.32 USD
+  Assets:Bank
+
+2023-01-19 * "Gas station"
+  Expenses:Transport  3898.05 USD
+  Assets:Cash
+
+2023-01-20 * "Salary"
+  Assets:Bank  2864.08 USD
+  Income:Salary
+
+2023-01-21 * "Salary"
+  Assets:Bank  3429.73 USD
+  Income:Salary
+
+2023-01-22 * "Electric bill"
+  Expenses:Utilities  702.81 USD
+  Assets:Bank
+
+2023-01-23 * "Salary"
+  Assets:Bank  1349.35 USD
+  Income:Salary
+
+2023-01-24 * "Stock purchase"
+  Assets:Investment  325.70 USD
+  Assets:Bank
+
+2023-01-25 * "Electric bill"
+  Expenses:Utilities  1387.05 USD
+  Assets:Bank
+
+2023-01-26 * "Monthly rent"
+  Expenses:Rent  2426.31 USD
+  Assets:Bank
+
+2023-01-27 * "Gas station"
+  Expenses:Transport  1812.01 USD
+  Assets:Cash
+
+2023-01-28 * "Credit card payment"
+  Liabilities:CreditCard  3607.29 USD
+  Assets:Bank
+
+2023-01-01 * "Gas station"
+  Expenses:Transport  2973.09 USD
+  Assets:Cash
+
+2023-01-02 * "Salary"
+  Assets:Bank  2294.73 USD
+  Income:Salary
+
+2023-01-03 * "Stock purchase"
+  Assets:Investment  1530.24 USD
+  Assets:Bank
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  1667.76 USD
+  Assets:Bank
+
+2023-01-05 * "Movie night"
+  Expenses:Entertainment  4022.34 USD
+  Assets:Cash
+
+2023-01-06 * "Stock purchase"
+  Assets:Investment  2206.71 USD
+  Assets:Bank
+
+2023-01-07 * "Salary"
+  Assets:Bank  4079.22 USD
+  Income:Salary
+
+2023-01-08 * "Gas station"
+  Expenses:Transport  1509.17 USD
+  Assets:Cash
+
+2023-01-09 * "Salary"
+  Assets:Bank  2400.26 USD
+  Income:Salary
+
+2023-01-10 * "Movie night"
+  Expenses:Entertainment  4823.23 USD
+  Assets:Cash
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  1464.33 USD
+  Assets:Bank
+
+2023-01-12 * "Gas station"
+  Expenses:Transport  4839.14 USD
+  Assets:Cash
+
+2023-01-13 * "Electric bill"
+  Expenses:Utilities  1636.17 USD
+  Assets:Bank
+
+2023-01-14 * "Stock purchase"
+  Assets:Investment  4084.31 USD
+  Assets:Bank
+
+2023-01-15 * "Gas station"
+  Expenses:Transport  1831.43 USD
+  Assets:Cash
+
+2023-01-16 * "Salary"
+  Assets:Bank  2965.21 USD
+  Income:Salary
+
+2023-01-17 * "Grocery shopping"
+  Expenses:Food  3411.75 USD
+  Assets:Cash
+
+2023-01-18 * "Credit card payment"
+  Liabilities:CreditCard  4765.49 USD
+  Assets:Bank
+
+2023-01-19 * "Gas station"
+  Expenses:Transport  4715.44 USD
+  Assets:Cash
+
+2023-01-20 * "Electric bill"
+  Expenses:Utilities  2197.89 USD
+  Assets:Bank
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  4158.10 USD
+  Assets:Bank
+
+2023-01-22 * "Stock purchase"
+  Assets:Investment  4096.64 USD
+  Assets:Bank
+
+2023-01-23 * "Salary"
+  Assets:Bank  3368.16 USD
+  Income:Salary
+
+2023-01-24 * "Gas station"
+  Expenses:Transport  3170.35 USD
+  Assets:Cash
+
+2023-01-25 * "Salary"
+  Assets:Bank  1270.88 USD
+  Income:Salary
+
+2023-01-26 * "Stock purchase"
+  Assets:Investment  3579.03 USD
+  Assets:Bank
+
+2023-01-27 * "Credit card payment"
+  Liabilities:CreditCard  379.09 USD
+  Assets:Bank
+
+2023-01-28 * "Stock purchase"
+  Assets:Investment  2915.40 USD
+  Assets:Bank
+
+2023-01-01 * "Movie night"
+  Expenses:Entertainment  2722.79 USD
+  Assets:Cash
+
+2023-01-02 * "Monthly rent"
+  Expenses:Rent  3511.16 USD
+  Assets:Bank
+
+2023-01-03 * "Gas station"
+  Expenses:Transport  555.75 USD
+  Assets:Cash
+
+2023-01-04 * "Movie night"
+  Expenses:Entertainment  3291.43 USD
+  Assets:Cash
+
+2023-01-05 * "Grocery shopping"
+  Expenses:Food  840.03 USD
+  Assets:Cash
+
+2023-01-06 * "Stock purchase"
+  Assets:Investment  2820.47 USD
+  Assets:Bank
+
+2023-01-07 * "Movie night"
+  Expenses:Entertainment  4834.39 USD
+  Assets:Cash
+
+2023-01-08 * "Stock purchase"
+  Assets:Investment  4828.93 USD
+  Assets:Bank
+
+2023-01-09 * "Monthly rent"
+  Expenses:Rent  538.66 USD
+  Assets:Bank
+
+2023-01-10 * "Gas station"
+  Expenses:Transport  1301.10 USD
+  Assets:Cash
+
+2023-01-11 * "Stock purchase"
+  Assets:Investment  2234.43 USD
+  Assets:Bank
+
+2023-01-12 * "Salary"
+  Assets:Bank  2320.69 USD
+  Income:Salary
+
+2023-01-13 * "Grocery shopping"
+  Expenses:Food  1731.39 USD
+  Assets:Cash
+
+2023-01-14 * "Electric bill"
+  Expenses:Utilities  2419.03 USD
+  Assets:Bank
+
+2023-01-15 * "Monthly rent"
+  Expenses:Rent  2085.72 USD
+  Assets:Bank
+
+2023-01-16 * "Salary"
+  Assets:Bank  589.19 USD
+  Income:Salary
+
+2023-01-17 * "Movie night"
+  Expenses:Entertainment  1748.16 USD
+  Assets:Cash
+
+2023-01-18 * "Gas station"
+  Expenses:Transport  2282.11 USD
+  Assets:Cash
+
+2023-01-19 * "Movie night"
+  Expenses:Entertainment  2610.36 USD
+  Assets:Cash
+
+2023-01-20 * "Credit card payment"
+  Liabilities:CreditCard  2386.05 USD
+  Assets:Bank
+
+2023-01-21 * "Credit card payment"
+  Liabilities:CreditCard  3612.75 USD
+  Assets:Bank
+
+2023-01-22 * "Electric bill"
+  Expenses:Utilities  1601.36 USD
+  Assets:Bank
+
+2023-01-23 * "Monthly rent"
+  Expenses:Rent  232.97 USD
+  Assets:Bank
+
+2023-01-24 * "Movie night"
+  Expenses:Entertainment  122.70 USD
+  Assets:Cash
+
+2023-01-25 * "Salary"
+  Assets:Bank  3243.37 USD
+  Income:Salary
+
+2023-01-26 * "Gas station"
+  Expenses:Transport  4650.31 USD
+  Assets:Cash
+
+2023-01-27 * "Salary"
+  Assets:Bank  2584.81 USD
+  Income:Salary
+
+2023-01-28 * "Stock purchase"
+  Assets:Investment  1661.64 USD
+  Assets:Bank
+
+2023-01-01 * "Gas station"
+  Expenses:Transport  4792.73 USD
+  Assets:Cash
+
+2023-01-02 * "Salary"
+  Assets:Bank  3990.80 USD
+  Income:Salary
+
+2023-01-03 * "Stock purchase"
+  Assets:Investment  940.07 USD
+  Assets:Bank
+
+2023-01-04 * "Gas station"
+  Expenses:Transport  1983.96 USD
+  Assets:Cash
+
+2023-01-05 * "Stock purchase"
+  Assets:Investment  2253.38 USD
+  Assets:Bank
+
+2023-01-06 * "Gas station"
+  Expenses:Transport  1950.29 USD
+  Assets:Cash
+
+2023-01-07 * "Monthly rent"
+  Expenses:Rent  1036.86 USD
+  Assets:Bank
+
+2023-01-08 * "Salary"
+  Assets:Bank  2890.97 USD
+  Income:Salary
+
+2023-01-09 * "Gas station"
+  Expenses:Transport  1835.31 USD
+  Assets:Cash
+
+2023-01-10 * "Electric bill"
+  Expenses:Utilities  2293.18 USD
+  Assets:Bank
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  3356.80 USD
+  Assets:Bank
+
+2023-01-12 * "Movie night"
+  Expenses:Entertainment  2643.30 USD
+  Assets:Cash
+
+2023-01-13 * "Stock purchase"
+  Assets:Investment  2988.88 USD
+  Assets:Bank
+
+2023-01-14 * "Movie night"
+  Expenses:Entertainment  2939.15 USD
+  Assets:Cash
+
+2023-01-15 * "Credit card payment"
+  Liabilities:CreditCard  1766.40 USD
+  Assets:Bank
+
+2023-01-16 * "Electric bill"
+  Expenses:Utilities  3090.64 USD
+  Assets:Bank
+
+2023-01-17 * "Monthly rent"
+  Expenses:Rent  4594.23 USD
+  Assets:Bank
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  3363.83 USD
+  Assets:Cash
+
+2023-01-19 * "Electric bill"
+  Expenses:Utilities  598.13 USD
+  Assets:Bank
+
+2023-01-20 * "Movie night"
+  Expenses:Entertainment  593.58 USD
+  Assets:Cash
+
+2023-01-21 * "Stock purchase"
+  Assets:Investment  3470.25 USD
+  Assets:Bank
+
+2023-01-22 * "Salary"
+  Assets:Bank  2097.01 USD
+  Income:Salary
+
+2023-01-23 * "Stock purchase"
+  Assets:Investment  2878.28 USD
+  Assets:Bank
+
+2023-01-24 * "Salary"
+  Assets:Bank  936.91 USD
+  Income:Salary
+
+2023-01-25 * "Credit card payment"
+  Liabilities:CreditCard  2779.01 USD
+  Assets:Bank
+
+2023-01-26 * "Salary"
+  Assets:Bank  1451.29 USD
+  Income:Salary
+
+2023-01-27 * "Credit card payment"
+  Liabilities:CreditCard  1579.75 USD
+  Assets:Bank
+
+2023-01-28 * "Movie night"
+  Expenses:Entertainment  3100.86 USD
+  Assets:Cash
+
+2023-01-01 * "Credit card payment"
+  Liabilities:CreditCard  4759.69 USD
+  Assets:Bank
+
+2023-01-02 * "Stock purchase"
+  Assets:Investment  691.31 USD
+  Assets:Bank
+
+2023-01-03 * "Credit card payment"
+  Liabilities:CreditCard  4819.51 USD
+  Assets:Bank
+
+2023-01-04 * "Credit card payment"
+  Liabilities:CreditCard  2051.58 USD
+  Assets:Bank
+
+2023-01-05 * "Credit card payment"
+  Liabilities:CreditCard  2084.00 USD
+  Assets:Bank
+
+2023-01-06 * "Monthly rent"
+  Expenses:Rent  2448.61 USD
+  Assets:Bank
+
+2023-01-07 * "Gas station"
+  Expenses:Transport  2831.34 USD
+  Assets:Cash
+
+2023-01-08 * "Electric bill"
+  Expenses:Utilities  1467.53 USD
+  Assets:Bank
+
+2023-01-09 * "Electric bill"
+  Expenses:Utilities  1131.97 USD
+  Assets:Bank
+
+2023-01-10 * "Credit card payment"
+  Liabilities:CreditCard  849.36 USD
+  Assets:Bank
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  2832.60 USD
+  Assets:Bank
+
+2023-01-12 * "Monthly rent"
+  Expenses:Rent  2753.13 USD
+  Assets:Bank
+
+2023-01-13 * "Electric bill"
+  Expenses:Utilities  2867.84 USD
+  Assets:Bank
+
+2023-01-14 * "Movie night"
+  Expenses:Entertainment  3877.81 USD
+  Assets:Cash
+
+2023-01-15 * "Grocery shopping"
+  Expenses:Food  2714.80 USD
+  Assets:Cash
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  3802.42 USD
+  Assets:Bank
+
+2023-01-17 * "Stock purchase"
+  Assets:Investment  2736.30 USD
+  Assets:Bank
+
+2023-01-18 * "Gas station"
+  Expenses:Transport  521.06 USD
+  Assets:Cash
+
+2023-01-19 * "Grocery shopping"
+  Expenses:Food  1495.57 USD
+  Assets:Cash
+
+2023-01-20 * "Movie night"
+  Expenses:Entertainment  2254.16 USD
+  Assets:Cash
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  4312.38 USD
+  Assets:Bank
+
+2023-01-22 * "Monthly rent"
+  Expenses:Rent  2200.96 USD
+  Assets:Bank
+
+2023-01-23 * "Gas station"
+  Expenses:Transport  3880.40 USD
+  Assets:Cash
+
+2023-01-24 * "Movie night"
+  Expenses:Entertainment  1057.29 USD
+  Assets:Cash
+
+2023-01-25 * "Stock purchase"
+  Assets:Investment  4306.63 USD
+  Assets:Bank
+
+2023-01-26 * "Salary"
+  Assets:Bank  838.25 USD
+  Income:Salary
+
+2023-01-27 * "Gas station"
+  Expenses:Transport  3926.40 USD
+  Assets:Cash
+
+2023-01-28 * "Movie night"
+  Expenses:Entertainment  4029.15 USD
+  Assets:Cash
+
+2023-01-01 * "Salary"
+  Assets:Bank  2666.08 USD
+  Income:Salary
+
+2023-01-02 * "Electric bill"
+  Expenses:Utilities  1625.03 USD
+  Assets:Bank
+
+2023-01-03 * "Electric bill"
+  Expenses:Utilities  1453.77 USD
+  Assets:Bank
+
+2023-01-04 * "Monthly rent"
+  Expenses:Rent  4762.46 USD
+  Assets:Bank
+
+2023-01-05 * "Stock purchase"
+  Assets:Investment  686.59 USD
+  Assets:Bank
+
+2023-01-06 * "Electric bill"
+  Expenses:Utilities  4594.66 USD
+  Assets:Bank
+
+2023-01-07 * "Salary"
+  Assets:Bank  4336.57 USD
+  Income:Salary
+
+2023-01-08 * "Salary"
+  Assets:Bank  3510.12 USD
+  Income:Salary
+
+2023-01-09 * "Movie night"
+  Expenses:Entertainment  1255.89 USD
+  Assets:Cash
+
+2023-01-10 * "Stock purchase"
+  Assets:Investment  4144.12 USD
+  Assets:Bank
+
+2023-01-11 * "Electric bill"
+  Expenses:Utilities  2452.40 USD
+  Assets:Bank
+
+2023-01-12 * "Stock purchase"
+  Assets:Investment  3142.79 USD
+  Assets:Bank
+
+2023-01-13 * "Monthly rent"
+  Expenses:Rent  2265.44 USD
+  Assets:Bank
+
+2023-01-14 * "Electric bill"
+  Expenses:Utilities  2020.23 USD
+  Assets:Bank
+
+2023-01-15 * "Movie night"
+  Expenses:Entertainment  3476.57 USD
+  Assets:Cash
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  2278.93 USD
+  Assets:Bank
+
+2023-01-17 * "Grocery shopping"
+  Expenses:Food  1643.17 USD
+  Assets:Cash
+
+2023-01-18 * "Monthly rent"
+  Expenses:Rent  4345.85 USD
+  Assets:Bank
+
+2023-01-19 * "Credit card payment"
+  Liabilities:CreditCard  3657.35 USD
+  Assets:Bank
+
+2023-01-20 * "Movie night"
+  Expenses:Entertainment  3177.85 USD
+  Assets:Cash
+
+2023-01-21 * "Stock purchase"
+  Assets:Investment  4252.03 USD
+  Assets:Bank
+
+2023-01-22 * "Stock purchase"
+  Assets:Investment  1096.97 USD
+  Assets:Bank
+
+2023-01-23 * "Credit card payment"
+  Liabilities:CreditCard  4125.99 USD
+  Assets:Bank
+
+2023-01-24 * "Electric bill"
+  Expenses:Utilities  1350.00 USD
+  Assets:Bank
+
+2023-01-25 * "Salary"
+  Assets:Bank  1695.40 USD
+  Income:Salary
+
+2023-01-26 * "Credit card payment"
+  Liabilities:CreditCard  2835.05 USD
+  Assets:Bank
+
+2023-01-27 * "Grocery shopping"
+  Expenses:Food  3943.64 USD
+  Assets:Cash
+
+2023-01-28 * "Credit card payment"
+  Liabilities:CreditCard  239.26 USD
+  Assets:Bank
+
+2023-01-01 * "Salary"
+  Assets:Bank  91.24 USD
+  Income:Salary
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  2212.02 USD
+  Assets:Cash
+
+2023-01-03 * "Stock purchase"
+  Assets:Investment  4959.27 USD
+  Assets:Bank
+
+2023-01-04 * "Salary"
+  Assets:Bank  1019.57 USD
+  Income:Salary
+
+2023-01-05 * "Electric bill"
+  Expenses:Utilities  4411.92 USD
+  Assets:Bank
+
+2023-01-06 * "Electric bill"
+  Expenses:Utilities  803.30 USD
+  Assets:Bank
+
+2023-01-07 * "Movie night"
+  Expenses:Entertainment  475.77 USD
+  Assets:Cash
+
+2023-01-08 * "Movie night"
+  Expenses:Entertainment  1259.44 USD
+  Assets:Cash
+
+2023-01-09 * "Salary"
+  Assets:Bank  3325.90 USD
+  Income:Salary
+
+2023-01-10 * "Electric bill"
+  Expenses:Utilities  268.42 USD
+  Assets:Bank
+
+2023-01-11 * "Gas station"
+  Expenses:Transport  3632.68 USD
+  Assets:Cash
+
+2023-01-12 * "Monthly rent"
+  Expenses:Rent  2151.86 USD
+  Assets:Bank
+
+2023-01-13 * "Grocery shopping"
+  Expenses:Food  3521.45 USD
+  Assets:Cash
+
+2023-01-14 * "Monthly rent"
+  Expenses:Rent  1074.97 USD
+  Assets:Bank
+
+2023-01-15 * "Gas station"
+  Expenses:Transport  672.17 USD
+  Assets:Cash
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  2602.03 USD
+  Assets:Bank
+
+2023-01-17 * "Movie night"
+  Expenses:Entertainment  56.34 USD
+  Assets:Cash
+
+2023-01-18 * "Stock purchase"
+  Assets:Investment  4087.37 USD
+  Assets:Bank
+
+2023-01-19 * "Credit card payment"
+  Liabilities:CreditCard  3473.21 USD
+  Assets:Bank
+
+2023-01-20 * "Stock purchase"
+  Assets:Investment  363.43 USD
+  Assets:Bank
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  455.76 USD
+  Assets:Bank
+
+2023-01-22 * "Movie night"
+  Expenses:Entertainment  524.98 USD
+  Assets:Cash
+
+2023-01-23 * "Salary"
+  Assets:Bank  4406.14 USD
+  Income:Salary
+
+2023-01-24 * "Salary"
+  Assets:Bank  1919.78 USD
+  Income:Salary
+
+2023-01-25 * "Salary"
+  Assets:Bank  3211.46 USD
+  Income:Salary
+
+2023-01-26 * "Grocery shopping"
+  Expenses:Food  351.37 USD
+  Assets:Cash
+
+2023-01-27 * "Salary"
+  Assets:Bank  3055.49 USD
+  Income:Salary
+
+2023-01-28 * "Gas station"
+  Expenses:Transport  2206.10 USD
+  Assets:Cash
+
+2023-01-01 * "Salary"
+  Assets:Bank  3144.12 USD
+  Income:Salary
+
+2023-01-02 * "Credit card payment"
+  Liabilities:CreditCard  4600.27 USD
+  Assets:Bank
+
+2023-01-03 * "Monthly rent"
+  Expenses:Rent  4301.21 USD
+  Assets:Bank
+
+2023-01-04 * "Salary"
+  Assets:Bank  4484.00 USD
+  Income:Salary
+
+2023-01-05 * "Stock purchase"
+  Assets:Investment  3764.70 USD
+  Assets:Bank
+
+2023-01-06 * "Stock purchase"
+  Assets:Investment  1764.16 USD
+  Assets:Bank
+
+2023-01-07 * "Salary"
+  Assets:Bank  1579.37 USD
+  Income:Salary
+
+2023-01-08 * "Monthly rent"
+  Expenses:Rent  1246.45 USD
+  Assets:Bank
+
+2023-01-09 * "Electric bill"
+  Expenses:Utilities  1248.35 USD
+  Assets:Bank
+
+2023-01-10 * "Grocery shopping"
+  Expenses:Food  3897.06 USD
+  Assets:Cash
+
+2023-01-11 * "Electric bill"
+  Expenses:Utilities  4240.98 USD
+  Assets:Bank
+
+2023-01-12 * "Gas station"
+  Expenses:Transport  1035.17 USD
+  Assets:Cash
+
+2023-01-13 * "Electric bill"
+  Expenses:Utilities  3741.74 USD
+  Assets:Bank
+
+2023-01-14 * "Gas station"
+  Expenses:Transport  3234.39 USD
+  Assets:Cash
+
+2023-01-15 * "Monthly rent"
+  Expenses:Rent  2479.49 USD
+  Assets:Bank
+
+2023-01-16 * "Monthly rent"
+  Expenses:Rent  1213.00 USD
+  Assets:Bank
+
+2023-01-17 * "Grocery shopping"
+  Expenses:Food  2646.15 USD
+  Assets:Cash
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  4934.54 USD
+  Assets:Cash
+
+2023-01-19 * "Stock purchase"
+  Assets:Investment  668.59 USD
+  Assets:Bank
+
+2023-01-20 * "Salary"
+  Assets:Bank  1833.41 USD
+  Income:Salary
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  3816.00 USD
+  Assets:Bank
+
+2023-01-22 * "Monthly rent"
+  Expenses:Rent  93.28 USD
+  Assets:Bank
+
+2023-01-23 * "Gas station"
+  Expenses:Transport  78.83 USD
+  Assets:Cash
+
+2023-01-24 * "Grocery shopping"
+  Expenses:Food  208.74 USD
+  Assets:Cash
+
+2023-01-25 * "Stock purchase"
+  Assets:Investment  4743.91 USD
+  Assets:Bank
+
+2023-01-26 * "Stock purchase"
+  Assets:Investment  2537.99 USD
+  Assets:Bank
+
+2023-01-27 * "Stock purchase"
+  Assets:Investment  2123.64 USD
+  Assets:Bank
+
+2023-01-28 * "Salary"
+  Assets:Bank  421.31 USD
+  Income:Salary
+
+2023-01-01 * "Electric bill"
+  Expenses:Utilities  1394.56 USD
+  Assets:Bank
+
+2023-01-02 * "Gas station"
+  Expenses:Transport  404.32 USD
+  Assets:Cash
+
+2023-01-03 * "Salary"
+  Assets:Bank  4871.82 USD
+  Income:Salary
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  2686.59 USD
+  Assets:Bank
+
+2023-01-05 * "Monthly rent"
+  Expenses:Rent  2936.32 USD
+  Assets:Bank
+
+2023-01-06 * "Stock purchase"
+  Assets:Investment  1557.75 USD
+  Assets:Bank
+
+2023-01-07 * "Gas station"
+  Expenses:Transport  3652.49 USD
+  Assets:Cash
+
+2023-01-08 * "Monthly rent"
+  Expenses:Rent  298.95 USD
+  Assets:Bank
+
+2023-01-09 * "Monthly rent"
+  Expenses:Rent  4623.89 USD
+  Assets:Bank
+
+2023-01-10 * "Grocery shopping"
+  Expenses:Food  2272.33 USD
+  Assets:Cash
+
+2023-01-11 * "Salary"
+  Assets:Bank  1553.36 USD
+  Income:Salary
+
+2023-01-12 * "Salary"
+  Assets:Bank  606.02 USD
+  Income:Salary
+
+2023-01-13 * "Salary"
+  Assets:Bank  3510.48 USD
+  Income:Salary
+
+2023-01-14 * "Movie night"
+  Expenses:Entertainment  2487.10 USD
+  Assets:Cash
+
+2023-01-15 * "Electric bill"
+  Expenses:Utilities  2619.80 USD
+  Assets:Bank
+
+2023-01-16 * "Salary"
+  Assets:Bank  843.15 USD
+  Income:Salary
+
+2023-01-17 * "Electric bill"
+  Expenses:Utilities  3751.38 USD
+  Assets:Bank
+
+2023-01-18 * "Monthly rent"
+  Expenses:Rent  3667.35 USD
+  Assets:Bank
+
+2023-01-19 * "Grocery shopping"
+  Expenses:Food  3859.44 USD
+  Assets:Cash
+
+2023-01-20 * "Stock purchase"
+  Assets:Investment  1681.71 USD
+  Assets:Bank
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  1367.18 USD
+  Assets:Bank
+
+2023-01-22 * "Monthly rent"
+  Expenses:Rent  1322.12 USD
+  Assets:Bank
+
+2023-01-23 * "Movie night"
+  Expenses:Entertainment  2485.78 USD
+  Assets:Cash
+
+2023-01-24 * "Salary"
+  Assets:Bank  286.64 USD
+  Income:Salary
+
+2023-01-25 * "Electric bill"
+  Expenses:Utilities  1844.76 USD
+  Assets:Bank
+
+2023-01-26 * "Monthly rent"
+  Expenses:Rent  3868.91 USD
+  Assets:Bank
+
+2023-01-27 * "Grocery shopping"
+  Expenses:Food  1149.74 USD
+  Assets:Cash
+
+2023-01-28 * "Grocery shopping"
+  Expenses:Food  229.75 USD
+  Assets:Cash
+
+2023-01-01 * "Credit card payment"
+  Liabilities:CreditCard  1230.31 USD
+  Assets:Bank
+
+2023-01-02 * "Salary"
+  Assets:Bank  1826.24 USD
+  Income:Salary
+
+2023-01-03 * "Grocery shopping"
+  Expenses:Food  903.02 USD
+  Assets:Cash
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  2768.80 USD
+  Assets:Bank
+
+2023-01-05 * "Gas station"
+  Expenses:Transport  1130.33 USD
+  Assets:Cash
+
+2023-01-06 * "Movie night"
+  Expenses:Entertainment  2087.12 USD
+  Assets:Cash
+
+2023-01-07 * "Monthly rent"
+  Expenses:Rent  1363.58 USD
+  Assets:Bank
+
+2023-01-08 * "Monthly rent"
+  Expenses:Rent  2861.96 USD
+  Assets:Bank
+
+2023-01-09 * "Grocery shopping"
+  Expenses:Food  2515.18 USD
+  Assets:Cash
+
+2023-01-10 * "Grocery shopping"
+  Expenses:Food  904.93 USD
+  Assets:Cash
+
+2023-01-11 * "Monthly rent"
+  Expenses:Rent  4770.86 USD
+  Assets:Bank
+
+2023-01-12 * "Electric bill"
+  Expenses:Utilities  4386.19 USD
+  Assets:Bank
+
+2023-01-13 * "Electric bill"
+  Expenses:Utilities  3869.90 USD
+  Assets:Bank
+
+2023-01-14 * "Credit card payment"
+  Liabilities:CreditCard  1643.23 USD
+  Assets:Bank
+
+2023-01-15 * "Gas station"
+  Expenses:Transport  49.77 USD
+  Assets:Cash
+
+2023-01-16 * "Electric bill"
+  Expenses:Utilities  1465.06 USD
+  Assets:Bank
+
+2023-01-17 * "Gas station"
+  Expenses:Transport  3700.48 USD
+  Assets:Cash
+
+2023-01-18 * "Credit card payment"
+  Liabilities:CreditCard  2324.99 USD
+  Assets:Bank
+
+2023-01-19 * "Gas station"
+  Expenses:Transport  4988.96 USD
+  Assets:Cash
+
+2023-01-20 * "Gas station"
+  Expenses:Transport  3664.99 USD
+  Assets:Cash
+
+2023-01-21 * "Stock purchase"
+  Assets:Investment  761.33 USD
+  Assets:Bank
+
+2023-01-22 * "Movie night"
+  Expenses:Entertainment  129.31 USD
+  Assets:Cash
+
+2023-01-23 * "Grocery shopping"
+  Expenses:Food  3183.35 USD
+  Assets:Cash
+
+2023-01-24 * "Grocery shopping"
+  Expenses:Food  4755.44 USD
+  Assets:Cash
+
+2023-01-25 * "Stock purchase"
+  Assets:Investment  3797.06 USD
+  Assets:Bank
+
+2023-01-26 * "Electric bill"
+  Expenses:Utilities  4246.54 USD
+  Assets:Bank
+
+2023-01-27 * "Gas station"
+  Expenses:Transport  528.71 USD
+  Assets:Cash
+
+2023-01-28 * "Grocery shopping"
+  Expenses:Food  2104.88 USD
+  Assets:Cash
+
+2023-01-01 * "Salary"
+  Assets:Bank  4863.07 USD
+  Income:Salary
+
+2023-01-02 * "Monthly rent"
+  Expenses:Rent  3561.15 USD
+  Assets:Bank
+
+2023-01-03 * "Gas station"
+  Expenses:Transport  229.06 USD
+  Assets:Cash
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  4487.46 USD
+  Assets:Bank
+
+2023-01-05 * "Movie night"
+  Expenses:Entertainment  3507.23 USD
+  Assets:Cash
+
+2023-01-06 * "Monthly rent"
+  Expenses:Rent  2297.71 USD
+  Assets:Bank
+
+2023-01-07 * "Salary"
+  Assets:Bank  2908.05 USD
+  Income:Salary
+
+2023-01-08 * "Stock purchase"
+  Assets:Investment  3189.71 USD
+  Assets:Bank
+
+2023-01-09 * "Grocery shopping"
+  Expenses:Food  383.40 USD
+  Assets:Cash
+
+2023-01-10 * "Salary"
+  Assets:Bank  2180.56 USD
+  Income:Salary
+
+2023-01-11 * "Electric bill"
+  Expenses:Utilities  1191.49 USD
+  Assets:Bank
+
+2023-01-12 * "Stock purchase"
+  Assets:Investment  4256.06 USD
+  Assets:Bank
+
+2023-01-13 * "Movie night"
+  Expenses:Entertainment  3506.62 USD
+  Assets:Cash
+
+2023-01-14 * "Electric bill"
+  Expenses:Utilities  1597.11 USD
+  Assets:Bank
+
+2023-01-15 * "Gas station"
+  Expenses:Transport  1175.72 USD
+  Assets:Cash
+
+2023-01-16 * "Monthly rent"
+  Expenses:Rent  689.20 USD
+  Assets:Bank
+
+2023-01-17 * "Salary"
+  Assets:Bank  785.50 USD
+  Income:Salary
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  2253.34 USD
+  Assets:Cash
+
+2023-01-19 * "Movie night"
+  Expenses:Entertainment  2038.50 USD
+  Assets:Cash
+
+2023-01-20 * "Gas station"
+  Expenses:Transport  4823.53 USD
+  Assets:Cash
+
+2023-01-21 * "Credit card payment"
+  Liabilities:CreditCard  2265.07 USD
+  Assets:Bank
+
+2023-01-22 * "Monthly rent"
+  Expenses:Rent  1332.39 USD
+  Assets:Bank
+
+2023-01-23 * "Electric bill"
+  Expenses:Utilities  461.20 USD
+  Assets:Bank
+
+2023-01-24 * "Grocery shopping"
+  Expenses:Food  4133.67 USD
+  Assets:Cash
+
+2023-01-25 * "Movie night"
+  Expenses:Entertainment  1082.95 USD
+  Assets:Cash
+
+2023-01-26 * "Gas station"
+  Expenses:Transport  750.14 USD
+  Assets:Cash
+
+2023-01-27 * "Stock purchase"
+  Assets:Investment  4842.32 USD
+  Assets:Bank
+
+2023-01-28 * "Electric bill"
+  Expenses:Utilities  2572.16 USD
+  Assets:Bank
+
+2023-01-01 * "Salary"
+  Assets:Bank  1308.23 USD
+  Income:Salary
+
+2023-01-02 * "Stock purchase"
+  Assets:Investment  165.10 USD
+  Assets:Bank
+
+2023-01-03 * "Gas station"
+  Expenses:Transport  4274.46 USD
+  Assets:Cash
+
+2023-01-04 * "Monthly rent"
+  Expenses:Rent  482.68 USD
+  Assets:Bank
+
+2023-01-05 * "Salary"
+  Assets:Bank  4021.44 USD
+  Income:Salary
+
+2023-01-06 * "Grocery shopping"
+  Expenses:Food  616.05 USD
+  Assets:Cash
+
+2023-01-07 * "Gas station"
+  Expenses:Transport  4153.56 USD
+  Assets:Cash
+
+2023-01-08 * "Stock purchase"
+  Assets:Investment  662.27 USD
+  Assets:Bank
+
+2023-01-09 * "Monthly rent"
+  Expenses:Rent  1867.48 USD
+  Assets:Bank
+
+2023-01-10 * "Electric bill"
+  Expenses:Utilities  2915.80 USD
+  Assets:Bank
+
+2023-01-11 * "Monthly rent"
+  Expenses:Rent  4587.97 USD
+  Assets:Bank
+
+2023-01-12 * "Monthly rent"
+  Expenses:Rent  118.78 USD
+  Assets:Bank
+
+2023-01-13 * "Credit card payment"
+  Liabilities:CreditCard  996.77 USD
+  Assets:Bank
+
+2023-01-14 * "Monthly rent"
+  Expenses:Rent  4048.40 USD
+  Assets:Bank
+
+2023-01-15 * "Movie night"
+  Expenses:Entertainment  4526.34 USD
+  Assets:Cash
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  621.41 USD
+  Assets:Bank
+
+2023-01-17 * "Stock purchase"
+  Assets:Investment  262.68 USD
+  Assets:Bank
+
+2023-01-18 * "Stock purchase"
+  Assets:Investment  4110.21 USD
+  Assets:Bank
+
+2023-01-19 * "Stock purchase"
+  Assets:Investment  2485.67 USD
+  Assets:Bank
+
+2023-01-20 * "Salary"
+  Assets:Bank  3419.23 USD
+  Income:Salary
+
+2023-01-21 * "Salary"
+  Assets:Bank  1776.18 USD
+  Income:Salary
+
+2023-01-22 * "Credit card payment"
+  Liabilities:CreditCard  1382.16 USD
+  Assets:Bank
+
+2023-01-23 * "Grocery shopping"
+  Expenses:Food  4418.28 USD
+  Assets:Cash
+
+2023-01-24 * "Gas station"
+  Expenses:Transport  3074.39 USD
+  Assets:Cash
+
+2023-01-25 * "Credit card payment"
+  Liabilities:CreditCard  3239.92 USD
+  Assets:Bank
+
+2023-01-26 * "Credit card payment"
+  Liabilities:CreditCard  2065.84 USD
+  Assets:Bank
+
+2023-01-27 * "Electric bill"
+  Expenses:Utilities  314.29 USD
+  Assets:Bank
+
+2023-01-28 * "Stock purchase"
+  Assets:Investment  1921.25 USD
+  Assets:Bank
+
+2023-01-01 * "Gas station"
+  Expenses:Transport  1005.29 USD
+  Assets:Cash
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  3157.46 USD
+  Assets:Cash
+
+2023-01-03 * "Movie night"
+  Expenses:Entertainment  4947.12 USD
+  Assets:Cash
+
+2023-01-04 * "Credit card payment"
+  Liabilities:CreditCard  2403.63 USD
+  Assets:Bank
+
+2023-01-05 * "Movie night"
+  Expenses:Entertainment  1726.73 USD
+  Assets:Cash
+
+2023-01-06 * "Salary"
+  Assets:Bank  1948.02 USD
+  Income:Salary
+
+2023-01-07 * "Gas station"
+  Expenses:Transport  140.05 USD
+  Assets:Cash
+
+2023-01-08 * "Electric bill"
+  Expenses:Utilities  156.22 USD
+  Assets:Bank
+
+2023-01-09 * "Credit card payment"
+  Liabilities:CreditCard  302.37 USD
+  Assets:Bank
+
+2023-01-10 * "Gas station"
+  Expenses:Transport  2651.87 USD
+  Assets:Cash
+
+2023-01-11 * "Monthly rent"
+  Expenses:Rent  4870.16 USD
+  Assets:Bank
+
+2023-01-12 * "Gas station"
+  Expenses:Transport  1246.81 USD
+  Assets:Cash
+
+2023-01-13 * "Grocery shopping"
+  Expenses:Food  1339.97 USD
+  Assets:Cash
+
+2023-01-14 * "Gas station"
+  Expenses:Transport  3822.61 USD
+  Assets:Cash
+
+2023-01-15 * "Stock purchase"
+  Assets:Investment  2882.70 USD
+  Assets:Bank
+
+2023-01-16 * "Salary"
+  Assets:Bank  1780.48 USD
+  Income:Salary
+
+2023-01-17 * "Movie night"
+  Expenses:Entertainment  888.74 USD
+  Assets:Cash
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  4032.99 USD
+  Assets:Cash
+
+2023-01-19 * "Grocery shopping"
+  Expenses:Food  4570.76 USD
+  Assets:Cash
+
+2023-01-20 * "Movie night"
+  Expenses:Entertainment  3520.23 USD
+  Assets:Cash
+
+2023-01-21 * "Salary"
+  Assets:Bank  4738.32 USD
+  Income:Salary
+
+2023-01-22 * "Gas station"
+  Expenses:Transport  2819.91 USD
+  Assets:Cash
+
+2023-01-23 * "Credit card payment"
+  Liabilities:CreditCard  4185.12 USD
+  Assets:Bank
+
+2023-01-24 * "Salary"
+  Assets:Bank  2715.20 USD
+  Income:Salary
+
+2023-01-25 * "Monthly rent"
+  Expenses:Rent  2457.28 USD
+  Assets:Bank
+
+2023-01-26 * "Gas station"
+  Expenses:Transport  290.28 USD
+  Assets:Cash
+
+2023-01-27 * "Credit card payment"
+  Liabilities:CreditCard  109.44 USD
+  Assets:Bank
+
+2023-01-28 * "Gas station"
+  Expenses:Transport  13.41 USD
+  Assets:Cash
+
+2023-01-01 * "Movie night"
+  Expenses:Entertainment  4034.16 USD
+  Assets:Cash
+
+2023-01-02 * "Movie night"
+  Expenses:Entertainment  3587.52 USD
+  Assets:Cash
+
+2023-01-03 * "Salary"
+  Assets:Bank  307.18 USD
+  Income:Salary
+
+2023-01-04 * "Salary"
+  Assets:Bank  2937.18 USD
+  Income:Salary
+
+2023-01-05 * "Movie night"
+  Expenses:Entertainment  3874.09 USD
+  Assets:Cash
+
+2023-01-06 * "Movie night"
+  Expenses:Entertainment  4803.19 USD
+  Assets:Cash
+
+2023-01-07 * "Stock purchase"
+  Assets:Investment  3525.64 USD
+  Assets:Bank
+
+2023-01-08 * "Movie night"
+  Expenses:Entertainment  2934.22 USD
+  Assets:Cash
+
+2023-01-09 * "Salary"
+  Assets:Bank  1515.81 USD
+  Income:Salary
+
+2023-01-10 * "Stock purchase"
+  Assets:Investment  4879.54 USD
+  Assets:Bank
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  3961.29 USD
+  Assets:Bank
+
+2023-01-12 * "Salary"
+  Assets:Bank  3249.41 USD
+  Income:Salary
+
+2023-01-13 * "Movie night"
+  Expenses:Entertainment  3538.84 USD
+  Assets:Cash
+
+2023-01-14 * "Salary"
+  Assets:Bank  1123.95 USD
+  Income:Salary
+
+2023-01-15 * "Electric bill"
+  Expenses:Utilities  1898.14 USD
+  Assets:Bank
+
+2023-01-16 * "Grocery shopping"
+  Expenses:Food  645.47 USD
+  Assets:Cash
+
+2023-01-17 * "Stock purchase"
+  Assets:Investment  4744.45 USD
+  Assets:Bank
+
+2023-01-18 * "Grocery shopping"
+  Expenses:Food  4255.28 USD
+  Assets:Cash
+
+2023-01-19 * "Movie night"
+  Expenses:Entertainment  918.59 USD
+  Assets:Cash
+
+2023-01-20 * "Gas station"
+  Expenses:Transport  4605.98 USD
+  Assets:Cash
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  3201.84 USD
+  Assets:Bank
+
+2023-01-22 * "Salary"
+  Assets:Bank  4684.07 USD
+  Income:Salary
+
+2023-01-23 * "Monthly rent"
+  Expenses:Rent  1662.53 USD
+  Assets:Bank
+
+2023-01-24 * "Movie night"
+  Expenses:Entertainment  1197.60 USD
+  Assets:Cash
+
+2023-01-25 * "Monthly rent"
+  Expenses:Rent  847.76 USD
+  Assets:Bank
+
+2023-01-26 * "Movie night"
+  Expenses:Entertainment  4110.09 USD
+  Assets:Cash
+
+2023-01-27 * "Electric bill"
+  Expenses:Utilities  2238.68 USD
+  Assets:Bank
+
+2023-01-28 * "Monthly rent"
+  Expenses:Rent  1056.32 USD
+  Assets:Bank
+
+2023-01-01 * "Monthly rent"
+  Expenses:Rent  1758.90 USD
+  Assets:Bank
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  3604.86 USD
+  Assets:Cash
+
+2023-01-03 * "Stock purchase"
+  Assets:Investment  1935.83 USD
+  Assets:Bank
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  4845.82 USD
+  Assets:Bank
+
+2023-01-05 * "Stock purchase"
+  Assets:Investment  2470.48 USD
+  Assets:Bank
+
+2023-01-06 * "Stock purchase"
+  Assets:Investment  1762.64 USD
+  Assets:Bank
+
+2023-01-07 * "Credit card payment"
+  Liabilities:CreditCard  516.13 USD
+  Assets:Bank
+
+2023-01-08 * "Gas station"
+  Expenses:Transport  3945.76 USD
+  Assets:Cash
+
+2023-01-09 * "Monthly rent"
+  Expenses:Rent  821.66 USD
+  Assets:Bank
+
+2023-01-10 * "Grocery shopping"
+  Expenses:Food  3997.98 USD
+  Assets:Cash
+
+2023-01-11 * "Movie night"
+  Expenses:Entertainment  1481.59 USD
+  Assets:Cash
+
+2023-01-12 * "Monthly rent"
+  Expenses:Rent  1313.03 USD
+  Assets:Bank
+
+2023-01-13 * "Salary"
+  Assets:Bank  380.26 USD
+  Income:Salary
+
+2023-01-14 * "Salary"
+  Assets:Bank  4440.78 USD
+  Income:Salary
+
+2023-01-15 * "Monthly rent"
+  Expenses:Rent  3662.61 USD
+  Assets:Bank
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  1696.37 USD
+  Assets:Bank
+
+2023-01-17 * "Stock purchase"
+  Assets:Investment  3525.48 USD
+  Assets:Bank
+
+2023-01-18 * "Salary"
+  Assets:Bank  4712.79 USD
+  Income:Salary
+
+2023-01-19 * "Stock purchase"
+  Assets:Investment  3040.51 USD
+  Assets:Bank
+
+2023-01-20 * "Monthly rent"
+  Expenses:Rent  793.95 USD
+  Assets:Bank
+
+2023-01-21 * "Gas station"
+  Expenses:Transport  1662.16 USD
+  Assets:Cash
+
+2023-01-22 * "Electric bill"
+  Expenses:Utilities  2052.31 USD
+  Assets:Bank
+
+2023-01-23 * "Electric bill"
+  Expenses:Utilities  3306.38 USD
+  Assets:Bank
+
+2023-01-24 * "Grocery shopping"
+  Expenses:Food  1195.37 USD
+  Assets:Cash
+
+2023-01-25 * "Credit card payment"
+  Liabilities:CreditCard  1970.58 USD
+  Assets:Bank
+
+2023-01-26 * "Movie night"
+  Expenses:Entertainment  776.41 USD
+  Assets:Cash
+
+2023-01-27 * "Monthly rent"
+  Expenses:Rent  29.04 USD
+  Assets:Bank
+
+2023-01-28 * "Credit card payment"
+  Liabilities:CreditCard  1479.80 USD
+  Assets:Bank
+
+2023-01-01 * "Grocery shopping"
+  Expenses:Food  1006.38 USD
+  Assets:Cash
+
+2023-01-02 * "Electric bill"
+  Expenses:Utilities  1042.70 USD
+  Assets:Bank
+
+2023-01-03 * "Credit card payment"
+  Liabilities:CreditCard  4885.52 USD
+  Assets:Bank
+
+2023-01-04 * "Electric bill"
+  Expenses:Utilities  4220.41 USD
+  Assets:Bank
+
+2023-01-05 * "Credit card payment"
+  Liabilities:CreditCard  3926.53 USD
+  Assets:Bank
+
+2023-01-06 * "Electric bill"
+  Expenses:Utilities  2450.59 USD
+  Assets:Bank
+
+2023-01-07 * "Stock purchase"
+  Assets:Investment  464.77 USD
+  Assets:Bank
+
+2023-01-08 * "Stock purchase"
+  Assets:Investment  932.56 USD
+  Assets:Bank
+
+2023-01-09 * "Credit card payment"
+  Liabilities:CreditCard  1853.31 USD
+  Assets:Bank
+
+2023-01-10 * "Credit card payment"
+  Liabilities:CreditCard  232.64 USD
+  Assets:Bank
+
+2023-01-11 * "Gas station"
+  Expenses:Transport  2330.64 USD
+  Assets:Cash
+
+2023-01-12 * "Grocery shopping"
+  Expenses:Food  4187.02 USD
+  Assets:Cash
+
+2023-01-13 * "Monthly rent"
+  Expenses:Rent  764.14 USD
+  Assets:Bank
+
+2023-01-14 * "Movie night"
+  Expenses:Entertainment  437.68 USD
+  Assets:Cash
+
+2023-01-15 * "Stock purchase"
+  Assets:Investment  4042.82 USD
+  Assets:Bank
+
+2023-01-16 * "Gas station"
+  Expenses:Transport  4853.82 USD
+  Assets:Cash
+
+2023-01-17 * "Stock purchase"
+  Assets:Investment  2772.47 USD
+  Assets:Bank
+
+2023-01-18 * "Stock purchase"
+  Assets:Investment  4093.84 USD
+  Assets:Bank
+
+2023-01-19 * "Credit card payment"
+  Liabilities:CreditCard  4828.48 USD
+  Assets:Bank
+
+2023-01-20 * "Gas station"
+  Expenses:Transport  2867.84 USD
+  Assets:Cash
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  2386.55 USD
+  Assets:Bank
+
+2023-01-22 * "Grocery shopping"
+  Expenses:Food  1980.07 USD
+  Assets:Cash
+
+2023-01-23 * "Salary"
+  Assets:Bank  2515.49 USD
+  Income:Salary
+
+2023-01-24 * "Credit card payment"
+  Liabilities:CreditCard  610.21 USD
+  Assets:Bank
+
+2023-01-25 * "Salary"
+  Assets:Bank  872.67 USD
+  Income:Salary
+
+2023-01-26 * "Gas station"
+  Expenses:Transport  4861.10 USD
+  Assets:Cash
+
+2023-01-27 * "Stock purchase"
+  Assets:Investment  639.67 USD
+  Assets:Bank
+
+2023-01-28 * "Stock purchase"
+  Assets:Investment  401.06 USD
+  Assets:Bank
+
+2023-01-01 * "Salary"
+  Assets:Bank  1017.58 USD
+  Income:Salary
+
+2023-01-02 * "Electric bill"
+  Expenses:Utilities  4172.20 USD
+  Assets:Bank
+
+2023-01-03 * "Monthly rent"
+  Expenses:Rent  1605.55 USD
+  Assets:Bank
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  444.27 USD
+  Assets:Bank
+
+2023-01-05 * "Electric bill"
+  Expenses:Utilities  2764.75 USD
+  Assets:Bank
+
+2023-01-06 * "Grocery shopping"
+  Expenses:Food  2603.24 USD
+  Assets:Cash
+
+2023-01-07 * "Stock purchase"
+  Assets:Investment  3934.89 USD
+  Assets:Bank
+
+2023-01-08 * "Salary"
+  Assets:Bank  571.47 USD
+  Income:Salary
+
+2023-01-09 * "Monthly rent"
+  Expenses:Rent  749.52 USD
+  Assets:Bank
+
+2023-01-10 * "Monthly rent"
+  Expenses:Rent  4625.39 USD
+  Assets:Bank
+
+2023-01-11 * "Movie night"
+  Expenses:Entertainment  3930.87 USD
+  Assets:Cash
+
+2023-01-12 * "Electric bill"
+  Expenses:Utilities  4390.69 USD
+  Assets:Bank
+
+2023-01-13 * "Credit card payment"
+  Liabilities:CreditCard  1921.39 USD
+  Assets:Bank
+
+2023-01-14 * "Credit card payment"
+  Liabilities:CreditCard  2864.40 USD
+  Assets:Bank
+
+2023-01-15 * "Electric bill"
+  Expenses:Utilities  196.95 USD
+  Assets:Bank
+
+2023-01-16 * "Stock purchase"
+  Assets:Investment  2020.84 USD
+  Assets:Bank
+
+2023-01-17 * "Movie night"
+  Expenses:Entertainment  203.52 USD
+  Assets:Cash
+
+2023-01-18 * "Grocery shopping"
+  Expenses:Food  3455.66 USD
+  Assets:Cash
+
+2023-01-19 * "Electric bill"
+  Expenses:Utilities  3731.29 USD
+  Assets:Bank
+
+2023-01-20 * "Grocery shopping"
+  Expenses:Food  4486.19 USD
+  Assets:Cash
+
+2023-01-21 * "Electric bill"
+  Expenses:Utilities  1695.95 USD
+  Assets:Bank
+
+2023-01-22 * "Credit card payment"
+  Liabilities:CreditCard  1561.64 USD
+  Assets:Bank
+
+2023-01-23 * "Monthly rent"
+  Expenses:Rent  4292.59 USD
+  Assets:Bank
+
+2023-01-24 * "Gas station"
+  Expenses:Transport  4862.76 USD
+  Assets:Cash
+
+2023-01-25 * "Credit card payment"
+  Liabilities:CreditCard  680.58 USD
+  Assets:Bank
+
+2023-01-26 * "Movie night"
+  Expenses:Entertainment  3872.41 USD
+  Assets:Cash
+
+2023-01-27 * "Stock purchase"
+  Assets:Investment  1354.41 USD
+  Assets:Bank
+
+2023-01-28 * "Monthly rent"
+  Expenses:Rent  3028.85 USD
+  Assets:Bank
+
+2023-01-01 * "Gas station"
+  Expenses:Transport  947.80 USD
+  Assets:Cash
+
+2023-01-02 * "Stock purchase"
+  Assets:Investment  4568.03 USD
+  Assets:Bank
+
+2023-01-03 * "Movie night"
+  Expenses:Entertainment  3707.31 USD
+  Assets:Cash
+
+2023-01-04 * "Salary"
+  Assets:Bank  4106.88 USD
+  Income:Salary
+
+2023-01-05 * "Stock purchase"
+  Assets:Investment  337.43 USD
+  Assets:Bank
+
+2023-01-06 * "Grocery shopping"
+  Expenses:Food  686.89 USD
+  Assets:Cash
+
+2023-01-07 * "Gas station"
+  Expenses:Transport  876.95 USD
+  Assets:Cash
+
+2023-01-08 * "Gas station"
+  Expenses:Transport  4186.51 USD
+  Assets:Cash
+
+2023-01-09 * "Grocery shopping"
+  Expenses:Food  175.02 USD
+  Assets:Cash
+
+2023-01-10 * "Gas station"
+  Expenses:Transport  4590.98 USD
+  Assets:Cash
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  1377.15 USD
+  Assets:Bank
+
+2023-01-12 * "Monthly rent"
+  Expenses:Rent  2530.58 USD
+  Assets:Bank
+
+2023-01-13 * "Gas station"
+  Expenses:Transport  3409.06 USD
+  Assets:Cash
+
+2023-01-14 * "Credit card payment"
+  Liabilities:CreditCard  1868.61 USD
+  Assets:Bank
+
+2023-01-15 * "Credit card payment"
+  Liabilities:CreditCard  896.14 USD
+  Assets:Bank
+
+2023-01-16 * "Movie night"
+  Expenses:Entertainment  2938.53 USD
+  Assets:Cash
+
+2023-01-17 * "Electric bill"
+  Expenses:Utilities  1727.80 USD
+  Assets:Bank
+
+2023-01-18 * "Monthly rent"
+  Expenses:Rent  3747.32 USD
+  Assets:Bank
+
+2023-01-19 * "Stock purchase"
+  Assets:Investment  1432.50 USD
+  Assets:Bank
+
+2023-01-20 * "Gas station"
+  Expenses:Transport  257.76 USD
+  Assets:Cash
+
+2023-01-21 * "Gas station"
+  Expenses:Transport  4286.98 USD
+  Assets:Cash
+
+2023-01-22 * "Electric bill"
+  Expenses:Utilities  3391.70 USD
+  Assets:Bank
+
+2023-01-23 * "Grocery shopping"
+  Expenses:Food  3261.42 USD
+  Assets:Cash
+
+2023-01-24 * "Grocery shopping"
+  Expenses:Food  4324.50 USD
+  Assets:Cash
+
+2023-01-25 * "Salary"
+  Assets:Bank  2375.75 USD
+  Income:Salary
+
+2023-01-26 * "Grocery shopping"
+  Expenses:Food  3240.38 USD
+  Assets:Cash
+
+2023-01-27 * "Electric bill"
+  Expenses:Utilities  1126.61 USD
+  Assets:Bank
+
+2023-01-28 * "Electric bill"
+  Expenses:Utilities  3566.58 USD
+  Assets:Bank
+
+2023-01-01 * "Stock purchase"
+  Assets:Investment  2124.80 USD
+  Assets:Bank
+
+2023-01-02 * "Credit card payment"
+  Liabilities:CreditCard  4259.42 USD
+  Assets:Bank
+
+2023-01-03 * "Credit card payment"
+  Liabilities:CreditCard  1267.47 USD
+  Assets:Bank
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  1517.70 USD
+  Assets:Bank
+
+2023-01-05 * "Grocery shopping"
+  Expenses:Food  2926.59 USD
+  Assets:Cash
+
+2023-01-06 * "Movie night"
+  Expenses:Entertainment  2562.45 USD
+  Assets:Cash
+
+2023-01-07 * "Electric bill"
+  Expenses:Utilities  2811.67 USD
+  Assets:Bank
+
+2023-01-08 * "Monthly rent"
+  Expenses:Rent  1499.39 USD
+  Assets:Bank
+
+2023-01-09 * "Movie night"
+  Expenses:Entertainment  2413.87 USD
+  Assets:Cash
+
+2023-01-10 * "Movie night"
+  Expenses:Entertainment  4941.92 USD
+  Assets:Cash
+
+2023-01-11 * "Electric bill"
+  Expenses:Utilities  4308.84 USD
+  Assets:Bank
+
+2023-01-12 * "Electric bill"
+  Expenses:Utilities  3284.04 USD
+  Assets:Bank
+
+2023-01-13 * "Gas station"
+  Expenses:Transport  949.92 USD
+  Assets:Cash
+
+2023-01-14 * "Stock purchase"
+  Assets:Investment  4499.44 USD
+  Assets:Bank
+
+2023-01-15 * "Salary"
+  Assets:Bank  3306.05 USD
+  Income:Salary
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  3609.20 USD
+  Assets:Bank
+
+2023-01-17 * "Electric bill"
+  Expenses:Utilities  4987.37 USD
+  Assets:Bank
+
+2023-01-18 * "Stock purchase"
+  Assets:Investment  4535.49 USD
+  Assets:Bank
+
+2023-01-19 * "Grocery shopping"
+  Expenses:Food  1947.49 USD
+  Assets:Cash
+
+2023-01-20 * "Gas station"
+  Expenses:Transport  2919.29 USD
+  Assets:Cash
+
+2023-01-21 * "Gas station"
+  Expenses:Transport  1722.40 USD
+  Assets:Cash
+
+2023-01-22 * "Credit card payment"
+  Liabilities:CreditCard  3434.73 USD
+  Assets:Bank
+
+2023-01-23 * "Movie night"
+  Expenses:Entertainment  4533.57 USD
+  Assets:Cash
+
+2023-01-24 * "Salary"
+  Assets:Bank  2541.50 USD
+  Income:Salary
+
+2023-01-25 * "Salary"
+  Assets:Bank  4204.79 USD
+  Income:Salary
+
+2023-01-26 * "Credit card payment"
+  Liabilities:CreditCard  1475.98 USD
+  Assets:Bank
+
+2023-01-27 * "Electric bill"
+  Expenses:Utilities  648.44 USD
+  Assets:Bank
+
+2023-01-28 * "Salary"
+  Assets:Bank  3628.68 USD
+  Income:Salary
+
+2023-01-01 * "Movie night"
+  Expenses:Entertainment  4735.15 USD
+  Assets:Cash
+
+2023-01-02 * "Gas station"
+  Expenses:Transport  3275.63 USD
+  Assets:Cash
+
+2023-01-03 * "Electric bill"
+  Expenses:Utilities  1782.86 USD
+  Assets:Bank
+
+2023-01-04 * "Movie night"
+  Expenses:Entertainment  2108.16 USD
+  Assets:Cash
+
+2023-01-05 * "Electric bill"
+  Expenses:Utilities  1864.70 USD
+  Assets:Bank
+
+2023-01-06 * "Monthly rent"
+  Expenses:Rent  2324.17 USD
+  Assets:Bank
+
+2023-01-07 * "Monthly rent"
+  Expenses:Rent  2357.98 USD
+  Assets:Bank
+
+2023-01-08 * "Gas station"
+  Expenses:Transport  2366.38 USD
+  Assets:Cash
+
+2023-01-09 * "Stock purchase"
+  Assets:Investment  2507.38 USD
+  Assets:Bank
+
+2023-01-10 * "Stock purchase"
+  Assets:Investment  2653.89 USD
+  Assets:Bank
+
+2023-01-11 * "Salary"
+  Assets:Bank  279.77 USD
+  Income:Salary
+
+2023-01-12 * "Gas station"
+  Expenses:Transport  695.45 USD
+  Assets:Cash
+
+2023-01-13 * "Credit card payment"
+  Liabilities:CreditCard  1719.92 USD
+  Assets:Bank
+
+2023-01-14 * "Salary"
+  Assets:Bank  724.69 USD
+  Income:Salary
+
+2023-01-15 * "Credit card payment"
+  Liabilities:CreditCard  3896.92 USD
+  Assets:Bank
+
+2023-01-16 * "Salary"
+  Assets:Bank  1669.82 USD
+  Income:Salary
+
+2023-01-17 * "Grocery shopping"
+  Expenses:Food  1573.94 USD
+  Assets:Cash
+
+2023-01-18 * "Electric bill"
+  Expenses:Utilities  33.52 USD
+  Assets:Bank
+
+2023-01-19 * "Salary"
+  Assets:Bank  1054.82 USD
+  Income:Salary
+
+2023-01-20 * "Salary"
+  Assets:Bank  2885.63 USD
+  Income:Salary
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  2452.99 USD
+  Assets:Bank
+
+2023-01-22 * "Stock purchase"
+  Assets:Investment  655.74 USD
+  Assets:Bank
+
+2023-01-23 * "Stock purchase"
+  Assets:Investment  3171.10 USD
+  Assets:Bank
+
+2023-01-24 * "Credit card payment"
+  Liabilities:CreditCard  2150.84 USD
+  Assets:Bank
+
+2023-01-25 * "Grocery shopping"
+  Expenses:Food  1922.75 USD
+  Assets:Cash
+
+2023-01-26 * "Movie night"
+  Expenses:Entertainment  2673.58 USD
+  Assets:Cash
+
+2023-01-27 * "Movie night"
+  Expenses:Entertainment  4750.84 USD
+  Assets:Cash
+
+2023-01-28 * "Gas station"
+  Expenses:Transport  3786.67 USD
+  Assets:Cash
+
+2023-01-01 * "Grocery shopping"
+  Expenses:Food  99.40 USD
+  Assets:Cash
+
+2023-01-02 * "Gas station"
+  Expenses:Transport  3137.17 USD
+  Assets:Cash
+
+2023-01-03 * "Movie night"
+  Expenses:Entertainment  1139.07 USD
+  Assets:Cash
+
+2023-01-04 * "Monthly rent"
+  Expenses:Rent  1567.34 USD
+  Assets:Bank
+
+2023-01-05 * "Electric bill"
+  Expenses:Utilities  1923.92 USD
+  Assets:Bank
+
+2023-01-06 * "Grocery shopping"
+  Expenses:Food  843.43 USD
+  Assets:Cash
+
+2023-01-07 * "Electric bill"
+  Expenses:Utilities  1498.03 USD
+  Assets:Bank
+
+2023-01-08 * "Movie night"
+  Expenses:Entertainment  2285.07 USD
+  Assets:Cash
+
+2023-01-09 * "Salary"
+  Assets:Bank  2173.99 USD
+  Income:Salary
+
+2023-01-10 * "Credit card payment"
+  Liabilities:CreditCard  1720.24 USD
+  Assets:Bank
+
+2023-01-11 * "Gas station"
+  Expenses:Transport  1802.66 USD
+  Assets:Cash
+
+2023-01-12 * "Stock purchase"
+  Assets:Investment  832.77 USD
+  Assets:Bank
+
+2023-01-13 * "Gas station"
+  Expenses:Transport  105.43 USD
+  Assets:Cash
+
+2023-01-14 * "Salary"
+  Assets:Bank  3638.57 USD
+  Income:Salary
+
+2023-01-15 * "Grocery shopping"
+  Expenses:Food  1063.84 USD
+  Assets:Cash
+
+2023-01-16 * "Salary"
+  Assets:Bank  2952.57 USD
+  Income:Salary
+
+2023-01-17 * "Grocery shopping"
+  Expenses:Food  624.58 USD
+  Assets:Cash
+
+2023-01-18 * "Electric bill"
+  Expenses:Utilities  1882.21 USD
+  Assets:Bank
+
+2023-01-19 * "Grocery shopping"
+  Expenses:Food  3858.54 USD
+  Assets:Cash
+
+2023-01-20 * "Grocery shopping"
+  Expenses:Food  2973.68 USD
+  Assets:Cash
+
+2023-01-21 * "Grocery shopping"
+  Expenses:Food  3313.23 USD
+  Assets:Cash
+
+2023-01-22 * "Monthly rent"
+  Expenses:Rent  250.69 USD
+  Assets:Bank
+
+2023-01-23 * "Stock purchase"
+  Assets:Investment  2089.71 USD
+  Assets:Bank
+
+2023-01-24 * "Electric bill"
+  Expenses:Utilities  626.74 USD
+  Assets:Bank
+
+2023-01-25 * "Salary"
+  Assets:Bank  2377.24 USD
+  Income:Salary
+
+2023-01-26 * "Grocery shopping"
+  Expenses:Food  1035.42 USD
+  Assets:Cash
+
+2023-01-27 * "Monthly rent"
+  Expenses:Rent  1512.57 USD
+  Assets:Bank
+
+2023-01-28 * "Electric bill"
+  Expenses:Utilities  3315.79 USD
+  Assets:Bank
+
+2023-01-01 * "Salary"
+  Assets:Bank  3117.76 USD
+  Income:Salary
+
+2023-01-02 * "Monthly rent"
+  Expenses:Rent  2099.94 USD
+  Assets:Bank
+
+2023-01-03 * "Monthly rent"
+  Expenses:Rent  2562.81 USD
+  Assets:Bank
+
+2023-01-04 * "Monthly rent"
+  Expenses:Rent  1420.71 USD
+  Assets:Bank
+
+2023-01-05 * "Gas station"
+  Expenses:Transport  2493.72 USD
+  Assets:Cash
+
+2023-01-06 * "Gas station"
+  Expenses:Transport  3892.01 USD
+  Assets:Cash
+
+2023-01-07 * "Stock purchase"
+  Assets:Investment  1796.03 USD
+  Assets:Bank
+
+2023-01-08 * "Grocery shopping"
+  Expenses:Food  1483.80 USD
+  Assets:Cash
+
+2023-01-09 * "Gas station"
+  Expenses:Transport  2745.21 USD
+  Assets:Cash
+
+2023-01-10 * "Credit card payment"
+  Liabilities:CreditCard  3444.14 USD
+  Assets:Bank
+
+2023-01-11 * "Grocery shopping"
+  Expenses:Food  1659.71 USD
+  Assets:Cash
+
+2023-01-12 * "Monthly rent"
+  Expenses:Rent  73.62 USD
+  Assets:Bank
+
+2023-01-13 * "Credit card payment"
+  Liabilities:CreditCard  4535.33 USD
+  Assets:Bank
+
+2023-01-14 * "Monthly rent"
+  Expenses:Rent  754.23 USD
+  Assets:Bank
+
+2023-01-15 * "Monthly rent"
+  Expenses:Rent  3899.84 USD
+  Assets:Bank
+
+2023-01-16 * "Monthly rent"
+  Expenses:Rent  3620.58 USD
+  Assets:Bank
+
+2023-01-17 * "Gas station"
+  Expenses:Transport  4524.85 USD
+  Assets:Cash
+
+2023-01-18 * "Electric bill"
+  Expenses:Utilities  2289.19 USD
+  Assets:Bank
+
+2023-01-19 * "Grocery shopping"
+  Expenses:Food  1327.98 USD
+  Assets:Cash
+
+2023-01-20 * "Salary"
+  Assets:Bank  508.05 USD
+  Income:Salary
+
+2023-01-21 * "Electric bill"
+  Expenses:Utilities  4371.96 USD
+  Assets:Bank
+
+2023-01-22 * "Movie night"
+  Expenses:Entertainment  1807.47 USD
+  Assets:Cash
+
+2023-01-23 * "Monthly rent"
+  Expenses:Rent  2135.72 USD
+  Assets:Bank
+
+2023-01-24 * "Grocery shopping"
+  Expenses:Food  484.04 USD
+  Assets:Cash
+
+2023-01-25 * "Salary"
+  Assets:Bank  58.26 USD
+  Income:Salary
+
+2023-01-26 * "Salary"
+  Assets:Bank  3320.14 USD
+  Income:Salary
+
+2023-01-27 * "Credit card payment"
+  Liabilities:CreditCard  1650.02 USD
+  Assets:Bank
+
+2023-01-28 * "Electric bill"
+  Expenses:Utilities  4775.89 USD
+  Assets:Bank
+
+2023-01-01 * "Monthly rent"
+  Expenses:Rent  4393.59 USD
+  Assets:Bank
+
+2023-01-02 * "Movie night"
+  Expenses:Entertainment  1869.38 USD
+  Assets:Cash
+
+2023-01-03 * "Stock purchase"
+  Assets:Investment  922.52 USD
+  Assets:Bank
+
+2023-01-04 * "Credit card payment"
+  Liabilities:CreditCard  2007.25 USD
+  Assets:Bank
+
+2023-01-05 * "Stock purchase"
+  Assets:Investment  1366.45 USD
+  Assets:Bank
+
+2023-01-06 * "Credit card payment"
+  Liabilities:CreditCard  3452.61 USD
+  Assets:Bank
+
+2023-01-07 * "Salary"
+  Assets:Bank  4001.50 USD
+  Income:Salary
+
+2023-01-08 * "Grocery shopping"
+  Expenses:Food  574.15 USD
+  Assets:Cash
+
+2023-01-09 * "Salary"
+  Assets:Bank  4908.03 USD
+  Income:Salary
+
+2023-01-10 * "Credit card payment"
+  Liabilities:CreditCard  527.53 USD
+  Assets:Bank
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  4013.30 USD
+  Assets:Bank
+
+2023-01-12 * "Stock purchase"
+  Assets:Investment  914.49 USD
+  Assets:Bank
+
+2023-01-13 * "Grocery shopping"
+  Expenses:Food  3898.03 USD
+  Assets:Cash
+
+2023-01-14 * "Salary"
+  Assets:Bank  4314.25 USD
+  Income:Salary
+
+2023-01-15 * "Credit card payment"
+  Liabilities:CreditCard  2420.57 USD
+  Assets:Bank
+
+2023-01-16 * "Stock purchase"
+  Assets:Investment  573.56 USD
+  Assets:Bank
+
+2023-01-17 * "Monthly rent"
+  Expenses:Rent  2209.03 USD
+  Assets:Bank
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  1315.45 USD
+  Assets:Cash
+
+2023-01-19 * "Gas station"
+  Expenses:Transport  71.68 USD
+  Assets:Cash
+
+2023-01-20 * "Movie night"
+  Expenses:Entertainment  4889.70 USD
+  Assets:Cash
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  2600.31 USD
+  Assets:Bank
+
+2023-01-22 * "Gas station"
+  Expenses:Transport  2169.91 USD
+  Assets:Cash
+
+2023-01-23 * "Stock purchase"
+  Assets:Investment  2414.83 USD
+  Assets:Bank
+
+2023-01-24 * "Grocery shopping"
+  Expenses:Food  751.79 USD
+  Assets:Cash
+
+2023-01-25 * "Salary"
+  Assets:Bank  68.11 USD
+  Income:Salary
+
+2023-01-26 * "Credit card payment"
+  Liabilities:CreditCard  2532.78 USD
+  Assets:Bank
+
+2023-01-27 * "Salary"
+  Assets:Bank  4260.84 USD
+  Income:Salary
+
+2023-01-28 * "Credit card payment"
+  Liabilities:CreditCard  383.58 USD
+  Assets:Bank
+
+2023-01-01 * "Movie night"
+  Expenses:Entertainment  1609.96 USD
+  Assets:Cash
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  4851.02 USD
+  Assets:Cash
+
+2023-01-03 * "Stock purchase"
+  Assets:Investment  2539.58 USD
+  Assets:Bank
+
+2023-01-04 * "Gas station"
+  Expenses:Transport  2022.35 USD
+  Assets:Cash
+
+2023-01-05 * "Credit card payment"
+  Liabilities:CreditCard  403.36 USD
+  Assets:Bank
+
+2023-01-06 * "Credit card payment"
+  Liabilities:CreditCard  4008.29 USD
+  Assets:Bank
+
+2023-01-07 * "Credit card payment"
+  Liabilities:CreditCard  449.22 USD
+  Assets:Bank
+
+2023-01-08 * "Monthly rent"
+  Expenses:Rent  2240.87 USD
+  Assets:Bank
+
+2023-01-09 * "Grocery shopping"
+  Expenses:Food  4903.55 USD
+  Assets:Cash
+
+2023-01-10 * "Stock purchase"
+  Assets:Investment  522.19 USD
+  Assets:Bank
+
+2023-01-11 * "Grocery shopping"
+  Expenses:Food  188.80 USD
+  Assets:Cash
+
+2023-01-12 * "Electric bill"
+  Expenses:Utilities  4131.28 USD
+  Assets:Bank
+
+2023-01-13 * "Gas station"
+  Expenses:Transport  4451.65 USD
+  Assets:Cash
+
+2023-01-14 * "Credit card payment"
+  Liabilities:CreditCard  3276.43 USD
+  Assets:Bank
+
+2023-01-15 * "Movie night"
+  Expenses:Entertainment  4752.27 USD
+  Assets:Cash
+
+2023-01-16 * "Gas station"
+  Expenses:Transport  4128.30 USD
+  Assets:Cash
+
+2023-01-17 * "Movie night"
+  Expenses:Entertainment  4223.14 USD
+  Assets:Cash
+
+2023-01-18 * "Credit card payment"
+  Liabilities:CreditCard  2805.15 USD
+  Assets:Bank
+
+2023-01-19 * "Movie night"
+  Expenses:Entertainment  3586.12 USD
+  Assets:Cash
+
+2023-01-20 * "Monthly rent"
+  Expenses:Rent  3582.41 USD
+  Assets:Bank
+
+2023-01-21 * "Gas station"
+  Expenses:Transport  496.21 USD
+  Assets:Cash
+
+2023-01-22 * "Movie night"
+  Expenses:Entertainment  20.96 USD
+  Assets:Cash
+
+2023-01-23 * "Electric bill"
+  Expenses:Utilities  4151.12 USD
+  Assets:Bank
+
+2023-01-24 * "Movie night"
+  Expenses:Entertainment  2742.98 USD
+  Assets:Cash
+
+2023-01-25 * "Grocery shopping"
+  Expenses:Food  3513.46 USD
+  Assets:Cash
+
+2023-01-26 * "Credit card payment"
+  Liabilities:CreditCard  4485.42 USD
+  Assets:Bank
+
+2023-01-27 * "Stock purchase"
+  Assets:Investment  710.84 USD
+  Assets:Bank
+
+2023-01-28 * "Gas station"
+  Expenses:Transport  543.74 USD
+  Assets:Cash
+
+2023-01-01 * "Stock purchase"
+  Assets:Investment  945.84 USD
+  Assets:Bank
+
+2023-01-02 * "Gas station"
+  Expenses:Transport  1085.79 USD
+  Assets:Cash
+
+2023-01-03 * "Monthly rent"
+  Expenses:Rent  3586.77 USD
+  Assets:Bank
+
+2023-01-04 * "Grocery shopping"
+  Expenses:Food  3788.18 USD
+  Assets:Cash
+
+2023-01-05 * "Monthly rent"
+  Expenses:Rent  4633.87 USD
+  Assets:Bank
+
+2023-01-06 * "Credit card payment"
+  Liabilities:CreditCard  3863.00 USD
+  Assets:Bank
+
+2023-01-07 * "Salary"
+  Assets:Bank  2292.37 USD
+  Income:Salary
+
+2023-01-08 * "Grocery shopping"
+  Expenses:Food  4819.64 USD
+  Assets:Cash
+
+2023-01-09 * "Grocery shopping"
+  Expenses:Food  2656.52 USD
+  Assets:Cash
+
+2023-01-10 * "Stock purchase"
+  Assets:Investment  2770.60 USD
+  Assets:Bank
+
+2023-01-11 * "Credit card payment"
+  Liabilities:CreditCard  4195.69 USD
+  Assets:Bank
+
+2023-01-12 * "Salary"
+  Assets:Bank  4622.61 USD
+  Income:Salary
+
+2023-01-13 * "Salary"
+  Assets:Bank  3462.17 USD
+  Income:Salary
+
+2023-01-14 * "Salary"
+  Assets:Bank  3655.17 USD
+  Income:Salary
+
+2023-01-15 * "Movie night"
+  Expenses:Entertainment  526.73 USD
+  Assets:Cash
+
+2023-01-16 * "Stock purchase"
+  Assets:Investment  2525.51 USD
+  Assets:Bank
+
+2023-01-17 * "Gas station"
+  Expenses:Transport  2099.14 USD
+  Assets:Cash
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  1375.24 USD
+  Assets:Cash
+
+2023-01-19 * "Credit card payment"
+  Liabilities:CreditCard  4852.75 USD
+  Assets:Bank
+
+2023-01-20 * "Salary"
+  Assets:Bank  4025.94 USD
+  Income:Salary
+
+2023-01-21 * "Electric bill"
+  Expenses:Utilities  2069.60 USD
+  Assets:Bank
+
+2023-01-22 * "Movie night"
+  Expenses:Entertainment  4216.94 USD
+  Assets:Cash
+
+2023-01-23 * "Gas station"
+  Expenses:Transport  3562.25 USD
+  Assets:Cash
+
+2023-01-24 * "Electric bill"
+  Expenses:Utilities  1012.44 USD
+  Assets:Bank
+
+2023-01-25 * "Salary"
+  Assets:Bank  3436.19 USD
+  Income:Salary
+
+2023-01-26 * "Salary"
+  Assets:Bank  4906.86 USD
+  Income:Salary
+
+2023-01-27 * "Movie night"
+  Expenses:Entertainment  2524.43 USD
+  Assets:Cash
+
+2023-01-28 * "Movie night"
+  Expenses:Entertainment  3554.66 USD
+  Assets:Cash
+
+2023-01-01 * "Stock purchase"
+  Assets:Investment  2815.78 USD
+  Assets:Bank
+
+2023-01-02 * "Electric bill"
+  Expenses:Utilities  3374.47 USD
+  Assets:Bank
+
+2023-01-03 * "Stock purchase"
+  Assets:Investment  4388.61 USD
+  Assets:Bank
+
+2023-01-04 * "Monthly rent"
+  Expenses:Rent  4043.44 USD
+  Assets:Bank
+
+2023-01-05 * "Salary"
+  Assets:Bank  136.11 USD
+  Income:Salary
+
+2023-01-06 * "Grocery shopping"
+  Expenses:Food  274.79 USD
+  Assets:Cash
+
+2023-01-07 * "Salary"
+  Assets:Bank  1007.51 USD
+  Income:Salary
+
+2023-01-08 * "Electric bill"
+  Expenses:Utilities  4917.83 USD
+  Assets:Bank
+
+2023-01-09 * "Grocery shopping"
+  Expenses:Food  740.68 USD
+  Assets:Cash
+
+2023-01-10 * "Electric bill"
+  Expenses:Utilities  3456.07 USD
+  Assets:Bank
+
+2023-01-11 * "Grocery shopping"
+  Expenses:Food  1027.96 USD
+  Assets:Cash
+
+2023-01-12 * "Credit card payment"
+  Liabilities:CreditCard  1799.83 USD
+  Assets:Bank
+
+2023-01-13 * "Gas station"
+  Expenses:Transport  521.38 USD
+  Assets:Cash
+
+2023-01-14 * "Stock purchase"
+  Assets:Investment  3714.64 USD
+  Assets:Bank
+
+2023-01-15 * "Electric bill"
+  Expenses:Utilities  1195.60 USD
+  Assets:Bank
+
+2023-01-16 * "Grocery shopping"
+  Expenses:Food  3467.75 USD
+  Assets:Cash
+
+2023-01-17 * "Stock purchase"
+  Assets:Investment  4633.16 USD
+  Assets:Bank
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  2088.67 USD
+  Assets:Cash
+
+2023-01-19 * "Grocery shopping"
+  Expenses:Food  4829.51 USD
+  Assets:Cash
+
+2023-01-20 * "Electric bill"
+  Expenses:Utilities  74.70 USD
+  Assets:Bank
+
+2023-01-21 * "Credit card payment"
+  Liabilities:CreditCard  1023.41 USD
+  Assets:Bank
+
+2023-01-22 * "Movie night"
+  Expenses:Entertainment  4151.62 USD
+  Assets:Cash
+
+2023-01-23 * "Gas station"
+  Expenses:Transport  3777.99 USD
+  Assets:Cash
+
+2023-01-24 * "Gas station"
+  Expenses:Transport  3882.97 USD
+  Assets:Cash
+
+2023-01-25 * "Salary"
+  Assets:Bank  1477.95 USD
+  Income:Salary
+
+2023-01-26 * "Monthly rent"
+  Expenses:Rent  4917.43 USD
+  Assets:Bank
+
+2023-01-27 * "Salary"
+  Assets:Bank  943.01 USD
+  Income:Salary
+
+2023-01-28 * "Monthly rent"
+  Expenses:Rent  3678.05 USD
+  Assets:Bank
+
+2023-01-01 * "Stock purchase"
+  Assets:Investment  1892.22 USD
+  Assets:Bank
+
+2023-01-02 * "Electric bill"
+  Expenses:Utilities  1402.77 USD
+  Assets:Bank
+
+2023-01-03 * "Electric bill"
+  Expenses:Utilities  659.03 USD
+  Assets:Bank
+
+2023-01-04 * "Credit card payment"
+  Liabilities:CreditCard  38.17 USD
+  Assets:Bank
+
+2023-01-05 * "Salary"
+  Assets:Bank  3551.35 USD
+  Income:Salary
+
+2023-01-06 * "Movie night"
+  Expenses:Entertainment  209.30 USD
+  Assets:Cash
+
+2023-01-07 * "Electric bill"
+  Expenses:Utilities  2988.43 USD
+  Assets:Bank
+
+2023-01-08 * "Movie night"
+  Expenses:Entertainment  2457.85 USD
+  Assets:Cash
+
+2023-01-09 * "Movie night"
+  Expenses:Entertainment  373.68 USD
+  Assets:Cash
+
+2023-01-10 * "Salary"
+  Assets:Bank  2631.72 USD
+  Income:Salary
+
+2023-01-11 * "Salary"
+  Assets:Bank  2607.83 USD
+  Income:Salary
+
+2023-01-12 * "Stock purchase"
+  Assets:Investment  2085.50 USD
+  Assets:Bank
+
+2023-01-13 * "Gas station"
+  Expenses:Transport  468.81 USD
+  Assets:Cash
+
+2023-01-14 * "Movie night"
+  Expenses:Entertainment  4418.15 USD
+  Assets:Cash
+
+2023-01-15 * "Electric bill"
+  Expenses:Utilities  1662.02 USD
+  Assets:Bank
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  1100.04 USD
+  Assets:Bank
+
+2023-01-17 * "Grocery shopping"
+  Expenses:Food  4983.19 USD
+  Assets:Cash
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  582.46 USD
+  Assets:Cash
+
+2023-01-19 * "Gas station"
+  Expenses:Transport  2233.88 USD
+  Assets:Cash
+
+2023-01-20 * "Movie night"
+  Expenses:Entertainment  4794.90 USD
+  Assets:Cash
+
+2023-01-21 * "Monthly rent"
+  Expenses:Rent  1913.05 USD
+  Assets:Bank
+
+2023-01-22 * "Electric bill"
+  Expenses:Utilities  1935.52 USD
+  Assets:Bank
+
+2023-01-23 * "Movie night"
+  Expenses:Entertainment  133.28 USD
+  Assets:Cash
+
+2023-01-24 * "Credit card payment"
+  Liabilities:CreditCard  2576.40 USD
+  Assets:Bank
+
+2023-01-25 * "Electric bill"
+  Expenses:Utilities  2439.16 USD
+  Assets:Bank
+
+2023-01-26 * "Gas station"
+  Expenses:Transport  4492.43 USD
+  Assets:Cash
+
+2023-01-27 * "Monthly rent"
+  Expenses:Rent  1608.36 USD
+  Assets:Bank
+
+2023-01-28 * "Salary"
+  Assets:Bank  4741.58 USD
+  Income:Salary
+
+2023-01-01 * "Grocery shopping"
+  Expenses:Food  4858.43 USD
+  Assets:Cash
+
+2023-01-02 * "Gas station"
+  Expenses:Transport  3138.40 USD
+  Assets:Cash
+
+2023-01-03 * "Gas station"
+  Expenses:Transport  3354.97 USD
+  Assets:Cash
+
+2023-01-04 * "Stock purchase"
+  Assets:Investment  4326.10 USD
+  Assets:Bank
+
+2023-01-05 * "Gas station"
+  Expenses:Transport  4179.97 USD
+  Assets:Cash
+
+2023-01-06 * "Stock purchase"
+  Assets:Investment  2693.39 USD
+  Assets:Bank
+
+2023-01-07 * "Monthly rent"
+  Expenses:Rent  3236.34 USD
+  Assets:Bank
+
+2023-01-08 * "Salary"
+  Assets:Bank  3736.99 USD
+  Income:Salary
+
+2023-01-09 * "Movie night"
+  Expenses:Entertainment  128.53 USD
+  Assets:Cash
+
+2023-01-10 * "Monthly rent"
+  Expenses:Rent  199.05 USD
+  Assets:Bank
+
+2023-01-11 * "Electric bill"
+  Expenses:Utilities  280.80 USD
+  Assets:Bank
+
+2023-01-12 * "Gas station"
+  Expenses:Transport  2794.84 USD
+  Assets:Cash
+
+2023-01-13 * "Stock purchase"
+  Assets:Investment  4555.82 USD
+  Assets:Bank
+
+2023-01-14 * "Stock purchase"
+  Assets:Investment  1946.28 USD
+  Assets:Bank
+
+2023-01-15 * "Grocery shopping"
+  Expenses:Food  2170.79 USD
+  Assets:Cash
+
+2023-01-16 * "Monthly rent"
+  Expenses:Rent  1953.61 USD
+  Assets:Bank
+
+2023-01-17 * "Monthly rent"
+  Expenses:Rent  2678.82 USD
+  Assets:Bank
+
+2023-01-18 * "Grocery shopping"
+  Expenses:Food  3782.24 USD
+  Assets:Cash
+
+2023-01-19 * "Monthly rent"
+  Expenses:Rent  3507.40 USD
+  Assets:Bank
+
+2023-01-20 * "Monthly rent"
+  Expenses:Rent  1794.92 USD
+  Assets:Bank
+
+2023-01-21 * "Electric bill"
+  Expenses:Utilities  1456.28 USD
+  Assets:Bank
+
+2023-01-22 * "Electric bill"
+  Expenses:Utilities  3036.76 USD
+  Assets:Bank
+
+2023-01-23 * "Credit card payment"
+  Liabilities:CreditCard  3828.72 USD
+  Assets:Bank
+
+2023-01-24 * "Grocery shopping"
+  Expenses:Food  1913.25 USD
+  Assets:Cash
+
+2023-01-25 * "Gas station"
+  Expenses:Transport  2375.20 USD
+  Assets:Cash
+
+2023-01-26 * "Stock purchase"
+  Assets:Investment  690.54 USD
+  Assets:Bank
+
+2023-01-27 * "Electric bill"
+  Expenses:Utilities  3985.88 USD
+  Assets:Bank
+
+2023-01-28 * "Salary"
+  Assets:Bank  4801.07 USD
+  Income:Salary
+
+2023-01-01 * "Movie night"
+  Expenses:Entertainment  1497.30 USD
+  Assets:Cash
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  4787.38 USD
+  Assets:Cash
+
+2023-01-03 * "Salary"
+  Assets:Bank  2772.09 USD
+  Income:Salary
+
+2023-01-04 * "Grocery shopping"
+  Expenses:Food  624.94 USD
+  Assets:Cash
+
+2023-01-05 * "Stock purchase"
+  Assets:Investment  2867.87 USD
+  Assets:Bank
+
+2023-01-06 * "Monthly rent"
+  Expenses:Rent  2690.39 USD
+  Assets:Bank
+
+2023-01-07 * "Movie night"
+  Expenses:Entertainment  1530.41 USD
+  Assets:Cash
+
+2023-01-08 * "Salary"
+  Assets:Bank  1066.57 USD
+  Income:Salary
+
+2023-01-09 * "Gas station"
+  Expenses:Transport  813.16 USD
+  Assets:Cash
+
+2023-01-10 * "Electric bill"
+  Expenses:Utilities  3088.26 USD
+  Assets:Bank
+
+2023-01-11 * "Salary"
+  Assets:Bank  979.69 USD
+  Income:Salary
+
+2023-01-12 * "Grocery shopping"
+  Expenses:Food  3358.18 USD
+  Assets:Cash
+
+2023-01-13 * "Credit card payment"
+  Liabilities:CreditCard  4258.42 USD
+  Assets:Bank
+
+2023-01-14 * "Monthly rent"
+  Expenses:Rent  3226.93 USD
+  Assets:Bank
+
+2023-01-15 * "Monthly rent"
+  Expenses:Rent  1460.36 USD
+  Assets:Bank
+
+2023-01-16 * "Gas station"
+  Expenses:Transport  1260.93 USD
+  Assets:Cash
+
+2023-01-17 * "Credit card payment"
+  Liabilities:CreditCard  3630.69 USD
+  Assets:Bank
+
+2023-01-18 * "Movie night"
+  Expenses:Entertainment  4758.18 USD
+  Assets:Cash
+
+2023-01-19 * "Gas station"
+  Expenses:Transport  649.79 USD
+  Assets:Cash
+
+2023-01-20 * "Monthly rent"
+  Expenses:Rent  509.22 USD
+  Assets:Bank
+
+2023-01-21 * "Movie night"
+  Expenses:Entertainment  4501.59 USD
+  Assets:Cash
+
+2023-01-22 * "Movie night"
+  Expenses:Entertainment  2434.45 USD
+  Assets:Cash
+
+2023-01-23 * "Electric bill"
+  Expenses:Utilities  3085.55 USD
+  Assets:Bank
+
+2023-01-24 * "Salary"
+  Assets:Bank  3470.36 USD
+  Income:Salary
+
+2023-01-25 * "Movie night"
+  Expenses:Entertainment  2832.10 USD
+  Assets:Cash
+
+2023-01-26 * "Stock purchase"
+  Assets:Investment  4040.42 USD
+  Assets:Bank
+
+2023-01-27 * "Movie night"
+  Expenses:Entertainment  851.51 USD
+  Assets:Cash
+
+2023-01-28 * "Gas station"
+  Expenses:Transport  1238.41 USD
+  Assets:Cash
+
+2023-01-01 * "Stock purchase"
+  Assets:Investment  3563.87 USD
+  Assets:Bank
+
+2023-01-02 * "Movie night"
+  Expenses:Entertainment  1390.63 USD
+  Assets:Cash
+
+2023-01-03 * "Movie night"
+  Expenses:Entertainment  680.19 USD
+  Assets:Cash
+
+2023-01-04 * "Credit card payment"
+  Liabilities:CreditCard  4390.65 USD
+  Assets:Bank
+
+2023-01-05 * "Electric bill"
+  Expenses:Utilities  2232.34 USD
+  Assets:Bank
+
+2023-01-06 * "Monthly rent"
+  Expenses:Rent  2439.99 USD
+  Assets:Bank
+
+2023-01-07 * "Monthly rent"
+  Expenses:Rent  887.09 USD
+  Assets:Bank
+
+2023-01-08 * "Salary"
+  Assets:Bank  4210.55 USD
+  Income:Salary
+
+2023-01-09 * "Gas station"
+  Expenses:Transport  4457.57 USD
+  Assets:Cash
+
+2023-01-10 * "Monthly rent"
+  Expenses:Rent  1323.54 USD
+  Assets:Bank
+
+2023-01-11 * "Grocery shopping"
+  Expenses:Food  3639.85 USD
+  Assets:Cash
+
+2023-01-12 * "Grocery shopping"
+  Expenses:Food  4249.44 USD
+  Assets:Cash
+
+2023-01-13 * "Stock purchase"
+  Assets:Investment  4065.09 USD
+  Assets:Bank
+
+2023-01-14 * "Gas station"
+  Expenses:Transport  3848.31 USD
+  Assets:Cash
+
+2023-01-15 * "Electric bill"
+  Expenses:Utilities  4532.45 USD
+  Assets:Bank
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  2721.91 USD
+  Assets:Bank
+
+2023-01-17 * "Salary"
+  Assets:Bank  3273.00 USD
+  Income:Salary
+
+2023-01-18 * "Gas station"
+  Expenses:Transport  1835.43 USD
+  Assets:Cash
+
+2023-01-19 * "Electric bill"
+  Expenses:Utilities  4458.27 USD
+  Assets:Bank
+
+2023-01-20 * "Monthly rent"
+  Expenses:Rent  678.07 USD
+  Assets:Bank
+
+2023-01-21 * "Grocery shopping"
+  Expenses:Food  1989.96 USD
+  Assets:Cash
+
+2023-01-22 * "Salary"
+  Assets:Bank  3316.77 USD
+  Income:Salary
+
+2023-01-23 * "Salary"
+  Assets:Bank  3788.46 USD
+  Income:Salary
+
+2023-01-24 * "Salary"
+  Assets:Bank  2236.64 USD
+  Income:Salary
+
+2023-01-25 * "Salary"
+  Assets:Bank  2836.12 USD
+  Income:Salary
+
+2023-01-26 * "Credit card payment"
+  Liabilities:CreditCard  3682.24 USD
+  Assets:Bank
+
+2023-01-27 * "Grocery shopping"
+  Expenses:Food  4696.48 USD
+  Assets:Cash
+
+2023-01-28 * "Credit card payment"
+  Liabilities:CreditCard  1101.91 USD
+  Assets:Bank
+
+2023-01-01 * "Electric bill"
+  Expenses:Utilities  1166.43 USD
+  Assets:Bank
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  1853.48 USD
+  Assets:Cash
+
+2023-01-03 * "Movie night"
+  Expenses:Entertainment  3346.24 USD
+  Assets:Cash
+
+2023-01-04 * "Credit card payment"
+  Liabilities:CreditCard  1946.58 USD
+  Assets:Bank
+
+2023-01-05 * "Grocery shopping"
+  Expenses:Food  4408.94 USD
+  Assets:Cash
+
+2023-01-06 * "Movie night"
+  Expenses:Entertainment  4903.14 USD
+  Assets:Cash
+
+2023-01-07 * "Electric bill"
+  Expenses:Utilities  525.09 USD
+  Assets:Bank
+
+2023-01-08 * "Electric bill"
+  Expenses:Utilities  4176.01 USD
+  Assets:Bank
+
+2023-01-09 * "Salary"
+  Assets:Bank  2897.37 USD
+  Income:Salary
+
+2023-01-10 * "Stock purchase"
+  Assets:Investment  1889.53 USD
+  Assets:Bank
+
+2023-01-11 * "Monthly rent"
+  Expenses:Rent  1832.83 USD
+  Assets:Bank
+
+2023-01-12 * "Stock purchase"
+  Assets:Investment  2588.15 USD
+  Assets:Bank
+
+2023-01-13 * "Gas station"
+  Expenses:Transport  4863.64 USD
+  Assets:Cash
+
+2023-01-14 * "Movie night"
+  Expenses:Entertainment  2586.70 USD
+  Assets:Cash
+
+2023-01-15 * "Movie night"
+  Expenses:Entertainment  4088.01 USD
+  Assets:Cash
+
+2023-01-16 * "Credit card payment"
+  Liabilities:CreditCard  2439.44 USD
+  Assets:Bank
+
+2023-01-17 * "Grocery shopping"
+  Expenses:Food  4436.99 USD
+  Assets:Cash
+
+2023-01-18 * "Salary"
+  Assets:Bank  2514.17 USD
+  Income:Salary
+
+2023-01-19 * "Gas station"
+  Expenses:Transport  2205.09 USD
+  Assets:Cash
+
+2023-01-20 * "Electric bill"
+  Expenses:Utilities  394.67 USD
+  Assets:Bank
+
+2023-01-21 * "Salary"
+  Assets:Bank  1065.47 USD
+  Income:Salary
+
+2023-01-22 * "Monthly rent"
+  Expenses:Rent  795.21 USD
+  Assets:Bank
+
+2023-01-23 * "Stock purchase"
+  Assets:Investment  3308.94 USD
+  Assets:Bank
+
+2023-01-24 * "Monthly rent"
+  Expenses:Rent  4057.75 USD
+  Assets:Bank
+
+2023-01-25 * "Credit card payment"
+  Liabilities:CreditCard  2412.77 USD
+  Assets:Bank
+
+2023-01-26 * "Salary"
+  Assets:Bank  2400.32 USD
+  Income:Salary
+
+2023-01-27 * "Stock purchase"
+  Assets:Investment  3239.82 USD
+  Assets:Bank
+
+2023-01-28 * "Grocery shopping"
+  Expenses:Food  122.01 USD
+  Assets:Cash
+
+2023-01-01 * "Salary"
+  Assets:Bank  648.15 USD
+  Income:Salary
+
+2023-01-02 * "Grocery shopping"
+  Expenses:Food  682.27 USD
+  Assets:Cash
+
+2023-01-03 * "Salary"
+  Assets:Bank  4455.08 USD
+  Income:Salary
+
+2023-01-04 * "Electric bill"
+  Expenses:Utilities  289.00 USD
+  Assets:Bank
+
+2023-01-05 * "Stock purchase"
+  Assets:Investment  4613.01 USD
+  Assets:Bank
+
+2023-01-06 * "Grocery shopping"
+  Expenses:Food  3000.79 USD
+  Assets:Cash
+
+2023-01-07 * "Electric bill"
+  Expenses:Utilities  4393.76 USD
+  Assets:Bank
+
+2023-01-08 * "Gas station"
+  Expenses:Transport  4736.80 USD
+  Assets:Cash
+
+2023-01-09 * "Credit card payment"
+  Liabilities:CreditCard  2251.52 USD
+  Assets:Bank
+
+2023-01-10 * "Salary"
+  Assets:Bank  4337.84 USD
+  Income:Salary
+
+2023-01-11 * "Stock purchase"
+  Assets:Investment  1104.63 USD
+  Assets:Bank
+
+2023-01-12 * "Salary"
+  Assets:Bank  3008.19 USD
+  Income:Salary
+
+2023-01-13 * "Electric bill"
+  Expenses:Utilities  3119.83 USD
+  Assets:Bank
+
+2023-01-14 * "Movie night"
+  Expenses:Entertainment  846.93 USD
+  Assets:Cash
+
+2023-01-15 * "Monthly rent"
+  Expenses:Rent  4612.54 USD
+  Assets:Bank
+
