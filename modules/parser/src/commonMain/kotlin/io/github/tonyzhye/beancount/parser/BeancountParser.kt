@@ -349,7 +349,11 @@ class BeancountParser : Parser {
             consume(Token.RCURLY::class)
         }
         
-        return Cost(number, currency, date, label)
+        if (number == null || currency.isEmpty()) {
+            return null
+        }
+        
+        return Cost(number, currency, date ?: LocalDate(1970, 1, 1), label)
     }
     
     private fun parseBalance(dateToken: Token.DATE): Balance {

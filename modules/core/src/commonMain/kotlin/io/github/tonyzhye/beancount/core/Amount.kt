@@ -18,11 +18,39 @@ data class Amount(
  * Based on beancount.core.position.Cost
  */
 data class Cost(
-    val number: Decimal? = null,
+    val number: Decimal,
     val currency: Currency,
-    val date: LocalDate? = null,
+    val date: LocalDate,
     val label: String? = null
 )
+
+/**
+ * CostSpec is a stand-in for an "incomplete" Cost.
+ * Any field may be left unspecified (null).
+ * Based on beancount.core.position.CostSpec
+ */
+data class CostSpec(
+    val numberPer: Decimal? = null,
+    val numberTotal: Decimal? = null,
+    val currency: Currency? = null,
+    val date: LocalDate? = null,
+    val label: String? = null,
+    val mergeCost: Boolean = false
+)
+
+/**
+ * Position is a pair of units and optional cost.
+ * Used to track inventories.
+ * Based on beancount.core.position.Position
+ */
+data class Position(
+    val units: Amount,
+    val cost: Cost? = null
+) {
+    init {
+        require(units.number != null) { "Position units must have a non-null number" }
+    }
+}
 
 /**
  * Posting represents a single leg of a transaction.

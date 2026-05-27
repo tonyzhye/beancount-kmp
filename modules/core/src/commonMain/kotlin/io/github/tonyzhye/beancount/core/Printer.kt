@@ -151,8 +151,8 @@ private fun formatPosting(posting: Posting): Triple<String, String, Meta?> {
 
             posting.cost?.let { cost ->
                 append(" {")
-                cost.number?.let { append("${it.toPlainString()} ${cost.currency}") }
-                cost.date?.let { append(", $it") }
+                append("${cost.number.toPlainString()} ${cost.currency}")
+                // Note: date is not typically displayed in cost formatting
                 cost.label?.let { append(", \"$it\"") }
                 append("}")
             }
