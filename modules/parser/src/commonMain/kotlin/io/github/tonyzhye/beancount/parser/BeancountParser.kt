@@ -164,8 +164,10 @@ class BeancountParser : Parser {
             io.github.tonyzhye.beancount.core.Booking.STRICT
         } else null
         
+        val meta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Open(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = meta,
             date = dateToken.value,
             account = account,
             currencies = currencies,
@@ -179,21 +181,24 @@ class BeancountParser : Parser {
         
         val account = parseAccount()
         
+        val closeMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Close(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = closeMeta,
             date = dateToken.value,
             account = account
         )
     }
-    
+
     private fun parseCommodity(dateToken: Token.DATE): Commodity {
         consume(Token.KEYWORD::class) // consume "commodity"
         skipWhitespaceAndComments()
-        
+
         val currency = parseCurrency()
-        
+        val commodityMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Commodity(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = commodityMeta,
             date = dateToken.value,
             currency = currency
         )
@@ -244,26 +249,29 @@ class BeancountParser : Parser {
             skipWhitespaceAndComments()
         }
         
+        // Parse transaction metadata (before postings)
+        // Note: Don't call skipWhitespaceAndComments() here because it would consume
+        // the INDENT tokens that parseMetadata() needs to identify metadata lines.
+        val txnMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         // Parse postings
         val postings = mutableListOf<Posting>()
-        
-        skipWhitespaceAndComments()
-        
+
         while (peek() is Token.INDENT || peek() is Token.ACCOUNT) {
             if (peek() is Token.INDENT) {
                 consume(Token.INDENT::class)
             }
-            
+
             val posting = parsePosting()
             if (posting != null) {
                 postings.add(posting)
             }
-            
+
             skipWhitespaceAndComments()
         }
-        
+
         return Transaction(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = txnMeta,
             date = dateToken.value,
             flag = flag,
             payee = payee,
@@ -292,25 +300,44 @@ class BeancountParser : Parser {
         var cost: CostSpec? = null
         if (peek() is Token.LCURLY) {
             cost = parseCostSpec()
-            skipWhitespaceAndComments()
+            skipInlineWhitespace()
         }
 
         // Parse price (optional): @ price or @@ price
         var price: Amount? = null
+        var isTotalPrice = false
         if (peek() is Token.AT) {
             consume(Token.AT::class)
-            skipWhitespaceAndComments()
+            skipInlineWhitespace()
             val priceNumber = (consume(Token.NUMBER::class) as Token.NUMBER).value
-            skipWhitespaceAndComments()
+            skipInlineWhitespace()
             val priceCurrency = parseCurrency()
             price = Amount(Decimal(priceNumber.toString()), priceCurrency)
+        } else if (peek() is Token.DOUBLE_AT) {
+            consume(Token.DOUBLE_AT::class)
+            skipInlineWhitespace()
+            val totalPriceNumber = (consume(Token.NUMBER::class) as Token.NUMBER).value
+            skipInlineWhitespace()
+            val totalPriceCurrency = parseCurrency()
+            // @@ means total price; convert to per-unit price
+            isTotalPrice = true
+            if (units != null && !units.number.isZero()) {
+                val perUnitPrice = Decimal(totalPriceNumber.toString()) / units.number.abs()
+                price = Amount(perUnitPrice, totalPriceCurrency)
+            } else {
+                price = Amount(Decimal(totalPriceNumber.toString()), totalPriceCurrency)
+            }
         }
+
+        // Parse posting metadata (optional)
+        val postingMeta = parseMetadata()
 
         return Posting(
             account = account,
             units = units,
             cost = cost,
-            price = price
+            price = price,
+            meta = postingMeta.ifEmpty { null }
         )
     }
 
@@ -381,126 +408,133 @@ class BeancountParser : Parser {
         skipWhitespaceAndComments()
         
         val amount = parseAmount()
-        
+        val balanceMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Balance(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = balanceMeta,
             date = dateToken.value,
             account = account,
             amount = amount
         )
     }
-    
+
     private fun parsePad(dateToken: Token.DATE): Pad {
         consume(Token.KEYWORD::class) // consume "pad"
         skipWhitespaceAndComments()
-        
+
         val account = parseAccount()
         skipWhitespaceAndComments()
-        
+
         val sourceAccount = parseAccount()
-        
+        val padMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Pad(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = padMeta,
             date = dateToken.value,
             account = account,
             sourceAccount = sourceAccount
         )
     }
-    
+
     private fun parseNote(dateToken: Token.DATE): Note {
         consume(Token.KEYWORD::class) // consume "note"
         skipWhitespaceAndComments()
-        
+
         val account = parseAccount()
         skipWhitespaceAndComments()
-        
+
         val comment = (consume(Token.STRING::class) as Token.STRING).value
-        
+        val noteMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Note(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = noteMeta,
             date = dateToken.value,
             account = account,
             comment = comment
         )
     }
-    
+
     private fun parseEvent(dateToken: Token.DATE): Event {
         consume(Token.KEYWORD::class) // consume "event"
         skipWhitespaceAndComments()
-        
+
         val type = (consume(Token.STRING::class) as Token.STRING).value
         skipWhitespaceAndComments()
-        
+
         val description = (consume(Token.STRING::class) as Token.STRING).value
-        
+        val eventMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Event(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = eventMeta,
             date = dateToken.value,
             type = type,
             description = description
         )
     }
-    
+
     private fun parsePrice(dateToken: Token.DATE): Price {
         consume(Token.KEYWORD::class) // consume "price"
         skipWhitespaceAndComments()
-        
+
         val currency = parseCurrency()
         skipWhitespaceAndComments()
-        
+
         val amount = parseAmount()
-        
+        val priceMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Price(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = priceMeta,
             date = dateToken.value,
             currency = currency,
             amount = amount
         )
     }
-    
+
     private fun parseDocument(dateToken: Token.DATE): Document {
         consume(Token.KEYWORD::class) // consume "document"
         skipWhitespaceAndComments()
-        
+
         val account = parseAccount()
         skipWhitespaceAndComments()
-        
+
         val filename = (consume(Token.STRING::class) as Token.STRING).value
-        
+        val documentMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Document(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = documentMeta,
             date = dateToken.value,
             account = account,
             filename = filename
         )
     }
-    
+
     private fun parseQuery(dateToken: Token.DATE): Query {
         consume(Token.KEYWORD::class) // consume "query"
         skipWhitespaceAndComments()
-        
+
         val name = (consume(Token.STRING::class) as Token.STRING).value
         skipWhitespaceAndComments()
-        
+
         val queryString = (consume(Token.STRING::class) as Token.STRING).value
-        
+        val queryMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Query(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = queryMeta,
             date = dateToken.value,
             name = name,
             queryString = queryString
         )
     }
-    
+
     private fun parseCustom(dateToken: Token.DATE): Custom {
         consume(Token.KEYWORD::class) // consume "custom"
         skipWhitespaceAndComments()
-        
+
         val type = (consume(Token.STRING::class) as Token.STRING).value
         val values = mutableListOf<Any>()
-        
+
         skipWhitespaceAndComments()
-        
+
         while (peek() is Token.STRING || peek() is Token.NUMBER || peek() is Token.DATE || peek() is Token.CURRENCY) {
             when (val token = advance()) {
                 is Token.STRING -> values.add(token.value)
@@ -511,9 +545,10 @@ class BeancountParser : Parser {
             }
             skipWhitespaceAndComments()
         }
-        
+        val customMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+
         return Custom(
-            meta = newMetadata(currentFilename, dateToken.line),
+            meta = customMeta,
             date = dateToken.value,
             type = type,
             values = values
@@ -581,6 +616,69 @@ class BeancountParser : Parser {
     
     // Helper methods
     
+    /**
+     * Parse optional metadata (indented key-value pairs).
+     * Returns a map of metadata entries.
+     */
+    private fun parseMetadata(): Meta {
+        val meta = mutableMapOf<String, Any>()
+
+        // Metadata lines start with indentation and have key: value format
+        while (true) {
+            // Skip any EOLs between entries
+            while (peek() is Token.EOL) {
+                consume(Token.EOL::class)
+            }
+
+            // Check if next token is an indent or key (indicating a metadata line)
+            // Indent may have been consumed by skipWhitespaceAndComments() elsewhere
+            if (peek() is Token.INDENT) {
+                consume(Token.INDENT::class)
+                skipWhitespaceAndComments()
+            } else if (peek() !is Token.KEY) {
+                break
+            }
+
+            // Check for metadata key
+            if (peek() is Token.KEY) {
+                val key = (consume(Token.KEY::class) as Token.KEY).value
+                skipWhitespaceAndComments()
+
+                // Consume colon after key
+                if (peek() is Token.COLON) {
+                    consume(Token.COLON::class)
+                    skipWhitespaceAndComments()
+                }
+
+                // Parse value
+                val value = when (val token = peek()) {
+                    is Token.STRING -> (consume(Token.STRING::class) as Token.STRING).value
+                    is Token.NUMBER -> (consume(Token.NUMBER::class) as Token.NUMBER).value
+                    is Token.DATE -> (consume(Token.DATE::class) as Token.DATE).value
+                    is Token.BOOL -> (consume(Token.BOOL::class) as Token.BOOL).value
+                    is Token.NONE -> {
+                        consume(Token.NONE::class)
+                        null
+                    }
+                    else -> {
+                        reportError("Expected metadata value, found ${token::class.simpleName}")
+                        break
+                    }
+                }
+
+                if (value != null) {
+                    meta[key] = value
+                }
+            } else {
+                // Not metadata, might be next posting or directive
+                // We need to 'unread' the indent, but since we can't, we just break
+                break
+            }
+        }
+
+        return meta
+    }
+
     private fun parseAccount(): String {
         return (consume(Token.ACCOUNT::class) as Token.ACCOUNT).value
     }
@@ -651,7 +749,21 @@ class BeancountParser : Parser {
             }
         }
     }
-    
+
+    /**
+     * Skip only inline whitespace (spaces), not EOL or INDENT.
+     * Used within postings to avoid consuming line breaks that separate
+     * postings from metadata or the next posting.
+     */
+    private fun skipInlineWhitespace() {
+        while (true) {
+            when (peek()) {
+                is Token.INDENT -> advance()  // Treat indent as inline within posting
+                else -> break
+            }
+        }
+    }
+
     private fun skipToNextDirective() {
         while (!isAtEnd() && peek() !is Token.DATE) {
             advance()

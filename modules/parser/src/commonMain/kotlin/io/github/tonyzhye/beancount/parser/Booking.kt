@@ -7,11 +7,16 @@ import kotlinx.datetime.LocalDate
  * Booking logic to complete incomplete postings and match lots.
  * Based on beancount.parser.booking_full and booking_method.
  *
- * Phase 1 implementation:
+ * Phase 2 implementation (complete):
  * - Completes missing posting amounts (existing functionality)
  * - CostSpec interpolation (fills missing date from transaction date)
- * - STRICT booking method: exact lot matching, error on ambiguous matches
- * - NONE booking method: no lot matching, allows negative positions
+ * - All booking methods:
+ *   - STRICT: exact lot matching, error on ambiguous matches
+ *   - STRICT_WITH_SIZE: STRICT + auto-resolve by lot size
+ *   - NONE: no lot matching, allows negative positions
+ *   - FIFO: First-In-First-Out
+ *   - LIFO: Last-In-First-Out
+ *   - HIFO: Highest-Cost-First-Out
  */
 object Booking {
 
@@ -104,6 +109,12 @@ object Booking {
             // Resolve CostSpec (interpolation)
             val resolvedCostSpec = interpolateCostSpec(costSpec, units, transaction.date)
 
+            // Handle zero units specially (no inventory change needed)
+            if (units.number.isZero()) {
+                finalPostings.add(posting.copy(cost = resolvedCostSpec))
+                continue
+            }
+
             // Determine if this is an augmentation or reduction
             val isReduction = units.number.isNegative()
 
@@ -114,14 +125,23 @@ object Booking {
                 val matches = inventory.findMatches(units.currency, costSpec)
 
                 val bookResult = when (bookingMethod) {
-                    io.github.tonyzhye.beancount.core.Booking.STRICT,
-                    io.github.tonyzhye.beancount.core.Booking.STRICT_WITH_SIZE ->
+                    io.github.tonyzhye.beancount.core.Booking.STRICT ->
                         bookStrict(transaction, posting, costSpec, inventory, matches)
+                    io.github.tonyzhye.beancount.core.Booking.STRICT_WITH_SIZE ->
+                        bookStrictWithSize(transaction, posting, costSpec, inventory, matches)
                     io.github.tonyzhye.beancount.core.Booking.NONE ->
                         bookNone(posting, costSpec, inventory)
+                    io.github.tonyzhye.beancount.core.Booking.FIFO ->
+                        bookXifo(transaction, posting, costSpec, inventory, matches,
+                                 sortBy = { it.cost?.date }, reverse = false)
+                    io.github.tonyzhye.beancount.core.Booking.LIFO ->
+                        bookXifo(transaction, posting, costSpec, inventory, matches,
+                                 sortBy = { it.cost?.date }, reverse = true)
+                    io.github.tonyzhye.beancount.core.Booking.HIFO ->
+                        bookXifo(transaction, posting, costSpec, inventory, matches,
+                                 sortBy = { it.cost?.number }, reverse = true)
                     else -> {
-                        // For unsupported methods (FIFO, LIFO, HIFO, AVERAGE), fall back to STRICT
-                        // with a warning
+                        // AVERAGE not supported
                         errors.add(LoadError(
                             transaction.meta,
                             "Booking method $bookingMethod is not yet supported, falling back to STRICT",
@@ -220,7 +240,7 @@ object Booking {
         )
 
         // Update inventory
-        inventory.addAmount(Amount(-reduceAmount * sign, match.units.currency), match.cost)
+        inventory.addAmount(Amount(-reduceAmount, match.units.currency), match.cost)
 
         val insufficient = reduceAmount < requiredAmount
         val error = if (insufficient) {
@@ -235,6 +255,123 @@ object Booking {
         return BookResult(
             postings = listOf(newPosting),
             errors = error,
+            insufficient = insufficient
+        )
+    }
+
+    /**
+     * STRICT_WITH_SIZE booking method.
+     * Like STRICT, but if ambiguous, try to find a lot whose size exactly matches.
+     * If found, select the oldest such lot.
+     */
+    private fun bookStrictWithSize(
+        transaction: Transaction,
+        posting: Posting,
+        costSpec: CostSpec,
+        inventory: Inventory,
+        matches: List<Position>
+    ): BookResult {
+        // First try STRICT
+        val strictResult = bookStrict(transaction, posting, costSpec, inventory, matches)
+
+        // If STRICT failed with ambiguous match, try size-based resolution
+        if (strictResult.errors.isNotEmpty() && matches.size > 1) {
+            val units = posting.units!!
+            val requiredAmount = units.number.abs()
+
+            // Find lots whose size exactly matches the required amount
+            val sizeMatches = matches.filter { match ->
+                match.units.number.abs() == requiredAmount
+            }
+
+            if (sizeMatches.isNotEmpty()) {
+                // Sort by cost date, select the oldest
+                val match = sizeMatches.sortedBy { it.cost?.date }.first()
+                val sign = if (units.number.isNegative()) -Decimal.ONE else Decimal.ONE
+                val reductionUnits = Amount(requiredAmount * sign, match.units.currency)
+
+                // Remove from inventory
+                inventory.addAmount(Amount(-requiredAmount, match.units.currency), match.cost)
+
+                return BookResult(
+                    postings = listOf(
+                        posting.copy(units = reductionUnits, cost = costSpecFromCost(match.cost))
+                    )
+                )
+            }
+        }
+
+        return strictResult
+    }
+
+    /**
+     * FIFO/LIFO/HIFO generic booking method.
+     * Consumes matching lots in the specified order until the required amount is met.
+     */
+    private fun <T : Comparable<T>> bookXifo(
+        transaction: Transaction,
+        posting: Posting,
+        costSpec: CostSpec,
+        inventory: Inventory,
+        matches: List<Position>,
+        sortBy: (Position) -> T?,
+        reverse: Boolean
+    ): BookResult {
+        val units = posting.units!!
+        val requiredAmount = units.number.abs()
+        val sign = if (units.number.isNegative()) -Decimal.ONE else Decimal.ONE
+
+        if (matches.isEmpty()) {
+            // No matching lots - create a new negative position
+            val cost = costSpec.toCost(transaction.date)
+            if (cost != null) {
+                inventory.addAmount(units, cost)
+            }
+            return BookResult(postings = listOf(posting.copy(cost = costSpec)))
+        }
+
+        // Sort matches by the specified attribute
+        val sortedMatches = if (reverse) {
+            matches.sortedWith(compareByDescending { sortBy(it) })
+        } else {
+            matches.sortedWith(compareBy { sortBy(it) })
+        }
+
+        val newPostings = mutableListOf<Posting>()
+        var remaining = requiredAmount
+
+        for (match in sortedMatches) {
+            if (remaining.isZero()) break
+
+            // Skip lots with inconsistent sign (mixed inventory)
+            if (match.units.number * sign > Decimal.ZERO) continue
+
+            val availableAmount = match.units.number.abs()
+            val consumeAmount = if (remaining <= availableAmount) remaining else availableAmount
+
+            val reductionUnits = Amount(consumeAmount * sign, match.units.currency)
+            newPostings.add(
+                posting.copy(units = reductionUnits, cost = costSpecFromCost(match.cost))
+            )
+
+            // Update inventory
+            inventory.addAmount(Amount(-consumeAmount, match.units.currency), match.cost)
+            remaining -= consumeAmount
+        }
+
+        val insufficient = remaining > Decimal.ZERO
+        val errors = if (insufficient) {
+            listOf(LoadError(
+                transaction.meta,
+                "Insufficient lots for ${formatPosition(units, costSpec)} in ${posting.account}: " +
+                "needed $requiredAmount, found ${requiredAmount - remaining}",
+                transaction
+            ))
+        } else emptyList()
+
+        return BookResult(
+            postings = newPostings,
+            errors = errors,
             insufficient = insufficient
         )
     }

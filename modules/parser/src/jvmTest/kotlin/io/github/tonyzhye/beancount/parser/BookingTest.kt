@@ -373,4 +373,320 @@ class BookingTest {
         assertNotNull(cost)
         assertEquals(LocalDate(2023, 1, 10), cost?.date)
     }
+
+    // ---- FIFO Booking Method Tests ----
+
+    @Test
+    fun `FIFO should consume oldest lots first`() {
+        val entries = listOf(
+            Open(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 1),
+                date = LocalDate(2023, 1, 1),
+                account = "Assets:Invest",
+                currencies = listOf("AAPL"),
+                booking = io.github.tonyzhye.beancount.core.Booking.FIFO
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 2),
+                date = LocalDate(2023, 1, 15),
+                flag = "*",
+                narration = "Buy Lot 1",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("10"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD", date = LocalDate(2023, 1, 15))),
+                    Posting("Assets:Cash", Amount(Decimal("-1000"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 3),
+                date = LocalDate(2023, 3, 1),
+                flag = "*",
+                narration = "Buy Lot 2",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("5"), "AAPL"), CostSpec(numberPer = Decimal("120"), currency = "USD", date = LocalDate(2023, 3, 1))),
+                    Posting("Assets:Cash", Amount(Decimal("-600"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 4),
+                date = LocalDate(2023, 6, 1),
+                flag = "*",
+                narration = "Buy Lot 3",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("3"), "AAPL"), CostSpec(numberPer = Decimal("110"), currency = "USD", date = LocalDate(2023, 6, 1))),
+                    Posting("Assets:Cash", Amount(Decimal("-330"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 5),
+                date = LocalDate(2023, 12, 1),
+                flag = "*",
+                narration = "Sell AAPL",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("-12"), "AAPL"), CostSpec(currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("1320"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = Booking.book(entries, Options())
+
+        assertEquals(0, errors.size, "Expected no errors: ${errors.map { it.message }}")
+
+        val sellTxn = result[4] as Transaction
+        val sellPostings = sellTxn.postings.filter { it.account == "Assets:Invest" }
+
+        // FIFO: consume 10 from Lot 1 (oldest), then 2 from Lot 2
+        assertEquals(2, sellPostings.size)
+        assertEquals(Decimal("-10"), sellPostings[0].units?.number)
+        assertEquals(Decimal("100"), sellPostings[0].cost?.numberPer)
+        assertEquals(Decimal("-2"), sellPostings[1].units?.number)
+        assertEquals(Decimal("120"), sellPostings[1].cost?.numberPer)
+    }
+
+    // ---- LIFO Booking Method Tests ----
+
+    @Test
+    fun `LIFO should consume newest lots first`() {
+        val entries = listOf(
+            Open(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 1),
+                date = LocalDate(2023, 1, 1),
+                account = "Assets:Invest",
+                currencies = listOf("AAPL"),
+                booking = io.github.tonyzhye.beancount.core.Booking.LIFO
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 2),
+                date = LocalDate(2023, 1, 15),
+                flag = "*",
+                narration = "Buy Lot 1",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("10"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD", date = LocalDate(2023, 1, 15))),
+                    Posting("Assets:Cash", Amount(Decimal("-1000"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 3),
+                date = LocalDate(2023, 3, 1),
+                flag = "*",
+                narration = "Buy Lot 2",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("5"), "AAPL"), CostSpec(numberPer = Decimal("120"), currency = "USD", date = LocalDate(2023, 3, 1))),
+                    Posting("Assets:Cash", Amount(Decimal("-600"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 4),
+                date = LocalDate(2023, 6, 1),
+                flag = "*",
+                narration = "Buy Lot 3",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("3"), "AAPL"), CostSpec(numberPer = Decimal("110"), currency = "USD", date = LocalDate(2023, 6, 1))),
+                    Posting("Assets:Cash", Amount(Decimal("-330"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 5),
+                date = LocalDate(2023, 12, 1),
+                flag = "*",
+                narration = "Sell AAPL",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("-12"), "AAPL"), CostSpec(currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("1320"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = Booking.book(entries, Options())
+
+        assertEquals(0, errors.size, "Expected no errors: ${errors.map { it.message }}")
+
+        val sellTxn = result[4] as Transaction
+        val sellPostings = sellTxn.postings.filter { it.account == "Assets:Invest" }
+
+        // LIFO: consume 3 from Lot 3 (newest), then 5 from Lot 2, then 4 from Lot 1
+        assertEquals(3, sellPostings.size)
+        assertEquals(Decimal("-3"), sellPostings[0].units?.number)
+        assertEquals(Decimal("110"), sellPostings[0].cost?.numberPer)
+        assertEquals(Decimal("-5"), sellPostings[1].units?.number)
+        assertEquals(Decimal("120"), sellPostings[1].cost?.numberPer)
+        assertEquals(Decimal("-4"), sellPostings[2].units?.number)
+        assertEquals(Decimal("100"), sellPostings[2].cost?.numberPer)
+    }
+
+    // ---- HIFO Booking Method Tests ----
+
+    @Test
+    fun `HIFO should consume highest cost lots first`() {
+        val entries = listOf(
+            Open(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 1),
+                date = LocalDate(2023, 1, 1),
+                account = "Assets:Invest",
+                currencies = listOf("AAPL"),
+                booking = io.github.tonyzhye.beancount.core.Booking.HIFO
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 2),
+                date = LocalDate(2023, 1, 15),
+                flag = "*",
+                narration = "Buy Lot 1",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("10"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD", date = LocalDate(2023, 1, 15))),
+                    Posting("Assets:Cash", Amount(Decimal("-1000"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 3),
+                date = LocalDate(2023, 3, 1),
+                flag = "*",
+                narration = "Buy Lot 2",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("5"), "AAPL"), CostSpec(numberPer = Decimal("120"), currency = "USD", date = LocalDate(2023, 3, 1))),
+                    Posting("Assets:Cash", Amount(Decimal("-600"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 4),
+                date = LocalDate(2023, 6, 1),
+                flag = "*",
+                narration = "Buy Lot 3",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("3"), "AAPL"), CostSpec(numberPer = Decimal("110"), currency = "USD", date = LocalDate(2023, 6, 1))),
+                    Posting("Assets:Cash", Amount(Decimal("-330"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 5),
+                date = LocalDate(2023, 12, 1),
+                flag = "*",
+                narration = "Sell AAPL",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("-12"), "AAPL"), CostSpec(currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("1320"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = Booking.book(entries, Options())
+
+        assertEquals(0, errors.size, "Expected no errors: ${errors.map { it.message }}")
+
+        val sellTxn = result[4] as Transaction
+        val sellPostings = sellTxn.postings.filter { it.account == "Assets:Invest" }
+
+        // HIFO: consume 5 from Lot 2 (highest cost $120), then 3 from Lot 3 ($110), then 4 from Lot 1 ($100)
+        assertEquals(3, sellPostings.size)
+        assertEquals(Decimal("-5"), sellPostings[0].units?.number)
+        assertEquals(Decimal("120"), sellPostings[0].cost?.numberPer)
+        assertEquals(Decimal("-3"), sellPostings[1].units?.number)
+        assertEquals(Decimal("110"), sellPostings[1].cost?.numberPer)
+        assertEquals(Decimal("-4"), sellPostings[2].units?.number)
+        assertEquals(Decimal("100"), sellPostings[2].cost?.numberPer)
+    }
+
+    // ---- STRICT_WITH_SIZE Booking Method Tests ----
+
+    @Test
+    fun `STRICT_WITH_SIZE should auto resolve by exact lot size match`() {
+        val entries = listOf(
+            Open(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 1),
+                date = LocalDate(2023, 1, 1),
+                account = "Assets:Invest",
+                currencies = listOf("AAPL"),
+                booking = io.github.tonyzhye.beancount.core.Booking.STRICT_WITH_SIZE
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 2),
+                date = LocalDate(2023, 1, 15),
+                flag = "*",
+                narration = "Buy Lot 1",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("10"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD", date = LocalDate(2023, 1, 15))),
+                    Posting("Assets:Cash", Amount(Decimal("-1000"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 3),
+                date = LocalDate(2023, 3, 1),
+                flag = "*",
+                narration = "Buy Lot 2",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("5"), "AAPL"), CostSpec(numberPer = Decimal("120"), currency = "USD", date = LocalDate(2023, 3, 1))),
+                    Posting("Assets:Cash", Amount(Decimal("-600"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 4),
+                date = LocalDate(2023, 12, 1),
+                flag = "*",
+                narration = "Sell AAPL",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("-5"), "AAPL"), CostSpec(currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("600"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = Booking.book(entries, Options())
+
+        assertEquals(0, errors.size, "Expected no errors: ${errors.map { it.message }}")
+
+        val sellTxn = result[3] as Transaction
+        val sellPosting = sellTxn.postings[0]
+
+        // STRICT_WITH_SIZE: Lot 2 has exactly 5 shares, select it
+        assertEquals(Decimal("-5"), sellPosting.units?.number)
+        assertEquals(Decimal("120"), sellPosting.cost?.numberPer)
+    }
+
+    @Test
+    fun `STRICT_WITH_SIZE should fallback to STRICT when no exact size match`() {
+        val entries = listOf(
+            Open(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 1),
+                date = LocalDate(2023, 1, 1),
+                account = "Assets:Invest",
+                currencies = listOf("AAPL"),
+                booking = io.github.tonyzhye.beancount.core.Booking.STRICT_WITH_SIZE
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 2),
+                date = LocalDate(2023, 1, 15),
+                flag = "*",
+                narration = "Buy Lot 1",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("10"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD", date = LocalDate(2023, 1, 15))),
+                    Posting("Assets:Cash", Amount(Decimal("-1000"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 3),
+                date = LocalDate(2023, 3, 1),
+                flag = "*",
+                narration = "Buy Lot 2",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("5"), "AAPL"), CostSpec(numberPer = Decimal("120"), currency = "USD", date = LocalDate(2023, 3, 1))),
+                    Posting("Assets:Cash", Amount(Decimal("-600"), "USD"))
+                )
+            ),
+            Transaction(
+                meta = mapOf("filename" to "test.beancount", "lineno" to 4),
+                date = LocalDate(2023, 12, 1),
+                flag = "*",
+                narration = "Sell AAPL ambiguous",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("-3"), "AAPL"), CostSpec(currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("360"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = Booking.book(entries, Options())
+
+        // No lot has exactly 3 shares, so should report ambiguous match error
+        assertEquals(1, errors.size, "Expected ambiguous match error")
+        assertTrue(errors[0].message.contains("Ambiguous matches"), "Error should mention ambiguous matches: ${errors[0].message}")
+    }
 }

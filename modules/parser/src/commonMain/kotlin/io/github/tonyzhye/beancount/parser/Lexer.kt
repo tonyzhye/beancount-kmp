@@ -115,7 +115,12 @@ class Lexer(private val input: String) {
             
             char == '@' -> {
                 advance()
-                Token.AT(startLine, startColumn)
+                if (peek() == '@') {
+                    advance()
+                    Token.DOUBLE_AT(startLine, startColumn)
+                } else {
+                    Token.AT(startLine, startColumn)
+                }
             }
             
             char == '{' -> {
@@ -321,23 +326,49 @@ class Lexer(private val input: String) {
     
     private fun readIdentifier(startLine: Int, startColumn: Int): Token {
         val builder = StringBuilder()
-        
-        while (!isAtEnd() && (peek().isLetterOrDigit() || peek() == '_' || peek() == '-' || peek() == ':' || peek() == '.')) {
+
+        while (!isAtEnd() && (peek().isLetterOrDigit() || peek() == '_' || peek() == '-' || peek() == '.')) {
             builder.append(advance())
         }
-        
+
         val text = builder.toString()
-        
+
+        // If we didn't read any characters and current char is ':', return COLON
+        if (text.isEmpty() && peek() == ':') {
+            advance()
+            return Token.COLON(startLine, startColumn)
+        }
+
+        // Check if it could be a key (for metadata) or account
+        // Keys: word followed by ':' then whitespace (e.g., "bank: ")
+        // Accounts: word followed by ':' then word (e.g., "Assets:Cash")
+        if (peek() == ':') {
+            // Look ahead to see if this is an account or a key
+            val nextPos = position + 1
+            if (nextPos < input.length && (input[nextPos].isLetterOrDigit() || input[nextPos] == '_')) {
+                // This looks like an account (e.g., Assets:Cash)
+                // Consume the ':' and continue reading
+                while (!isAtEnd() && (peek().isLetterOrDigit() || peek() == '_' || peek() == '-' || peek() == ':' || peek() == '.')) {
+                    builder.append(advance())
+                }
+                val accountText = builder.toString()
+                return Token.ACCOUNT(accountText, accountText, startLine, startColumn)
+            } else {
+                // This looks like a metadata key (e.g., "bank: ")
+                return Token.KEY(text, text, startLine, startColumn)
+            }
+        }
+
         // Check if it's an account (contains :)
         if (text.contains(':')) {
             return Token.ACCOUNT(text, text, startLine, startColumn)
         }
-        
+
         // Check if it's a keyword
         if (text.lowercase() in keywords) {
             return Token.KEYWORD(text.lowercase(), text, startLine, startColumn)
         }
-        
+
         // Check if it's a boolean
         if (text == "TRUE") {
             return Token.BOOL(true, text, startLine, startColumn)
@@ -345,27 +376,22 @@ class Lexer(private val input: String) {
         if (text == "FALSE") {
             return Token.BOOL(false, text, startLine, startColumn)
         }
-        
+
         // Check if it's NULL
         if (text == "NULL") {
             return Token.NONE(startLine, startColumn)
         }
-        
+
         // Check if it's a currency (all uppercase with digits and underscores)
         if (text.all { it.isUpperCase() || it.isDigit() || it == '_' || it == '/' || it == '.' }) {
             return Token.CURRENCY(text, text, startLine, startColumn)
         }
-        
+
         // Check if it's a flag (single uppercase letter)
         if (text.length == 1 && text[0].isUpperCase()) {
             return Token.FLAG(text, text, startLine, startColumn)
         }
-        
-        // Check if it could be a key (for metadata)
-        if (peek() == ':') {
-            return Token.KEY(text, text, startLine, startColumn)
-        }
-        
+
         // Otherwise, it's a keyword or identifier
         return Token.KEYWORD(text, text, startLine, startColumn)
     }

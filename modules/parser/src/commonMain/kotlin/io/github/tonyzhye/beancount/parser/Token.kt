@@ -151,6 +151,11 @@ sealed class Token {
         override val text: String = "@"
     }
     
+    /** Double at: @@ (total price) */
+    data class DOUBLE_AT(override val line: Int, override val column: Int) : Token() {
+        override val text: String = "@@"
+    }
+    
     data class LCURLY(override val line: Int, override val column: Int) : Token() {
         override val text: String = "{"
     }
