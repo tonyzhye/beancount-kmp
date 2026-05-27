@@ -207,7 +207,7 @@ class PrinterTest {
                 Posting(
                     "Assets:Invest",
                     Amount(Decimal("10"), "AAPL"),
-                    cost = Cost(Decimal("150.00"), "USD", LocalDate(2023, 1, 15))
+                    cost = CostSpec(numberPer = Decimal("150.00"), currency = "USD", date = LocalDate(2023, 1, 15))
                 ),
                 Posting("Assets:Cash", Amount(Decimal("-1500.00"), "USD"))
             )

@@ -277,7 +277,7 @@ class BeancountParser : Parser {
     private fun parsePosting(): Posting? {
         val account = parseAccount()
         skipWhitespaceAndComments()
-        
+
         // Parse amount (optional)
         var units: Amount? = null
         if (peek() is Token.NUMBER) {
@@ -287,14 +287,14 @@ class BeancountParser : Parser {
             units = Amount(Decimal(number.toString()), currency)
             skipWhitespaceAndComments()
         }
-        
+
         // Parse cost (optional): {cost}
-        var cost: Cost? = null
+        var cost: CostSpec? = null
         if (peek() is Token.LCURLY) {
-            cost = parseCost()
+            cost = parseCostSpec()
             skipWhitespaceAndComments()
         }
-        
+
         // Parse price (optional): @ price or @@ price
         var price: Amount? = null
         if (peek() is Token.AT) {
@@ -305,7 +305,7 @@ class BeancountParser : Parser {
             val priceCurrency = parseCurrency()
             price = Amount(Decimal(priceNumber.toString()), priceCurrency)
         }
-        
+
         return Posting(
             account = account,
             units = units,
@@ -313,47 +313,64 @@ class BeancountParser : Parser {
             price = price
         )
     }
-    
-    private fun parseCost(): Cost? {
+
+    private fun parseCostSpec(): CostSpec? {
         consume(Token.LCURLY::class) // consume "{"
         skipWhitespaceAndComments()
-        
-        var number: Decimal? = null
-        var currency: String = ""
+
+        var numberPer: Decimal? = null
+        var numberTotal: Decimal? = null
+        var currency: Currency? = null
         var date: LocalDate? = null
         var label: String? = null
-        
+        var mergeCost = false
+
+        // Check for merge flag "*"
+        if (peek() is Token.ASTERISK) {
+            consume(Token.ASTERISK::class)
+            mergeCost = true
+            skipWhitespaceAndComments()
+        }
+
         // Try to parse cost components
         if (peek() is Token.NUMBER) {
-            number = Decimal((consume(Token.NUMBER::class) as Token.NUMBER).value.toString())
+            numberPer = Decimal((consume(Token.NUMBER::class) as Token.NUMBER).value.toString())
             skipWhitespaceAndComments()
-            
+
             if (peek() is Token.CURRENCY) {
                 currency = parseCurrency()
                 skipWhitespaceAndComments()
             }
+        } else if (peek() is Token.CURRENCY) {
+            // Cost spec with only currency: {USD}
+            currency = parseCurrency()
+            skipWhitespaceAndComments()
         }
-        
+
         // Check for date
         if (peek() is Token.DATE) {
             date = (consume(Token.DATE::class) as Token.DATE).value
             skipWhitespaceAndComments()
         }
-        
+
         // Check for label (string)
         if (peek() is Token.STRING) {
             label = (consume(Token.STRING::class) as Token.STRING).value
+            skipWhitespaceAndComments()
         }
-        
+
         if (peek() is Token.RCURLY) {
             consume(Token.RCURLY::class)
         }
-        
-        if (number == null || currency.isEmpty()) {
-            return null
-        }
-        
-        return Cost(number, currency, date ?: LocalDate(1970, 1, 1), label)
+
+        return CostSpec(
+            numberPer = numberPer,
+            numberTotal = numberTotal,
+            currency = currency,
+            date = date,
+            label = label,
+            mergeCost = mergeCost
+        )
     }
     
     private fun parseBalance(dateToken: Token.DATE): Balance {

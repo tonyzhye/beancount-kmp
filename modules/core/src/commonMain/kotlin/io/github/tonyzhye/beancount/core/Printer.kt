@@ -149,11 +149,14 @@ private fun formatPosting(posting: Posting): Triple<String, String, Meta?> {
         posting.units?.let { units ->
             append("${units.number.toPlainString()} ${units.currency}")
 
-            posting.cost?.let { cost ->
+            posting.cost?.let { costSpec ->
                 append(" {")
-                append("${cost.number.toPlainString()} ${cost.currency}")
+                // Print numberPer if available
+                costSpec.numberPer?.let { append(it.toPlainString()) }
+                // Print currency if available
+                costSpec.currency?.let { append(" $it") }
                 // Note: date is not typically displayed in cost formatting
-                cost.label?.let { append(", \"$it\"") }
+                costSpec.label?.let { append(", \"$it\"") }
                 append("}")
             }
 

@@ -16,47 +16,67 @@ enum class MatchResult {
 }
 
 /**
+ * Check if a position's cost matches a CostSpec.
+ * A position matches if all specified fields in the spec match the cost.
+ * Based on beancount.core.position.Position.matches
+ */
+fun Position.costMatches(spec: CostSpec): Boolean {
+    if (cost != null) {
+        if (spec.currency != null && cost.currency != spec.currency) return false
+        if (spec.numberPer != null && cost.number != spec.numberPer) return false
+        if (spec.date != null && cost.date != spec.date) return false
+        if (spec.label != null && cost.label != spec.label) return false
+    } else {
+        // Position has no cost, but spec requires cost attributes
+        if (spec.currency != null || spec.numberPer != null || spec.date != null || spec.label != null) return false
+    }
+    return true
+}
+
+/**
  * An Inventory is a set of positions, indexed by (currency, cost) for efficiency.
  * Based on beancount.core.inventory.Inventory
  */
 class Inventory : Iterable<Position> {
-    
+
     private val positions = mutableMapOf<Pair<String, Cost?>, Position>()
-    
+
     /**
      * Create a new inventory from a list of existing positions.
      */
     constructor(positions: List<Position> = emptyList()) {
         positions.forEach { addPosition(it) }
     }
-    
+
     /**
      * Create a copy of this inventory.
      */
     fun copy(): Inventory {
         return Inventory(toList())
     }
-    
+
     /**
      * Return true if the inventory is empty.
      */
     fun isEmpty(): Boolean = positions.isEmpty()
-    
+
     /**
      * Return the number of positions in the inventory.
      */
     fun size(): Int = positions.size
-    
+
     /**
      * Return true if all positions are small (below tolerance).
+     * Supports "*" key as default tolerance for any currency.
      */
     fun isSmall(tolerances: Map<String, Decimal>): Boolean {
+        val defaultTolerance = tolerances["*"] ?: Decimal.ZERO
         return positions.values.all { position ->
-            val tolerance = tolerances[position.units.currency] ?: Decimal.ZERO
+            val tolerance = tolerances[position.units.currency] ?: defaultTolerance
             position.units.number.abs() <= tolerance
         }
     }
-    
+
     /**
      * Return true if all positions are small (single tolerance for all).
      */
@@ -65,7 +85,7 @@ class Inventory : Iterable<Position> {
             position.units.number.abs() <= tolerance
         }
     }
-    
+
     /**
      * Return true if the inventory contains both positive and negative lots
      * for at least one currency.
@@ -81,7 +101,7 @@ class Inventory : Iterable<Position> {
         }
         return false
     }
-    
+
     /**
      * Get the total amount across all positions in the given currency.
      */
@@ -94,24 +114,41 @@ class Inventory : Iterable<Position> {
         }
         return Amount(total, currency)
     }
-    
+
     /**
      * Get all positions as a list.
      */
     fun getPositions(): List<Position> = positions.values.toList()
-    
+
+    /**
+     * Find all positions for a commodity that match the given CostSpec.
+     * First filters by commodity currency, then matches cost spec.
+     */
+    fun findMatches(commodity: String, spec: CostSpec): List<Position> {
+        return positions.values.filter { position ->
+            position.units.currency == commodity && position.costMatches(spec)
+        }
+    }
+
+    /**
+     * Get all positions for a specific currency.
+     */
+    fun getPositions(currency: String): List<Position> {
+        return positions.values.filter { it.units.currency == currency }
+    }
+
     /**
      * Add an amount with cost to this inventory using strict lot matching.
-     * 
+     *
      * @return A pair of (oldPosition, matchResult) where oldPosition is the
      *         position before modification (null if newly created or deleted).
      */
     fun addAmount(units: Amount, cost: Cost? = null): Pair<Position?, MatchResult> {
         require(units.number != null) { "Units must have a non-null number" }
-        
+
         val key = units.currency to cost
         val existing = positions[key]
-        
+
         return if (existing == null) {
             // Create new position
             val newPosition = Position(units, cost)
@@ -121,7 +158,7 @@ class Inventory : Iterable<Position> {
             // Add to existing position
             val oldPosition = existing
             val newUnits = Amount(existing.units.number + units.number, existing.units.currency)
-            
+
             if (newUnits.number.isZero()) {
                 // Remove if zero
                 positions.remove(key)
@@ -133,17 +170,17 @@ class Inventory : Iterable<Position> {
             }
         }
     }
-    
+
     /**
      * Add a position to this inventory using strict lot matching.
-     * 
+     *
      * @return A pair of (oldPosition, matchResult) where oldPosition is the
      *         position before modification (null if newly created or deleted).
      */
     fun addPosition(position: Position): Pair<Position?, MatchResult> {
         return addAmount(position.units, position.cost)
     }
-    
+
     /**
      * Reduce the inventory using a conversion function.
      */
@@ -154,7 +191,7 @@ class Inventory : Iterable<Position> {
         }
         return inventory
     }
-    
+
     /**
      * Add another inventory to this one (in-place modification).
      */
@@ -164,7 +201,7 @@ class Inventory : Iterable<Position> {
         }
         return this
     }
-    
+
     /**
      * Add another inventory to this one (returns new inventory, immutable).
      */
@@ -173,22 +210,22 @@ class Inventory : Iterable<Position> {
         newInventory.addInventory(other)
         return newInventory
     }
-    
+
     // Iterable implementation
     override fun iterator(): Iterator<Position> = positions.values.iterator()
-    
+
     override fun toString(): String {
         return positions.values.joinToString(", ") { "${it.units} ${it.cost ?: ""}" }
     }
-    
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Inventory) return false
         return positions == other.positions
     }
-    
+
     override fun hashCode(): Int = positions.hashCode()
-    
+
     companion object {
         /**
          * Create an inventory from a string representation.
@@ -198,24 +235,24 @@ class Inventory : Iterable<Position> {
             val inventory = Inventory()
             // Simple parsing: "10 USD, 5 AAPL {100.00 USD}"
             val positionStrs = string.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-            
+
             for (posStr in positionStrs) {
                 // Parse format: "10 USD" or "5 AAPL {100.00 USD}"
                 val parts = posStr.split(" ")
                 if (parts.size >= 2) {
                     val number = Decimal(parts[0])
                     val currency = parts[1]
-                    
+
                      val cost = if (parts.size >= 4 && parts[2].startsWith("{")) {
                         val costNumber = Decimal(parts[2].removePrefix("{"))
                         val costCurrency = parts[3].replace("}", "")
                         Cost(costNumber, costCurrency, LocalDate(2000, 1, 1)) // Default date for parsing
                     } else null
-                    
+
                     inventory.addAmount(Amount(number, currency), cost)
                 }
             }
-            
+
             return inventory
         }
     }

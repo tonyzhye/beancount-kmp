@@ -55,11 +55,13 @@ data class Position(
 /**
  * Posting represents a single leg of a transaction.
  * Based on beancount.core.data.Posting
+ *
+ * Note: cost is CostSpec during parsing/booking, resolved to Cost in positions.
  */
 data class Posting(
     val account: Account,
     val units: Amount? = null,
-    val cost: Cost? = null,
+    val cost: CostSpec? = null,
     val price: Amount? = null,
     val flag: Flag? = null,
     val meta: Meta? = null

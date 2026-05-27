@@ -318,7 +318,7 @@ class ParserTest {
         
         val posting = transaction.postings[0]
         assertNotNull(posting.cost)
-        assertEquals(Decimal("120.00"), posting.cost?.number)
+        assertEquals(Decimal("120.00"), posting.cost?.numberPer)
         assertEquals("USD", posting.cost?.currency)
     }
 

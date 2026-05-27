@@ -267,35 +267,41 @@ fun validateDuplicateCommodities(entries: List<Directive>, options: Options): Li
 
 /**
  * Check that all transaction postings balance.
- * Sum of all postings should be zero for each currency.
+ * Uses posting weights (considering cost/price conversions) and tolerances.
+ * Based on beancount.ops.validation.validate_check_transaction_balances.
  */
 fun validateCheckTransactionBalances(entries: List<Directive>, options: Options): List<ValidationError> {
     val errors = mutableListOf<ValidationError>()
-    
+
     for (entry in entries) {
         if (entry !is Transaction) continue
-        
-        // Group postings by currency
-        val balances = mutableMapOf<Currency, Decimal>()
-        
+
+        // Compute residual using weights (cost/price conversions applied)
+        val residual = Inventory()
         for (posting in entry.postings) {
-            val units = posting.units ?: continue
-            val current = balances[units.currency] ?: Decimal.ZERO
-            balances[units.currency] = current + units.number
+            val weight = getWeight(posting) ?: continue
+            residual.addAmount(weight)
         }
-        
-        // Check if all balances are zero
-        for ((currency, balance) in balances) {
-            if (!balance.isZero()) {
-                errors.add(ValidationError(
-                    entry.meta,
-                    "Transaction does not balance: $balance $currency",
-                    entry
-                ))
-            }
+
+        // Check if residual is small enough (within tolerance)
+        // Use default tolerance of 0.005 if no tolerance map is provided.
+        val tolerances = options.toleranceMap.ifEmpty {
+            mapOf("*" to Decimal("0.005"))
+        }
+        if (!residual.isSmall(tolerances)) {
+            // Build error message showing non-small positions
+            val residualStr = residual.getPositions()
+                .filter { !it.units.number.isZero() }
+                .joinToString(", ") { "${it.units.number.toPlainString()} ${it.units.currency}" }
+
+            errors.add(ValidationError(
+                entry.meta,
+                "Transaction does not balance: $residualStr",
+                entry
+            ))
         }
     }
-    
+
     return errors
 }
 
