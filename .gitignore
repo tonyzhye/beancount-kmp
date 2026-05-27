@@ -69,6 +69,7 @@ yarn.lock
 
 # Test outputs
 *.output
+*.picklecache
 
 # Misc
 *.swp

@@ -232,6 +232,16 @@ if (!result.getErrors().isEmpty()) {
 | Cache | pickle serialization | Reserved (Phase 2) |
 | Query | SQL-like bql | Reserved (Phase 2) |
 
+**Performance** (vs Python Beancount 3.2.3):
+
+| Metric | Small Files | Large Files (1-10MB) |
+|--------|------------|---------------------|
+| Speed | 2-10x faster | 3-3.5x faster |
+| Memory | Higher base overhead | 1.8-2.8x less memory |
+| Throughput | 14,000-26,000 KB/s | 12,000-13,000 KB/s |
+
+See [Performance Benchmark Report](doc/20260526-performance-benchmark-report.md) for detailed analysis.
+
 **Test Coverage:**
 - Integration tests comparing entry/error counts with Python beancount 3.2.3
 - Valid/invalid ledger file validation
@@ -247,6 +257,9 @@ if (!result.getErrors().isEmpty()) {
 ./gradlew :core:jvmTest
 ./gradlew :parser:jvmTest
 ./gradlew :loader:jvmTest
+
+# Run performance comparison tests
+./gradlew :loader:jvmTest --tests "PerformanceComparisonTest"
 
 # Run CLI manual test
 ./gradlew :cli:run --args="examples/example.beancount"
