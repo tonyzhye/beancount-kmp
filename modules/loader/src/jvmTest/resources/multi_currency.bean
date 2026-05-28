@@ -1,0 +1,149 @@
+; ============================================================
+; Multi-Currency Ledger - 多币种账本
+; 模拟跨国企业的多币种交易和汇率转换
+; ============================================================
+
+option "title" "多币种交易账本"
+option "operating_currency" "USD"
+
+; ---------- 商品定义 ----------
+2023-01-01 commodity USD
+2023-01-01 commodity EUR
+2023-01-01 commodity GBP
+2023-01-01 commodity JPY
+2023-01-01 commodity CNY
+2023-01-01 commodity CHF
+
+; ---------- 价格历史 ----------
+; EUR/USD
+2023-01-01 price EUR 1.0850 USD
+2023-02-01 price EUR 1.0720 USD
+2023-03-01 price EUR 1.0900 USD
+2023-06-01 price EUR 1.0780 USD
+2023-09-01 price EUR 1.0650 USD
+2023-12-01 price EUR 1.0950 USD
+
+; GBP/USD
+2023-01-01 price GBP 1.2050 USD
+2023-03-01 price GBP 1.1850 USD
+2023-06-01 price GBP 1.2750 USD
+2023-09-01 price GBP 1.2450 USD
+2023-12-01 price GBP 1.2650 USD
+
+; JPY/USD
+2023-01-01 price JPY 0.00765 USD
+2023-03-01 price JPY 0.00745 USD
+2023-06-01 price JPY 0.00715 USD
+2023-09-01 price JPY 0.00675 USD
+2023-12-01 price JPY 0.00705 USD
+
+; CNY/USD
+2023-01-01 price CNY 0.1445 USD
+2023-03-01 price CNY 0.1455 USD
+2023-06-01 price CNY 0.1380 USD
+2023-09-01 price CNY 0.1370 USD
+2023-12-01 price CNY 0.1410 USD
+
+; CHF/USD
+2023-01-01 price CHF 1.0850 USD
+2023-06-01 price CHF 1.1050 USD
+2023-12-01 price CHF 1.1350 USD
+
+; ---------- 账户开设 ----------
+2023-01-01 open Assets:Bank:USD USD
+2023-01-01 open Assets:Bank:EUR EUR
+2023-01-01 open Assets:Bank:GBP GBP
+2023-01-01 open Assets:Bank:JPY JPY
+2023-01-01 open Assets:Bank:CNY CNY
+2023-01-01 open Assets:Bank:CHF CHF
+2023-01-01 open Equity:OpeningBalances
+
+; 收入
+2023-01-01 open Income:Revenue:US USD
+2023-01-01 open Income:Revenue:EU EUR
+2023-01-01 open Income:Revenue:UK GBP
+2023-01-01 open Income:Revenue:JP JPY
+2023-01-01 open Income:Revenue:CN CNY
+
+; 支出
+2023-01-01 open Expenses:Operations:US USD,CHF
+2023-01-01 open Expenses:Operations:EU EUR
+2023-01-01 open Expenses:Operations:UK GBP
+2023-01-01 open Expenses:Operations:JP JPY
+2023-01-01 open Expenses:Operations:CN CNY
+
+; ---------- 初始余额 ----------
+2023-01-01 pad Assets:Bank:USD Equity:OpeningBalances
+2023-01-02 balance Assets:Bank:USD 100000.00 USD
+
+; ---------- 多币种交易 ----------
+; 1. 基础汇率交易（使用 @ 单价）
+2023-01-05 * "欧洲客户付款"
+  Assets:Bank:EUR  10000.00 EUR
+  Income:Revenue:EU
+
+2023-01-10 * "支付欧洲供应商"
+  Expenses:Operations:EU  5000.00 EUR @ 1.0850 USD
+  Assets:Bank:USD
+
+; 2. 总价交易（使用 @@ 总价）
+2023-01-15 * "英国设备采购"
+  Expenses:Operations:UK  5000.00 GBP @@ 6025.00 USD
+  Assets:Bank:USD
+
+; 3. 货币转换（外币到外币）
+2023-02-01 * "EUR 转 GBP"
+  Assets:Bank:GBP  3000.00 GBP @ 1.1800 USD
+  Assets:Bank:EUR  -3540.00 EUR @ 1.0720 USD
+  Expenses:Operations:US
+
+; 4. 大额日元交易
+2023-02-15 * "日本销售收入"
+  Assets:Bank:JPY  1000000.00 JPY
+  Income:Revenue:JP
+
+2023-02-20 * "支付日本供应商"
+  Expenses:Operations:JP  500000.00 JPY @ 0.00745 USD
+  Assets:Bank:USD
+
+; 5. 人民币交易
+2023-03-01 * "中国客户付款"
+  Assets:Bank:CNY  50000.00 CNY
+  Income:Revenue:CN
+
+2023-03-10 * "支付中国供应商"
+  Expenses:Operations:CN  30000.00 CNY @@ 4365.00 USD
+  Assets:Bank:USD
+
+; 6. 瑞士法郎交易
+2023-03-15 * "瑞士服务费"
+  Expenses:Operations:US  2000.00 CHF @ 1.0900 USD
+  Assets:Bank:USD
+
+; 7. 多币种混合交易
+2023-04-01 * "国际会议费用"
+  Expenses:Operations:EU  2000.00 EUR @ 1.0780 USD
+  Expenses:Operations:UK  1000.00 GBP @ 1.2750 USD
+  Assets:Bank:USD
+
+; 8. 货币兑换（含小数汇率）
+2023-05-01 * "GBP 转 USD"
+  Assets:Bank:USD  6362.50 USD
+  Assets:Bank:GBP  -5000.00 GBP @ 1.2725 USD
+
+; 9. 日本收入转换
+2023-06-01 * "日元兑换美元"
+  Assets:Bank:USD  7150.00 USD
+  Assets:Bank:JPY  -1000000.00 JPY @ 0.00715 USD
+
+; 10. 多笔小额交易
+2023-07-01 * "多币种服务费"
+  Expenses:Operations:EU  500.00 EUR @ 1.0650 USD
+  Expenses:Operations:UK  400.00 GBP @ 1.2450 USD
+  Expenses:Operations:JP  50000.00 JPY @ 0.00675 USD
+  Assets:Bank:USD
+
+; ---------- 事件记录 ----------
+2023-01-01 event "forex" "开始多币种交易"
+2023-06-30 event "forex" "上半年汇率波动"
+2023-12-31 event "forex" "年度汇率总结"

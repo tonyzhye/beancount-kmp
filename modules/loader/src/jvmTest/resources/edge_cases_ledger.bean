@@ -1,0 +1,53 @@
+option "title" "Edge Cases Test Ledger"
+option "operating_currency" "USD"
+
+; Test various edge cases
+
+; Account openings with multiple currencies
+2023-01-01 open Assets:Bank USD,EUR,GBP
+2023-01-01 open Expenses:Food USD
+2023-01-01 open Income:Salary USD
+
+; Transaction with no flag (should use default)
+2023-01-15 "Lunch"
+  Expenses:Food  15.00 USD
+  Assets:Bank
+
+; Transaction with explicit flag
+2023-01-16 ! "Dinner"
+  Expenses:Food  30.00 USD
+  Assets:Bank
+
+; Transaction with payee
+2023-01-17 * "Restaurant" "Fine dining"
+  Expenses:Food  100.00 USD
+  Assets:Bank
+
+; Note with multiple metadata
+2023-01-20 note Assets:Bank "Important note"
+  author: "John Doe"
+  priority: "high"
+  id: "12345"
+
+; Event directives
+2023-01-01 event "project" "Alpha"
+2023-02-01 event "project" "Beta"
+2023-03-01 event "project" "Gamma"
+
+; Price directives for multiple commodities
+2023-01-01 price EUR 1.10 USD
+2023-02-01 price EUR 1.08 USD
+2023-03-01 price EUR 1.12 USD
+2023-01-01 price GBP 1.25 USD
+2023-02-01 price GBP 1.30 USD
+
+; Commodity with metadata
+2023-01-01 commodity BTC
+  name: "Bitcoin"
+  asset-class: "cryptocurrency"
+
+; Balance assertion
+2023-01-31 balance Assets:Bank -145.00 USD
+
+; Close account
+2023-12-31 close Expenses:Food

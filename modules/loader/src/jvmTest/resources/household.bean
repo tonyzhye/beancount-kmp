@@ -1,0 +1,134 @@
+; ============================================================
+; Household Ledger - 家庭账本
+; 模拟一个普通家庭一年的收支情况
+; ============================================================
+
+option "title" "家庭账本 2023"
+option "operating_currency" "CNY"
+
+; ---------- 基础设置 ----------
+2023-01-01 commodity CNY
+2023-01-01 commodity USD
+
+; ---------- 账户开设 ----------
+2023-01-01 open Assets:Bank:Checking CNY,USD
+2023-01-01 open Assets:Bank:Savings CNY
+2023-01-01 open Assets:Cash CNY
+2023-01-01 open Liabilities:CreditCard CNY
+2023-01-01 open Liabilities:Mortgage CNY
+2023-01-01 open Equity:OpeningBalances
+
+; 收入账户
+2023-01-01 open Income:Salary CNY
+2023-01-01 open Income:Bonus CNY
+2023-01-01 open Income:Investments CNY
+
+; 支出账户
+2023-01-01 open Expenses:Food CNY
+2023-01-01 open Expenses:Transport CNY
+2023-01-01 open Expenses:Housing:Rent CNY
+2023-01-01 open Expenses:Housing:Utilities CNY
+2023-01-01 open Expenses:Entertainment CNY
+2023-01-01 open Expenses:Shopping CNY
+2023-01-01 open Expenses:Healthcare CNY
+2023-01-01 open Expenses:Education CNY
+
+; ---------- 初始余额 ----------
+2023-01-01 pad Assets:Bank:Checking Equity:OpeningBalances
+2023-01-02 balance Assets:Bank:Checking 50000.00 CNY
+
+; ---------- 1月份 ----------
+2023-01-05 * "工资收入"
+  Assets:Bank:Checking  15000.00 CNY
+  Income:Salary
+
+2023-01-08 * "超市购物"
+  Expenses:Food  350.50 CNY
+  Assets:Bank:Checking
+
+2023-01-10 * "交通卡充值"
+  Expenses:Transport  200.00 CNY
+  Assets:Bank:Checking
+
+2023-01-12 * "水电费"
+  Expenses:Housing:Utilities  280.00 CNY
+  Assets:Bank:Checking
+
+2023-01-15 * "房租"
+  Expenses:Housing:Rent  3500.00 CNY
+  Assets:Bank:Checking
+
+2023-01-18 * "电影票"
+  Expenses:Entertainment  120.00 CNY
+  Assets:Cash
+
+2023-01-20 * "买衣服"
+  Expenses:Shopping  599.00 CNY
+  Liabilities:CreditCard
+
+2023-01-25 * "工资收入"
+  Assets:Bank:Checking  15000.00 CNY
+  Income:Salary
+
+2023-01-31 balance Assets:Bank:Checking 75669.50 CNY
+
+; ---------- 2月份 ----------
+2023-02-05 * "工资收入"
+  Assets:Bank:Checking  15000.00 CNY
+  Income:Salary
+
+2023-02-10 * "春节购物"
+  Expenses:Shopping  1200.00 CNY
+  Assets:Bank:Checking
+
+2023-02-12 * "年夜饭"
+  Expenses:Food  800.00 CNY
+  Assets:Cash
+
+2023-02-15 * "红包收入"
+  Assets:Cash  2000.00 CNY
+  Income:Bonus
+
+2023-02-20 * "交通费"
+  Expenses:Transport  150.00 CNY
+  Assets:Bank:Checking
+
+2023-02-28 balance Assets:Bank:Checking 89319.50 CNY
+
+; ---------- 3月份 ----------
+2023-03-05 * "工资收入"
+  Assets:Bank:Checking  15000.00 CNY
+  Income:Salary
+
+2023-03-08 * "季度奖金"
+  Assets:Bank:Checking  8000.00 CNY
+  Income:Bonus
+
+2023-03-10 * "医疗费"
+  Expenses:Healthcare  450.00 CNY
+  Assets:Bank:Checking
+
+2023-03-15 * "房租"
+  Expenses:Housing:Rent  3500.00 CNY
+  Assets:Bank:Checking
+
+2023-03-20 * "培训课程"
+  Expenses:Education  2000.00 CNY
+  Assets:Bank:Checking
+
+2023-03-25 * "信用卡还款"
+  Liabilities:CreditCard  599.00 CNY
+  Assets:Bank:Checking
+
+2023-03-31 balance Assets:Bank:Checking 105770.50 CNY
+
+; ---------- 事件记录 ----------
+2023-01-01 event "life_stage" "开始记账"
+2023-03-01 event "life_stage" "第一季度结束"
+
+; ---------- 查询 ----------
+2023-01-01 query "monthly_expenses" "SELECT month, SUM(position) WHERE account ~ 'Expenses' GROUP BY month"
+
+; ---------- 关闭账户 ----------
+; 年中关闭了信用卡，改用现金
+2023-06-30 close Liabilities:CreditCard

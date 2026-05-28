@@ -49,7 +49,8 @@ class BeancountParser : Parser {
     private fun parseString(content: String, filename: String): ParseResult {
         currentFilename = filename
         lexer = Lexer(content)
-        
+        position = 0 // Reset position for new parse
+
         // Tokenize
         val tokenList = mutableListOf<Token>()
         while (true) {
@@ -130,6 +131,7 @@ class BeancountParser : Parser {
                 "document" -> parseDocument(dateToken)
                 "query" -> parseQuery(dateToken)
                 "custom" -> parseCustom(dateToken)
+                "include" -> parseInclude(dateToken)
                 "plugin" -> {
                     parsePlugin(dateToken)
                     null // Plugins don't create entries
@@ -145,6 +147,7 @@ class BeancountParser : Parser {
                 }
             }
             is Token.FLAG -> parseTransaction(dateToken) // Transaction can start with flag directly
+            is Token.STRING -> parseTransaction(dateToken) // Transaction can start with narration directly (no flag)
             else -> {
                 reportError("Expected keyword after date")
                 skipToNextDirective()
@@ -374,9 +377,21 @@ class BeancountParser : Parser {
             skipWhitespaceAndComments()
         }
 
+        // Skip optional comma between components
+        if (peek() is Token.COMMA) {
+            consume(Token.COMMA::class)
+            skipWhitespaceAndComments()
+        }
+
         // Check for date
         if (peek() is Token.DATE) {
             date = (consume(Token.DATE::class) as Token.DATE).value
+            skipWhitespaceAndComments()
+        }
+
+        // Skip optional comma before label
+        if (peek() is Token.COMMA) {
+            consume(Token.COMMA::class)
             skipWhitespaceAndComments()
         }
 
@@ -554,7 +569,21 @@ class BeancountParser : Parser {
             values = values
         )
     }
-    
+
+    private fun parseInclude(dateToken: Token.DATE): Include {
+        consume(Token.KEYWORD::class) // consume "include"
+        skipWhitespaceAndComments()
+
+        val filename = (consume(Token.STRING::class) as Token.STRING).value
+        val includeMeta = newMetadata(currentFilename, dateToken.line)
+
+        return Include(
+            meta = includeMeta,
+            date = dateToken.value,
+            filename = filename
+        )
+    }
+
     private fun parseOptionNoDate() {
         consume(Token.KEYWORD::class) // consume "option"
         skipWhitespaceAndComments()
@@ -680,7 +709,14 @@ class BeancountParser : Parser {
     }
 
     private fun parseAccount(): String {
-        return (consume(Token.ACCOUNT::class) as Token.ACCOUNT).value
+        val token = peek()
+        return if (token is Token.ACCOUNT) {
+            (consume(Token.ACCOUNT::class) as Token.ACCOUNT).value
+        } else {
+            reportError("Expected account name, found ${token::class.simpleName}")
+            advance() // skip the invalid token
+            ""
+        }
     }
     
     private fun parseCurrency(): String {

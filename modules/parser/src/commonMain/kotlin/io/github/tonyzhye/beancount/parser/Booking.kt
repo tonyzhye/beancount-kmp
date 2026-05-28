@@ -465,9 +465,34 @@ object Booking {
         }
 
         // Calculate the sum of all complete postings by currency
+        // Use weight (considering price conversions and cost basis) instead of raw units
         val balances = mutableMapOf<Currency, Decimal>()
         for (posting in postings) {
             val units = posting.units ?: continue
+            
+            // Check for cost basis first (for investment transactions)
+            val cost = posting.cost
+            if (cost != null) {
+                val costNumber = cost.numberPer
+                val costCurrency = cost.currency
+                if (costNumber != null && costCurrency != null) {
+                    val weight = costNumber * units.number
+                    val current = balances[costCurrency] ?: Decimal.ZERO
+                    balances[costCurrency] = current + weight
+                    continue
+                }
+            }
+            
+            // Check for price conversion
+            val price = posting.price
+            if (price != null) {
+                val weight = price.number * units.number
+                val current = balances[price.currency] ?: Decimal.ZERO
+                balances[price.currency] = current + weight
+                continue
+            }
+            
+            // Otherwise use raw units
             val current = balances[units.currency] ?: Decimal.ZERO
             balances[units.currency] = current + units.number
         }

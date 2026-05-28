@@ -70,7 +70,15 @@ fun formatEntry(entry: Directive): String {
         is Event -> formatEvent(entry)
         is Query -> formatQuery(entry)
         is Custom -> formatCustom(entry)
+        is Include -> formatInclude(entry)
     }
+}
+
+private fun formatInclude(entry: Include): String {
+    val builder = StringBuilder()
+    builder.append("${entry.date} include \"${escapeString(entry.filename)}\"\n")
+    formatMetadata(entry.meta, builder)
+    return builder.toString()
 }
 
 /**

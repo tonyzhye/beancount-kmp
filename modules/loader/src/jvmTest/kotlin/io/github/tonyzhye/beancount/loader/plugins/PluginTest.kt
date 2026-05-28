@@ -49,7 +49,9 @@ class PluginTest {
         assertEquals(1, padTransactions.size, "Expected one pad transaction")
 
         val padTx = padTransactions.first()
-        assertEquals("Padding for balance assertion", padTx.narration)
+        assertTrue(padTx.narration?.contains("Padding inserted") == true)
+        assertTrue(padTx.narration?.contains("100 USD") == true)
+        assertTrue(padTx.narration?.contains("150 USD") == true)
 
         // The pad should bring the balance from -50 to 100, so +150
         val cashPosting = padTx.postings.find { it.account == "Assets:Cash" }
@@ -91,8 +93,9 @@ class PluginTest {
         val options = Options()
         val (result, errors) = PadPlugin.transform(entries, options)
 
-        assertEquals(1, errors.size)
-        assertTrue(errors[0].message.contains("No balance assertion found"))
+        assertEquals(2, errors.size)
+        assertTrue(errors.any { it.message.contains("No balance assertion found") })
+        assertTrue(errors.any { it.message.contains("Unused Pad entry") })
     }
 
     @Test
@@ -138,7 +141,7 @@ class PluginTest {
         assertEquals(1, errors.size)
         assertTrue(errors[0].message.contains("Balance failed"))
         assertTrue(errors[0].message.contains("expected 100"))
-        assertTrue(errors[0].message.contains("but got 50"))
+        assertTrue(errors[0].message.contains("accumulated 50"))
     }
 
     @Test

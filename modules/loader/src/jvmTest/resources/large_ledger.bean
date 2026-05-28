@@ -1,0 +1,2017 @@
+option "title" "Large Performance Test Ledger"
+option "operating_currency" "USD"
+
+2023-01-01 open Assets:Bank:Checking USD
+2023-01-01 open Assets:Cash USD
+2023-01-01 open Expenses:Food USD
+2023-01-01 open Expenses:Transport USD
+2023-01-01 open Expenses:Entertainment USD
+2023-01-01 open Expenses:Shopping USD
+2023-01-01 open Income:Salary USD
+2023-01-01 open Income:Freelance USD
+2023-01-01 open Equity:OpeningBalances
+
+2023-01-01 pad Assets:Bank:Checking Equity:OpeningBalances
+2023-01-02 balance Assets:Bank:Checking 100000.00 USD
+2023-01-01 * "Income - Salary"
+  Assets:Bank:Checking  6197.13 USD
+  Income:Salary
+
+2023-01-02 * "Expense - Food"
+  Expenses:Food  76.74 USD
+  Assets:Bank:Checking
+
+2023-01-03 * "Expense - Transport"
+  Expenses:Transport  15.04 USD
+  Assets:Bank:Checking
+
+2023-01-04 * "Expense - Food"
+  Expenses:Food  70.90 USD
+  Assets:Bank:Checking
+
+2023-01-05 * "Expense - Food"
+  Expenses:Food  63.14 USD
+  Assets:Bank:Checking
+
+2023-01-06 * "Expense - Food"
+  Expenses:Food  12.68 USD
+  Assets:Bank:Checking
+
+2023-01-07 * "Expense - Transport"
+  Expenses:Transport  15.47 USD
+  Assets:Bank:Checking
+
+2023-01-08 * "Expense - Food"
+  Expenses:Food  60.51 USD
+  Assets:Bank:Checking
+
+2023-01-09 * "Expense - Shopping"
+  Expenses:Shopping  149.20 USD
+  Assets:Bank:Checking
+
+2023-01-10 * "Expense - Entertainment"
+  Expenses:Entertainment  165.70 USD
+  Assets:Bank:Checking
+
+2023-01-11 * "Expense - Food"
+  Expenses:Food  78.29 USD
+  Assets:Bank:Checking
+
+2023-01-12 * "Expense - Transport"
+  Expenses:Transport  36.42 USD
+  Assets:Bank:Checking
+
+2023-01-13 * "Expense - Entertainment"
+  Expenses:Entertainment  70.02 USD
+  Assets:Bank:Checking
+
+2023-01-14 * "Expense - Transport"
+  Expenses:Transport  48.07 USD
+  Assets:Bank:Checking
+
+2023-01-15 * "Expense - Entertainment"
+  Expenses:Entertainment  38.40 USD
+  Assets:Bank:Checking
+
+2023-01-16 * "Income - Freelance"
+  Assets:Bank:Checking  4899.64 USD
+  Income:Freelance
+
+2023-01-17 * "Expense - Entertainment"
+  Expenses:Entertainment  172.55 USD
+  Assets:Bank:Checking
+
+2023-01-18 * "Expense - Entertainment"
+  Expenses:Entertainment  165.28 USD
+  Assets:Bank:Checking
+
+2023-01-19 * "Expense - Shopping"
+  Expenses:Shopping  291.30 USD
+  Assets:Bank:Checking
+
+2023-01-20 * "Expense - Shopping"
+  Expenses:Shopping  85.46 USD
+  Assets:Bank:Checking
+
+2023-01-21 * "Expense - Entertainment"
+  Expenses:Entertainment  169.29 USD
+  Assets:Bank:Checking
+
+2023-01-22 * "Expense - Entertainment"
+  Expenses:Entertainment  123.92 USD
+  Assets:Bank:Checking
+
+2023-01-23 * "Expense - Food"
+  Expenses:Food  14.12 USD
+  Assets:Bank:Checking
+
+2023-01-24 * "Expense - Transport"
+  Expenses:Transport  39.79 USD
+  Assets:Bank:Checking
+
+2023-01-25 * "Expense - Food"
+  Expenses:Food  86.98 USD
+  Assets:Bank:Checking
+
+2023-01-26 * "Expense - Food"
+  Expenses:Food  44.21 USD
+  Assets:Bank:Checking
+
+2023-01-27 * "Expense - Shopping"
+  Expenses:Shopping  336.06 USD
+  Assets:Bank:Checking
+
+2023-01-28 * "Expense - Entertainment"
+  Expenses:Entertainment  49.28 USD
+  Assets:Bank:Checking
+
+2023-01-29 * "Expense - Entertainment"
+  Expenses:Entertainment  57.71 USD
+  Assets:Bank:Checking
+
+2023-01-30 * "Expense - Entertainment"
+  Expenses:Entertainment  146.33 USD
+  Assets:Bank:Checking
+
+2023-01-31 * "Income - Salary"
+  Assets:Bank:Checking  6417.74 USD
+  Income:Salary
+
+2023-02-01 * "Expense - Food"
+  Expenses:Food  64.82 USD
+  Assets:Bank:Checking
+
+2023-02-02 * "Expense - Transport"
+  Expenses:Transport  29.04 USD
+  Assets:Bank:Checking
+
+2023-02-03 * "Expense - Transport"
+  Expenses:Transport  12.35 USD
+  Assets:Bank:Checking
+
+2023-02-04 * "Expense - Shopping"
+  Expenses:Shopping  171.48 USD
+  Assets:Bank:Checking
+
+2023-02-05 * "Expense - Transport"
+  Expenses:Transport  35.81 USD
+  Assets:Bank:Checking
+
+2023-02-06 * "Expense - Food"
+  Expenses:Food  30.61 USD
+  Assets:Bank:Checking
+
+2023-02-07 * "Expense - Food"
+  Expenses:Food  82.45 USD
+  Assets:Bank:Checking
+
+2023-02-08 * "Expense - Shopping"
+  Expenses:Shopping  170.48 USD
+  Assets:Bank:Checking
+
+2023-02-09 * "Expense - Transport"
+  Expenses:Transport  46.09 USD
+  Assets:Bank:Checking
+
+2023-02-10 * "Expense - Entertainment"
+  Expenses:Entertainment  58.27 USD
+  Assets:Bank:Checking
+
+2023-02-11 * "Expense - Shopping"
+  Expenses:Shopping  228.03 USD
+  Assets:Bank:Checking
+
+2023-02-12 * "Expense - Shopping"
+  Expenses:Shopping  114.29 USD
+  Assets:Bank:Checking
+
+2023-02-13 * "Expense - Transport"
+  Expenses:Transport  16.10 USD
+  Assets:Bank:Checking
+
+2023-02-14 * "Expense - Entertainment"
+  Expenses:Entertainment  154.46 USD
+  Assets:Bank:Checking
+
+2023-02-15 * "Income - Freelance"
+  Assets:Bank:Checking  5142.17 USD
+  Income:Freelance
+
+2023-02-16 * "Expense - Shopping"
+  Expenses:Shopping  212.90 USD
+  Assets:Bank:Checking
+
+2023-02-17 * "Expense - Transport"
+  Expenses:Transport  27.93 USD
+  Assets:Bank:Checking
+
+2023-02-18 * "Expense - Food"
+  Expenses:Food  78.02 USD
+  Assets:Bank:Checking
+
+2023-02-19 * "Expense - Food"
+  Expenses:Food  23.76 USD
+  Assets:Bank:Checking
+
+2023-02-20 * "Expense - Transport"
+  Expenses:Transport  40.64 USD
+  Assets:Bank:Checking
+
+2023-02-21 * "Expense - Shopping"
+  Expenses:Shopping  318.38 USD
+  Assets:Bank:Checking
+
+2023-02-22 * "Expense - Shopping"
+  Expenses:Shopping  221.73 USD
+  Assets:Bank:Checking
+
+2023-02-23 * "Expense - Shopping"
+  Expenses:Shopping  288.10 USD
+  Assets:Bank:Checking
+
+2023-02-24 * "Expense - Food"
+  Expenses:Food  71.23 USD
+  Assets:Bank:Checking
+
+2023-02-25 * "Expense - Food"
+  Expenses:Food  71.35 USD
+  Assets:Bank:Checking
+
+2023-02-26 * "Expense - Entertainment"
+  Expenses:Entertainment  158.35 USD
+  Assets:Bank:Checking
+
+2023-02-27 * "Expense - Entertainment"
+  Expenses:Entertainment  40.08 USD
+  Assets:Bank:Checking
+
+2023-02-28 * "Expense - Shopping"
+  Expenses:Shopping  121.17 USD
+  Assets:Bank:Checking
+
+2023-03-01 * "Expense - Food"
+  Expenses:Food  95.84 USD
+  Assets:Bank:Checking
+
+2023-03-02 * "Income - Salary"
+  Assets:Bank:Checking  7379.26 USD
+  Income:Salary
+
+2023-03-03 * "Expense - Entertainment"
+  Expenses:Entertainment  194.94 USD
+  Assets:Bank:Checking
+
+2023-03-04 * "Expense - Transport"
+  Expenses:Transport  27.85 USD
+  Assets:Bank:Checking
+
+2023-03-05 * "Expense - Food"
+  Expenses:Food  88.35 USD
+  Assets:Bank:Checking
+
+2023-03-06 * "Expense - Entertainment"
+  Expenses:Entertainment  171.50 USD
+  Assets:Bank:Checking
+
+2023-03-07 * "Expense - Transport"
+  Expenses:Transport  11.88 USD
+  Assets:Bank:Checking
+
+2023-03-08 * "Expense - Transport"
+  Expenses:Transport  29.27 USD
+  Assets:Bank:Checking
+
+2023-03-09 * "Expense - Food"
+  Expenses:Food  63.91 USD
+  Assets:Bank:Checking
+
+2023-03-10 * "Expense - Shopping"
+  Expenses:Shopping  58.76 USD
+  Assets:Bank:Checking
+
+2023-03-11 * "Expense - Entertainment"
+  Expenses:Entertainment  178.17 USD
+  Assets:Bank:Checking
+
+2023-03-12 * "Expense - Entertainment"
+  Expenses:Entertainment  63.10 USD
+  Assets:Bank:Checking
+
+2023-03-13 * "Expense - Transport"
+  Expenses:Transport  44.51 USD
+  Assets:Bank:Checking
+
+2023-03-14 * "Expense - Food"
+  Expenses:Food  17.71 USD
+  Assets:Bank:Checking
+
+2023-03-15 * "Expense - Shopping"
+  Expenses:Shopping  417.21 USD
+  Assets:Bank:Checking
+
+2023-03-16 * "Expense - Transport"
+  Expenses:Transport  10.78 USD
+  Assets:Bank:Checking
+
+2023-03-17 * "Income - Freelance"
+  Assets:Bank:Checking  5376.41 USD
+  Income:Freelance
+
+2023-03-18 * "Expense - Transport"
+  Expenses:Transport  16.93 USD
+  Assets:Bank:Checking
+
+2023-03-19 * "Expense - Shopping"
+  Expenses:Shopping  483.96 USD
+  Assets:Bank:Checking
+
+2023-03-20 * "Expense - Transport"
+  Expenses:Transport  37.08 USD
+  Assets:Bank:Checking
+
+2023-03-21 * "Expense - Shopping"
+  Expenses:Shopping  497.82 USD
+  Assets:Bank:Checking
+
+2023-03-22 * "Expense - Entertainment"
+  Expenses:Entertainment  98.86 USD
+  Assets:Bank:Checking
+
+2023-03-23 * "Expense - Shopping"
+  Expenses:Shopping  104.45 USD
+  Assets:Bank:Checking
+
+2023-03-24 * "Expense - Transport"
+  Expenses:Transport  7.88 USD
+  Assets:Bank:Checking
+
+2023-03-25 * "Expense - Food"
+  Expenses:Food  62.95 USD
+  Assets:Bank:Checking
+
+2023-03-26 * "Expense - Transport"
+  Expenses:Transport  31.48 USD
+  Assets:Bank:Checking
+
+2023-03-27 * "Expense - Food"
+  Expenses:Food  16.39 USD
+  Assets:Bank:Checking
+
+2023-03-28 * "Expense - Food"
+  Expenses:Food  30.60 USD
+  Assets:Bank:Checking
+
+2023-03-29 * "Expense - Food"
+  Expenses:Food  87.37 USD
+  Assets:Bank:Checking
+
+2023-03-30 * "Expense - Food"
+  Expenses:Food  56.27 USD
+  Assets:Bank:Checking
+
+2023-03-31 * "Expense - Entertainment"
+  Expenses:Entertainment  140.42 USD
+  Assets:Bank:Checking
+
+2023-04-01 * "Income - Salary"
+  Assets:Bank:Checking  4071.18 USD
+  Income:Salary
+
+2023-04-02 * "Expense - Transport"
+  Expenses:Transport  37.55 USD
+  Assets:Bank:Checking
+
+2023-04-03 * "Expense - Shopping"
+  Expenses:Shopping  159.35 USD
+  Assets:Bank:Checking
+
+2023-04-04 * "Expense - Shopping"
+  Expenses:Shopping  413.37 USD
+  Assets:Bank:Checking
+
+2023-04-05 * "Expense - Transport"
+  Expenses:Transport  9.24 USD
+  Assets:Bank:Checking
+
+2023-04-06 * "Expense - Shopping"
+  Expenses:Shopping  209.43 USD
+  Assets:Bank:Checking
+
+2023-04-07 * "Expense - Shopping"
+  Expenses:Shopping  260.16 USD
+  Assets:Bank:Checking
+
+2023-04-08 * "Expense - Food"
+  Expenses:Food  70.60 USD
+  Assets:Bank:Checking
+
+2023-04-09 * "Expense - Food"
+  Expenses:Food  15.46 USD
+  Assets:Bank:Checking
+
+2023-04-10 * "Expense - Entertainment"
+  Expenses:Entertainment  164.11 USD
+  Assets:Bank:Checking
+
+2023-04-11 * "Expense - Food"
+  Expenses:Food  32.38 USD
+  Assets:Bank:Checking
+
+2023-04-12 * "Expense - Transport"
+  Expenses:Transport  29.13 USD
+  Assets:Bank:Checking
+
+2023-04-13 * "Expense - Transport"
+  Expenses:Transport  23.98 USD
+  Assets:Bank:Checking
+
+2023-04-14 * "Expense - Entertainment"
+  Expenses:Entertainment  103.27 USD
+  Assets:Bank:Checking
+
+2023-04-15 * "Expense - Food"
+  Expenses:Food  49.88 USD
+  Assets:Bank:Checking
+
+2023-04-16 * "Income - Freelance"
+  Assets:Bank:Checking  7306.75 USD
+  Income:Freelance
+
+2023-04-17 * "Expense - Food"
+  Expenses:Food  14.55 USD
+  Assets:Bank:Checking
+
+2023-04-18 * "Expense - Food"
+  Expenses:Food  97.21 USD
+  Assets:Bank:Checking
+
+2023-04-19 * "Expense - Transport"
+  Expenses:Transport  12.48 USD
+  Assets:Bank:Checking
+
+2023-04-20 * "Expense - Shopping"
+  Expenses:Shopping  266.61 USD
+  Assets:Bank:Checking
+
+2023-04-21 * "Expense - Shopping"
+  Expenses:Shopping  456.10 USD
+  Assets:Bank:Checking
+
+2023-04-22 * "Expense - Transport"
+  Expenses:Transport  22.05 USD
+  Assets:Bank:Checking
+
+2023-04-23 * "Expense - Shopping"
+  Expenses:Shopping  169.34 USD
+  Assets:Bank:Checking
+
+2023-04-24 * "Expense - Shopping"
+  Expenses:Shopping  178.36 USD
+  Assets:Bank:Checking
+
+2023-04-25 * "Expense - Shopping"
+  Expenses:Shopping  119.66 USD
+  Assets:Bank:Checking
+
+2023-04-26 * "Expense - Entertainment"
+  Expenses:Entertainment  59.19 USD
+  Assets:Bank:Checking
+
+2023-04-27 * "Expense - Food"
+  Expenses:Food  62.13 USD
+  Assets:Bank:Checking
+
+2023-04-28 * "Expense - Food"
+  Expenses:Food  77.32 USD
+  Assets:Bank:Checking
+
+2023-04-29 * "Expense - Food"
+  Expenses:Food  14.51 USD
+  Assets:Bank:Checking
+
+2023-04-30 * "Expense - Shopping"
+  Expenses:Shopping  276.28 USD
+  Assets:Bank:Checking
+
+2023-05-01 * "Income - Salary"
+  Assets:Bank:Checking  7263.60 USD
+  Income:Salary
+
+2023-05-02 * "Expense - Transport"
+  Expenses:Transport  7.56 USD
+  Assets:Bank:Checking
+
+2023-05-03 * "Expense - Food"
+  Expenses:Food  86.62 USD
+  Assets:Bank:Checking
+
+2023-05-04 * "Expense - Food"
+  Expenses:Food  63.55 USD
+  Assets:Bank:Checking
+
+2023-05-05 * "Expense - Transport"
+  Expenses:Transport  23.17 USD
+  Assets:Bank:Checking
+
+2023-05-06 * "Expense - Transport"
+  Expenses:Transport  31.05 USD
+  Assets:Bank:Checking
+
+2023-05-07 * "Expense - Food"
+  Expenses:Food  65.74 USD
+  Assets:Bank:Checking
+
+2023-05-08 * "Expense - Shopping"
+  Expenses:Shopping  345.82 USD
+  Assets:Bank:Checking
+
+2023-05-09 * "Expense - Entertainment"
+  Expenses:Entertainment  188.25 USD
+  Assets:Bank:Checking
+
+2023-05-10 * "Expense - Transport"
+  Expenses:Transport  35.14 USD
+  Assets:Bank:Checking
+
+2023-05-11 * "Expense - Entertainment"
+  Expenses:Entertainment  62.96 USD
+  Assets:Bank:Checking
+
+2023-05-12 * "Expense - Shopping"
+  Expenses:Shopping  108.90 USD
+  Assets:Bank:Checking
+
+2023-05-13 * "Expense - Entertainment"
+  Expenses:Entertainment  102.30 USD
+  Assets:Bank:Checking
+
+2023-05-14 * "Expense - Food"
+  Expenses:Food  10.84 USD
+  Assets:Bank:Checking
+
+2023-05-15 * "Expense - Food"
+  Expenses:Food  16.59 USD
+  Assets:Bank:Checking
+
+2023-05-16 * "Income - Freelance"
+  Assets:Bank:Checking  4065.77 USD
+  Income:Freelance
+
+2023-05-17 * "Expense - Entertainment"
+  Expenses:Entertainment  43.84 USD
+  Assets:Bank:Checking
+
+2023-05-18 * "Expense - Entertainment"
+  Expenses:Entertainment  178.56 USD
+  Assets:Bank:Checking
+
+2023-05-19 * "Expense - Transport"
+  Expenses:Transport  21.63 USD
+  Assets:Bank:Checking
+
+2023-05-20 * "Expense - Transport"
+  Expenses:Transport  24.72 USD
+  Assets:Bank:Checking
+
+2023-05-21 * "Expense - Entertainment"
+  Expenses:Entertainment  130.10 USD
+  Assets:Bank:Checking
+
+2023-05-22 * "Expense - Food"
+  Expenses:Food  70.11 USD
+  Assets:Bank:Checking
+
+2023-05-23 * "Expense - Entertainment"
+  Expenses:Entertainment  187.72 USD
+  Assets:Bank:Checking
+
+2023-05-24 * "Expense - Food"
+  Expenses:Food  94.50 USD
+  Assets:Bank:Checking
+
+2023-05-25 * "Expense - Transport"
+  Expenses:Transport  16.90 USD
+  Assets:Bank:Checking
+
+2023-05-26 * "Expense - Food"
+  Expenses:Food  76.82 USD
+  Assets:Bank:Checking
+
+2023-05-27 * "Expense - Transport"
+  Expenses:Transport  17.26 USD
+  Assets:Bank:Checking
+
+2023-05-28 * "Expense - Transport"
+  Expenses:Transport  37.29 USD
+  Assets:Bank:Checking
+
+2023-05-29 * "Expense - Transport"
+  Expenses:Transport  35.94 USD
+  Assets:Bank:Checking
+
+2023-05-30 * "Expense - Entertainment"
+  Expenses:Entertainment  110.97 USD
+  Assets:Bank:Checking
+
+2023-05-31 * "Income - Salary"
+  Assets:Bank:Checking  4255.61 USD
+  Income:Salary
+
+2023-06-01 * "Expense - Food"
+  Expenses:Food  18.31 USD
+  Assets:Bank:Checking
+
+2023-06-02 * "Expense - Shopping"
+  Expenses:Shopping  423.21 USD
+  Assets:Bank:Checking
+
+2023-06-03 * "Expense - Food"
+  Expenses:Food  10.32 USD
+  Assets:Bank:Checking
+
+2023-06-04 * "Expense - Transport"
+  Expenses:Transport  33.67 USD
+  Assets:Bank:Checking
+
+2023-06-05 * "Expense - Entertainment"
+  Expenses:Entertainment  49.08 USD
+  Assets:Bank:Checking
+
+2023-06-06 * "Expense - Shopping"
+  Expenses:Shopping  298.26 USD
+  Assets:Bank:Checking
+
+2023-06-07 * "Expense - Shopping"
+  Expenses:Shopping  302.41 USD
+  Assets:Bank:Checking
+
+2023-06-08 * "Expense - Food"
+  Expenses:Food  16.77 USD
+  Assets:Bank:Checking
+
+2023-06-09 * "Expense - Transport"
+  Expenses:Transport  29.55 USD
+  Assets:Bank:Checking
+
+2023-06-10 * "Expense - Entertainment"
+  Expenses:Entertainment  124.85 USD
+  Assets:Bank:Checking
+
+2023-06-11 * "Expense - Transport"
+  Expenses:Transport  24.34 USD
+  Assets:Bank:Checking
+
+2023-06-12 * "Expense - Food"
+  Expenses:Food  37.74 USD
+  Assets:Bank:Checking
+
+2023-06-13 * "Expense - Food"
+  Expenses:Food  90.90 USD
+  Assets:Bank:Checking
+
+2023-06-14 * "Expense - Transport"
+  Expenses:Transport  35.69 USD
+  Assets:Bank:Checking
+
+2023-06-15 * "Income - Freelance"
+  Assets:Bank:Checking  6334.67 USD
+  Income:Freelance
+
+2023-06-16 * "Expense - Entertainment"
+  Expenses:Entertainment  160.42 USD
+  Assets:Bank:Checking
+
+2023-06-17 * "Expense - Shopping"
+  Expenses:Shopping  488.23 USD
+  Assets:Bank:Checking
+
+2023-06-18 * "Expense - Transport"
+  Expenses:Transport  46.66 USD
+  Assets:Bank:Checking
+
+2023-06-19 * "Expense - Transport"
+  Expenses:Transport  43.91 USD
+  Assets:Bank:Checking
+
+2023-06-20 * "Expense - Transport"
+  Expenses:Transport  44.66 USD
+  Assets:Bank:Checking
+
+2023-06-21 * "Expense - Food"
+  Expenses:Food  26.14 USD
+  Assets:Bank:Checking
+
+2023-06-22 * "Expense - Entertainment"
+  Expenses:Entertainment  160.83 USD
+  Assets:Bank:Checking
+
+2023-06-23 * "Expense - Shopping"
+  Expenses:Shopping  411.01 USD
+  Assets:Bank:Checking
+
+2023-06-24 * "Expense - Transport"
+  Expenses:Transport  17.01 USD
+  Assets:Bank:Checking
+
+2023-06-25 * "Expense - Food"
+  Expenses:Food  44.43 USD
+  Assets:Bank:Checking
+
+2023-06-26 * "Expense - Food"
+  Expenses:Food  87.27 USD
+  Assets:Bank:Checking
+
+2023-06-27 * "Expense - Transport"
+  Expenses:Transport  13.98 USD
+  Assets:Bank:Checking
+
+2023-06-28 * "Expense - Shopping"
+  Expenses:Shopping  207.35 USD
+  Assets:Bank:Checking
+
+2023-06-29 * "Expense - Transport"
+  Expenses:Transport  15.03 USD
+  Assets:Bank:Checking
+
+2023-06-30 * "Income - Salary"
+  Assets:Bank:Checking  6300.17 USD
+  Income:Salary
+
+2023-07-01 * "Expense - Shopping"
+  Expenses:Shopping  197.72 USD
+  Assets:Bank:Checking
+
+2023-07-02 * "Expense - Food"
+  Expenses:Food  97.02 USD
+  Assets:Bank:Checking
+
+2023-07-03 * "Expense - Entertainment"
+  Expenses:Entertainment  83.21 USD
+  Assets:Bank:Checking
+
+2023-07-04 * "Expense - Shopping"
+  Expenses:Shopping  355.78 USD
+  Assets:Bank:Checking
+
+2023-07-05 * "Expense - Entertainment"
+  Expenses:Entertainment  189.06 USD
+  Assets:Bank:Checking
+
+2023-07-06 * "Expense - Food"
+  Expenses:Food  88.93 USD
+  Assets:Bank:Checking
+
+2023-07-07 * "Expense - Entertainment"
+  Expenses:Entertainment  52.14 USD
+  Assets:Bank:Checking
+
+2023-07-08 * "Expense - Entertainment"
+  Expenses:Entertainment  26.89 USD
+  Assets:Bank:Checking
+
+2023-07-09 * "Expense - Shopping"
+  Expenses:Shopping  205.56 USD
+  Assets:Bank:Checking
+
+2023-07-10 * "Expense - Entertainment"
+  Expenses:Entertainment  98.55 USD
+  Assets:Bank:Checking
+
+2023-07-11 * "Expense - Food"
+  Expenses:Food  44.67 USD
+  Assets:Bank:Checking
+
+2023-07-12 * "Expense - Transport"
+  Expenses:Transport  16.46 USD
+  Assets:Bank:Checking
+
+2023-07-13 * "Expense - Shopping"
+  Expenses:Shopping  50.76 USD
+  Assets:Bank:Checking
+
+2023-07-14 * "Expense - Transport"
+  Expenses:Transport  21.39 USD
+  Assets:Bank:Checking
+
+2023-07-15 * "Income - Freelance"
+  Assets:Bank:Checking  3349.87 USD
+  Income:Freelance
+
+2023-07-16 * "Expense - Entertainment"
+  Expenses:Entertainment  132.17 USD
+  Assets:Bank:Checking
+
+2023-07-17 * "Expense - Food"
+  Expenses:Food  74.78 USD
+  Assets:Bank:Checking
+
+2023-07-18 * "Expense - Entertainment"
+  Expenses:Entertainment  111.28 USD
+  Assets:Bank:Checking
+
+2023-07-19 * "Expense - Shopping"
+  Expenses:Shopping  196.78 USD
+  Assets:Bank:Checking
+
+2023-07-20 * "Expense - Entertainment"
+  Expenses:Entertainment  119.79 USD
+  Assets:Bank:Checking
+
+2023-07-21 * "Expense - Transport"
+  Expenses:Transport  23.92 USD
+  Assets:Bank:Checking
+
+2023-07-22 * "Expense - Shopping"
+  Expenses:Shopping  354.79 USD
+  Assets:Bank:Checking
+
+2023-07-23 * "Expense - Transport"
+  Expenses:Transport  32.70 USD
+  Assets:Bank:Checking
+
+2023-07-24 * "Expense - Entertainment"
+  Expenses:Entertainment  93.09 USD
+  Assets:Bank:Checking
+
+2023-07-25 * "Expense - Food"
+  Expenses:Food  37.35 USD
+  Assets:Bank:Checking
+
+2023-07-26 * "Expense - Transport"
+  Expenses:Transport  24.34 USD
+  Assets:Bank:Checking
+
+2023-07-27 * "Expense - Entertainment"
+  Expenses:Entertainment  103.70 USD
+  Assets:Bank:Checking
+
+2023-07-28 * "Expense - Shopping"
+  Expenses:Shopping  354.03 USD
+  Assets:Bank:Checking
+
+2023-07-29 * "Expense - Shopping"
+  Expenses:Shopping  407.18 USD
+  Assets:Bank:Checking
+
+2023-07-30 * "Income - Salary"
+  Assets:Bank:Checking  7799.16 USD
+  Income:Salary
+
+2023-07-31 * "Expense - Transport"
+  Expenses:Transport  34.65 USD
+  Assets:Bank:Checking
+
+2023-08-01 * "Expense - Entertainment"
+  Expenses:Entertainment  112.78 USD
+  Assets:Bank:Checking
+
+2023-08-02 * "Expense - Entertainment"
+  Expenses:Entertainment  36.81 USD
+  Assets:Bank:Checking
+
+2023-08-03 * "Expense - Transport"
+  Expenses:Transport  35.28 USD
+  Assets:Bank:Checking
+
+2023-08-04 * "Expense - Transport"
+  Expenses:Transport  41.30 USD
+  Assets:Bank:Checking
+
+2023-08-05 * "Expense - Transport"
+  Expenses:Transport  6.10 USD
+  Assets:Bank:Checking
+
+2023-08-06 * "Expense - Transport"
+  Expenses:Transport  49.28 USD
+  Assets:Bank:Checking
+
+2023-08-07 * "Expense - Food"
+  Expenses:Food  50.99 USD
+  Assets:Bank:Checking
+
+2023-08-08 * "Expense - Transport"
+  Expenses:Transport  37.33 USD
+  Assets:Bank:Checking
+
+2023-08-09 * "Expense - Shopping"
+  Expenses:Shopping  272.47 USD
+  Assets:Bank:Checking
+
+2023-08-10 * "Expense - Transport"
+  Expenses:Transport  11.64 USD
+  Assets:Bank:Checking
+
+2023-08-11 * "Expense - Food"
+  Expenses:Food  90.34 USD
+  Assets:Bank:Checking
+
+2023-08-12 * "Expense - Food"
+  Expenses:Food  80.06 USD
+  Assets:Bank:Checking
+
+2023-08-13 * "Expense - Transport"
+  Expenses:Transport  12.91 USD
+  Assets:Bank:Checking
+
+2023-08-14 * "Income - Freelance"
+  Assets:Bank:Checking  7789.83 USD
+  Income:Freelance
+
+2023-08-15 * "Expense - Shopping"
+  Expenses:Shopping  72.60 USD
+  Assets:Bank:Checking
+
+2023-08-16 * "Expense - Transport"
+  Expenses:Transport  46.29 USD
+  Assets:Bank:Checking
+
+2023-08-17 * "Expense - Food"
+  Expenses:Food  51.08 USD
+  Assets:Bank:Checking
+
+2023-08-18 * "Expense - Shopping"
+  Expenses:Shopping  350.41 USD
+  Assets:Bank:Checking
+
+2023-08-19 * "Expense - Entertainment"
+  Expenses:Entertainment  191.01 USD
+  Assets:Bank:Checking
+
+2023-08-20 * "Expense - Shopping"
+  Expenses:Shopping  325.69 USD
+  Assets:Bank:Checking
+
+2023-08-21 * "Expense - Shopping"
+  Expenses:Shopping  423.76 USD
+  Assets:Bank:Checking
+
+2023-08-22 * "Expense - Shopping"
+  Expenses:Shopping  453.74 USD
+  Assets:Bank:Checking
+
+2023-08-23 * "Expense - Shopping"
+  Expenses:Shopping  252.53 USD
+  Assets:Bank:Checking
+
+2023-08-24 * "Expense - Transport"
+  Expenses:Transport  42.79 USD
+  Assets:Bank:Checking
+
+2023-08-25 * "Expense - Entertainment"
+  Expenses:Entertainment  157.85 USD
+  Assets:Bank:Checking
+
+2023-08-26 * "Expense - Shopping"
+  Expenses:Shopping  332.04 USD
+  Assets:Bank:Checking
+
+2023-08-27 * "Expense - Entertainment"
+  Expenses:Entertainment  99.18 USD
+  Assets:Bank:Checking
+
+2023-08-28 * "Expense - Entertainment"
+  Expenses:Entertainment  62.21 USD
+  Assets:Bank:Checking
+
+2023-08-29 * "Income - Salary"
+  Assets:Bank:Checking  4679.24 USD
+  Income:Salary
+
+2023-08-30 * "Expense - Food"
+  Expenses:Food  22.45 USD
+  Assets:Bank:Checking
+
+2023-08-31 * "Expense - Transport"
+  Expenses:Transport  22.24 USD
+  Assets:Bank:Checking
+
+2023-09-01 * "Expense - Transport"
+  Expenses:Transport  36.79 USD
+  Assets:Bank:Checking
+
+2023-09-02 * "Expense - Food"
+  Expenses:Food  47.34 USD
+  Assets:Bank:Checking
+
+2023-09-03 * "Expense - Entertainment"
+  Expenses:Entertainment  117.67 USD
+  Assets:Bank:Checking
+
+2023-09-04 * "Expense - Shopping"
+  Expenses:Shopping  78.02 USD
+  Assets:Bank:Checking
+
+2023-09-05 * "Expense - Shopping"
+  Expenses:Shopping  225.26 USD
+  Assets:Bank:Checking
+
+2023-09-06 * "Expense - Food"
+  Expenses:Food  87.11 USD
+  Assets:Bank:Checking
+
+2023-09-07 * "Expense - Shopping"
+  Expenses:Shopping  264.64 USD
+  Assets:Bank:Checking
+
+2023-09-08 * "Expense - Entertainment"
+  Expenses:Entertainment  73.75 USD
+  Assets:Bank:Checking
+
+2023-09-09 * "Expense - Shopping"
+  Expenses:Shopping  434.05 USD
+  Assets:Bank:Checking
+
+2023-09-10 * "Expense - Shopping"
+  Expenses:Shopping  292.20 USD
+  Assets:Bank:Checking
+
+2023-09-11 * "Expense - Transport"
+  Expenses:Transport  26.97 USD
+  Assets:Bank:Checking
+
+2023-09-12 * "Expense - Entertainment"
+  Expenses:Entertainment  98.45 USD
+  Assets:Bank:Checking
+
+2023-09-13 * "Income - Freelance"
+  Assets:Bank:Checking  3145.12 USD
+  Income:Freelance
+
+2023-09-14 * "Expense - Entertainment"
+  Expenses:Entertainment  140.40 USD
+  Assets:Bank:Checking
+
+2023-09-15 * "Expense - Shopping"
+  Expenses:Shopping  375.88 USD
+  Assets:Bank:Checking
+
+2023-09-16 * "Expense - Shopping"
+  Expenses:Shopping  463.79 USD
+  Assets:Bank:Checking
+
+2023-09-17 * "Expense - Food"
+  Expenses:Food  91.62 USD
+  Assets:Bank:Checking
+
+2023-09-18 * "Expense - Food"
+  Expenses:Food  17.56 USD
+  Assets:Bank:Checking
+
+2023-09-19 * "Expense - Shopping"
+  Expenses:Shopping  111.06 USD
+  Assets:Bank:Checking
+
+2023-09-20 * "Expense - Shopping"
+  Expenses:Shopping  131.78 USD
+  Assets:Bank:Checking
+
+2023-09-21 * "Expense - Entertainment"
+  Expenses:Entertainment  88.24 USD
+  Assets:Bank:Checking
+
+2023-09-22 * "Expense - Transport"
+  Expenses:Transport  25.46 USD
+  Assets:Bank:Checking
+
+2023-09-23 * "Expense - Entertainment"
+  Expenses:Entertainment  157.02 USD
+  Assets:Bank:Checking
+
+2023-09-24 * "Expense - Shopping"
+  Expenses:Shopping  175.22 USD
+  Assets:Bank:Checking
+
+2023-09-25 * "Expense - Shopping"
+  Expenses:Shopping  163.52 USD
+  Assets:Bank:Checking
+
+2023-09-26 * "Expense - Food"
+  Expenses:Food  52.33 USD
+  Assets:Bank:Checking
+
+2023-09-27 * "Expense - Food"
+  Expenses:Food  99.99 USD
+  Assets:Bank:Checking
+
+2023-09-28 * "Income - Salary"
+  Assets:Bank:Checking  4749.80 USD
+  Income:Salary
+
+2023-09-29 * "Expense - Food"
+  Expenses:Food  80.31 USD
+  Assets:Bank:Checking
+
+2023-09-30 * "Expense - Food"
+  Expenses:Food  77.88 USD
+  Assets:Bank:Checking
+
+2023-10-01 * "Expense - Transport"
+  Expenses:Transport  13.97 USD
+  Assets:Bank:Checking
+
+2023-10-02 * "Expense - Food"
+  Expenses:Food  65.92 USD
+  Assets:Bank:Checking
+
+2023-10-03 * "Expense - Transport"
+  Expenses:Transport  10.68 USD
+  Assets:Bank:Checking
+
+2023-10-04 * "Expense - Food"
+  Expenses:Food  60.76 USD
+  Assets:Bank:Checking
+
+2023-10-05 * "Expense - Transport"
+  Expenses:Transport  25.93 USD
+  Assets:Bank:Checking
+
+2023-10-06 * "Expense - Entertainment"
+  Expenses:Entertainment  158.04 USD
+  Assets:Bank:Checking
+
+2023-10-07 * "Expense - Transport"
+  Expenses:Transport  32.27 USD
+  Assets:Bank:Checking
+
+2023-10-08 * "Expense - Food"
+  Expenses:Food  80.00 USD
+  Assets:Bank:Checking
+
+2023-10-09 * "Expense - Transport"
+  Expenses:Transport  48.41 USD
+  Assets:Bank:Checking
+
+2023-10-10 * "Expense - Food"
+  Expenses:Food  62.08 USD
+  Assets:Bank:Checking
+
+2023-10-11 * "Expense - Entertainment"
+  Expenses:Entertainment  123.64 USD
+  Assets:Bank:Checking
+
+2023-10-12 * "Expense - Shopping"
+  Expenses:Shopping  228.49 USD
+  Assets:Bank:Checking
+
+2023-10-13 * "Income - Freelance"
+  Assets:Bank:Checking  6575.07 USD
+  Income:Freelance
+
+2023-10-14 * "Expense - Food"
+  Expenses:Food  63.29 USD
+  Assets:Bank:Checking
+
+2023-10-15 * "Expense - Transport"
+  Expenses:Transport  9.59 USD
+  Assets:Bank:Checking
+
+2023-10-16 * "Expense - Entertainment"
+  Expenses:Entertainment  173.05 USD
+  Assets:Bank:Checking
+
+2023-10-17 * "Expense - Food"
+  Expenses:Food  81.66 USD
+  Assets:Bank:Checking
+
+2023-10-18 * "Expense - Food"
+  Expenses:Food  41.25 USD
+  Assets:Bank:Checking
+
+2023-10-19 * "Expense - Shopping"
+  Expenses:Shopping  347.68 USD
+  Assets:Bank:Checking
+
+2023-10-20 * "Expense - Food"
+  Expenses:Food  55.54 USD
+  Assets:Bank:Checking
+
+2023-10-21 * "Expense - Entertainment"
+  Expenses:Entertainment  22.28 USD
+  Assets:Bank:Checking
+
+2023-10-22 * "Expense - Shopping"
+  Expenses:Shopping  420.05 USD
+  Assets:Bank:Checking
+
+2023-10-23 * "Expense - Food"
+  Expenses:Food  49.02 USD
+  Assets:Bank:Checking
+
+2023-10-24 * "Expense - Entertainment"
+  Expenses:Entertainment  134.41 USD
+  Assets:Bank:Checking
+
+2023-10-25 * "Expense - Shopping"
+  Expenses:Shopping  368.29 USD
+  Assets:Bank:Checking
+
+2023-10-26 * "Expense - Shopping"
+  Expenses:Shopping  129.26 USD
+  Assets:Bank:Checking
+
+2023-10-27 * "Expense - Entertainment"
+  Expenses:Entertainment  130.86 USD
+  Assets:Bank:Checking
+
+2023-10-28 * "Income - Salary"
+  Assets:Bank:Checking  7598.09 USD
+  Income:Salary
+
+2023-10-29 * "Expense - Shopping"
+  Expenses:Shopping  259.19 USD
+  Assets:Bank:Checking
+
+2023-10-30 * "Expense - Entertainment"
+  Expenses:Entertainment  78.01 USD
+  Assets:Bank:Checking
+
+2023-10-31 * "Expense - Transport"
+  Expenses:Transport  42.38 USD
+  Assets:Bank:Checking
+
+2023-11-01 * "Expense - Food"
+  Expenses:Food  35.10 USD
+  Assets:Bank:Checking
+
+2023-11-02 * "Expense - Shopping"
+  Expenses:Shopping  159.74 USD
+  Assets:Bank:Checking
+
+2023-11-03 * "Expense - Shopping"
+  Expenses:Shopping  306.43 USD
+  Assets:Bank:Checking
+
+2023-11-04 * "Expense - Shopping"
+  Expenses:Shopping  201.38 USD
+  Assets:Bank:Checking
+
+2023-11-05 * "Expense - Shopping"
+  Expenses:Shopping  432.93 USD
+  Assets:Bank:Checking
+
+2023-11-06 * "Expense - Transport"
+  Expenses:Transport  26.94 USD
+  Assets:Bank:Checking
+
+2023-11-07 * "Expense - Entertainment"
+  Expenses:Entertainment  163.61 USD
+  Assets:Bank:Checking
+
+2023-11-08 * "Expense - Entertainment"
+  Expenses:Entertainment  70.34 USD
+  Assets:Bank:Checking
+
+2023-11-09 * "Expense - Entertainment"
+  Expenses:Entertainment  120.04 USD
+  Assets:Bank:Checking
+
+2023-11-10 * "Expense - Transport"
+  Expenses:Transport  8.85 USD
+  Assets:Bank:Checking
+
+2023-11-11 * "Expense - Shopping"
+  Expenses:Shopping  269.86 USD
+  Assets:Bank:Checking
+
+2023-11-12 * "Income - Freelance"
+  Assets:Bank:Checking  6790.82 USD
+  Income:Freelance
+
+2023-11-13 * "Expense - Shopping"
+  Expenses:Shopping  340.66 USD
+  Assets:Bank:Checking
+
+2023-11-14 * "Expense - Shopping"
+  Expenses:Shopping  251.68 USD
+  Assets:Bank:Checking
+
+2023-11-15 * "Expense - Food"
+  Expenses:Food  18.37 USD
+  Assets:Bank:Checking
+
+2023-11-16 * "Expense - Transport"
+  Expenses:Transport  23.20 USD
+  Assets:Bank:Checking
+
+2023-11-17 * "Expense - Transport"
+  Expenses:Transport  18.78 USD
+  Assets:Bank:Checking
+
+2023-11-18 * "Expense - Entertainment"
+  Expenses:Entertainment  105.19 USD
+  Assets:Bank:Checking
+
+2023-11-19 * "Expense - Entertainment"
+  Expenses:Entertainment  96.59 USD
+  Assets:Bank:Checking
+
+2023-11-20 * "Expense - Entertainment"
+  Expenses:Entertainment  83.33 USD
+  Assets:Bank:Checking
+
+2023-11-21 * "Expense - Shopping"
+  Expenses:Shopping  171.91 USD
+  Assets:Bank:Checking
+
+2023-11-22 * "Expense - Entertainment"
+  Expenses:Entertainment  61.50 USD
+  Assets:Bank:Checking
+
+2023-11-23 * "Expense - Transport"
+  Expenses:Transport  19.20 USD
+  Assets:Bank:Checking
+
+2023-11-24 * "Expense - Transport"
+  Expenses:Transport  13.62 USD
+  Assets:Bank:Checking
+
+2023-11-25 * "Expense - Shopping"
+  Expenses:Shopping  174.42 USD
+  Assets:Bank:Checking
+
+2023-11-26 * "Expense - Entertainment"
+  Expenses:Entertainment  196.49 USD
+  Assets:Bank:Checking
+
+2023-11-27 * "Income - Salary"
+  Assets:Bank:Checking  7163.14 USD
+  Income:Salary
+
+2023-11-28 * "Expense - Entertainment"
+  Expenses:Entertainment  60.95 USD
+  Assets:Bank:Checking
+
+2023-11-29 * "Expense - Transport"
+  Expenses:Transport  18.60 USD
+  Assets:Bank:Checking
+
+2023-11-30 * "Expense - Transport"
+  Expenses:Transport  17.34 USD
+  Assets:Bank:Checking
+
+2023-12-01 * "Expense - Food"
+  Expenses:Food  59.80 USD
+  Assets:Bank:Checking
+
+2023-12-02 * "Expense - Transport"
+  Expenses:Transport  33.70 USD
+  Assets:Bank:Checking
+
+2023-12-03 * "Expense - Shopping"
+  Expenses:Shopping  96.16 USD
+  Assets:Bank:Checking
+
+2023-12-04 * "Expense - Food"
+  Expenses:Food  61.67 USD
+  Assets:Bank:Checking
+
+2023-12-05 * "Expense - Shopping"
+  Expenses:Shopping  265.42 USD
+  Assets:Bank:Checking
+
+2023-12-06 * "Expense - Entertainment"
+  Expenses:Entertainment  53.19 USD
+  Assets:Bank:Checking
+
+2023-12-07 * "Expense - Food"
+  Expenses:Food  32.72 USD
+  Assets:Bank:Checking
+
+2023-12-08 * "Expense - Shopping"
+  Expenses:Shopping  101.34 USD
+  Assets:Bank:Checking
+
+2023-12-09 * "Expense - Food"
+  Expenses:Food  46.06 USD
+  Assets:Bank:Checking
+
+2023-12-10 * "Expense - Food"
+  Expenses:Food  61.93 USD
+  Assets:Bank:Checking
+
+2023-12-11 * "Expense - Food"
+  Expenses:Food  23.66 USD
+  Assets:Bank:Checking
+
+2023-12-12 * "Income - Freelance"
+  Assets:Bank:Checking  7055.71 USD
+  Income:Freelance
+
+2023-12-13 * "Expense - Entertainment"
+  Expenses:Entertainment  35.33 USD
+  Assets:Bank:Checking
+
+2023-12-14 * "Expense - Transport"
+  Expenses:Transport  10.33 USD
+  Assets:Bank:Checking
+
+2023-12-15 * "Expense - Shopping"
+  Expenses:Shopping  322.84 USD
+  Assets:Bank:Checking
+
+2023-12-16 * "Expense - Transport"
+  Expenses:Transport  39.91 USD
+  Assets:Bank:Checking
+
+2023-12-17 * "Expense - Shopping"
+  Expenses:Shopping  252.73 USD
+  Assets:Bank:Checking
+
+2023-12-18 * "Expense - Shopping"
+  Expenses:Shopping  183.81 USD
+  Assets:Bank:Checking
+
+2023-12-19 * "Expense - Shopping"
+  Expenses:Shopping  187.42 USD
+  Assets:Bank:Checking
+
+2023-12-20 * "Expense - Food"
+  Expenses:Food  64.87 USD
+  Assets:Bank:Checking
+
+2023-12-21 * "Expense - Food"
+  Expenses:Food  95.28 USD
+  Assets:Bank:Checking
+
+2023-12-22 * "Expense - Transport"
+  Expenses:Transport  33.15 USD
+  Assets:Bank:Checking
+
+2023-12-23 * "Expense - Entertainment"
+  Expenses:Entertainment  138.88 USD
+  Assets:Bank:Checking
+
+2023-12-24 * "Expense - Transport"
+  Expenses:Transport  15.79 USD
+  Assets:Bank:Checking
+
+2023-12-25 * "Expense - Food"
+  Expenses:Food  24.09 USD
+  Assets:Bank:Checking
+
+2023-12-26 * "Expense - Shopping"
+  Expenses:Shopping  252.73 USD
+  Assets:Bank:Checking
+
+2023-12-27 * "Income - Salary"
+  Assets:Bank:Checking  5969.06 USD
+  Income:Salary
+
+2023-12-28 * "Expense - Entertainment"
+  Expenses:Entertainment  25.88 USD
+  Assets:Bank:Checking
+
+2023-12-29 * "Expense - Entertainment"
+  Expenses:Entertainment  147.25 USD
+  Assets:Bank:Checking
+
+2023-12-30 * "Expense - Shopping"
+  Expenses:Shopping  82.03 USD
+  Assets:Bank:Checking
+
+2023-12-31 * "Expense - Transport"
+  Expenses:Transport  46.58 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Expense - Transport"
+  Expenses:Transport  24.13 USD
+  Assets:Bank:Checking
+
+2024-01-02 * "Expense - Transport"
+  Expenses:Transport  34.14 USD
+  Assets:Bank:Checking
+
+2024-01-03 * "Expense - Entertainment"
+  Expenses:Entertainment  168.79 USD
+  Assets:Bank:Checking
+
+2024-01-04 * "Expense - Food"
+  Expenses:Food  15.37 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Expense - Entertainment"
+  Expenses:Entertainment  127.11 USD
+  Assets:Bank:Checking
+
+2024-01-06 * "Expense - Entertainment"
+  Expenses:Entertainment  99.05 USD
+  Assets:Bank:Checking
+
+2024-01-07 * "Expense - Shopping"
+  Expenses:Shopping  359.91 USD
+  Assets:Bank:Checking
+
+2024-01-08 * "Expense - Shopping"
+  Expenses:Shopping  474.20 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Expense - Shopping"
+  Expenses:Shopping  246.99 USD
+  Assets:Bank:Checking
+
+2024-01-10 * "Expense - Food"
+  Expenses:Food  90.05 USD
+  Assets:Bank:Checking
+
+2024-01-11 * "Income - Freelance"
+  Assets:Bank:Checking  6672.67 USD
+  Income:Freelance
+
+2024-01-12 * "Expense - Entertainment"
+  Expenses:Entertainment  24.66 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Expense - Transport"
+  Expenses:Transport  48.29 USD
+  Assets:Bank:Checking
+
+2024-01-14 * "Expense - Food"
+  Expenses:Food  99.96 USD
+  Assets:Bank:Checking
+
+2024-01-15 * "Expense - Entertainment"
+  Expenses:Entertainment  123.72 USD
+  Assets:Bank:Checking
+
+2024-01-16 * "Expense - Transport"
+  Expenses:Transport  26.17 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Expense - Shopping"
+  Expenses:Shopping  462.23 USD
+  Assets:Bank:Checking
+
+2024-01-18 * "Expense - Transport"
+  Expenses:Transport  49.86 USD
+  Assets:Bank:Checking
+
+2024-01-19 * "Expense - Shopping"
+  Expenses:Shopping  335.65 USD
+  Assets:Bank:Checking
+
+2024-01-20 * "Expense - Shopping"
+  Expenses:Shopping  486.07 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Expense - Shopping"
+  Expenses:Shopping  206.58 USD
+  Assets:Bank:Checking
+
+2024-01-22 * "Expense - Entertainment"
+  Expenses:Entertainment  77.79 USD
+  Assets:Bank:Checking
+
+2024-01-23 * "Expense - Food"
+  Expenses:Food  87.20 USD
+  Assets:Bank:Checking
+
+2024-01-24 * "Expense - Entertainment"
+  Expenses:Entertainment  94.10 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Expense - Shopping"
+  Expenses:Shopping  179.70 USD
+  Assets:Bank:Checking
+
+2024-01-26 * "Income - Salary"
+  Assets:Bank:Checking  7725.97 USD
+  Income:Salary
+
+2024-01-27 * "Expense - Food"
+  Expenses:Food  50.93 USD
+  Assets:Bank:Checking
+
+2024-01-28 * "Expense - Entertainment"
+  Expenses:Entertainment  65.43 USD
+  Assets:Bank:Checking
+
+2024-01-29 * "Expense - Food"
+  Expenses:Food  97.32 USD
+  Assets:Bank:Checking
+
+2024-01-30 * "Expense - Shopping"
+  Expenses:Shopping  439.21 USD
+  Assets:Bank:Checking
+
+2024-01-31 * "Expense - Food"
+  Expenses:Food  69.19 USD
+  Assets:Bank:Checking
+
+2024-02-01 * "Expense - Shopping"
+  Expenses:Shopping  235.96 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Expense - Transport"
+  Expenses:Transport  28.33 USD
+  Assets:Bank:Checking
+
+2024-02-03 * "Expense - Shopping"
+  Expenses:Shopping  331.43 USD
+  Assets:Bank:Checking
+
+2024-02-04 * "Expense - Food"
+  Expenses:Food  28.32 USD
+  Assets:Bank:Checking
+
+2024-02-05 * "Expense - Transport"
+  Expenses:Transport  46.75 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Expense - Shopping"
+  Expenses:Shopping  446.38 USD
+  Assets:Bank:Checking
+
+2024-02-07 * "Expense - Shopping"
+  Expenses:Shopping  104.64 USD
+  Assets:Bank:Checking
+
+2024-02-08 * "Expense - Transport"
+  Expenses:Transport  36.94 USD
+  Assets:Bank:Checking
+
+2024-02-09 * "Expense - Entertainment"
+  Expenses:Entertainment  119.15 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Income - Freelance"
+  Assets:Bank:Checking  5761.26 USD
+  Income:Freelance
+
+2024-02-11 * "Expense - Food"
+  Expenses:Food  30.22 USD
+  Assets:Bank:Checking
+
+2024-02-12 * "Expense - Food"
+  Expenses:Food  51.53 USD
+  Assets:Bank:Checking
+
+2024-02-13 * "Expense - Food"
+  Expenses:Food  68.29 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Expense - Transport"
+  Expenses:Transport  27.43 USD
+  Assets:Bank:Checking
+
+2024-02-15 * "Expense - Entertainment"
+  Expenses:Entertainment  111.60 USD
+  Assets:Bank:Checking
+
+2024-02-16 * "Expense - Entertainment"
+  Expenses:Entertainment  94.79 USD
+  Assets:Bank:Checking
+
+2024-02-17 * "Expense - Shopping"
+  Expenses:Shopping  491.11 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Expense - Transport"
+  Expenses:Transport  25.56 USD
+  Assets:Bank:Checking
+
+2024-02-19 * "Expense - Transport"
+  Expenses:Transport  22.26 USD
+  Assets:Bank:Checking
+
+2024-02-20 * "Expense - Transport"
+  Expenses:Transport  43.88 USD
+  Assets:Bank:Checking
+
+2024-02-21 * "Expense - Entertainment"
+  Expenses:Entertainment  159.08 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Expense - Shopping"
+  Expenses:Shopping  202.94 USD
+  Assets:Bank:Checking
+
+2024-02-23 * "Expense - Entertainment"
+  Expenses:Entertainment  167.70 USD
+  Assets:Bank:Checking
+
+2024-02-24 * "Expense - Entertainment"
+  Expenses:Entertainment  150.69 USD
+  Assets:Bank:Checking
+
+2024-02-25 * "Income - Salary"
+  Assets:Bank:Checking  7187.38 USD
+  Income:Salary
+
+2024-02-26 * "Expense - Shopping"
+  Expenses:Shopping  439.37 USD
+  Assets:Bank:Checking
+
+2024-02-27 * "Expense - Shopping"
+  Expenses:Shopping  292.36 USD
+  Assets:Bank:Checking
+
+2024-02-28 * "Expense - Entertainment"
+  Expenses:Entertainment  79.84 USD
+  Assets:Bank:Checking
+
+2024-02-29 * "Expense - Shopping"
+  Expenses:Shopping  254.91 USD
+  Assets:Bank:Checking
+
+2024-03-01 * "Expense - Entertainment"
+  Expenses:Entertainment  176.53 USD
+  Assets:Bank:Checking
+
+2024-03-02 * "Expense - Transport"
+  Expenses:Transport  30.73 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Expense - Transport"
+  Expenses:Transport  43.52 USD
+  Assets:Bank:Checking
+
+2024-03-04 * "Expense - Shopping"
+  Expenses:Shopping  69.64 USD
+  Assets:Bank:Checking
+
+2024-03-05 * "Expense - Shopping"
+  Expenses:Shopping  367.35 USD
+  Assets:Bank:Checking
+
+2024-03-06 * "Expense - Shopping"
+  Expenses:Shopping  223.74 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Expense - Transport"
+  Expenses:Transport  27.29 USD
+  Assets:Bank:Checking
+
+2024-03-08 * "Expense - Food"
+  Expenses:Food  21.36 USD
+  Assets:Bank:Checking
+
+2024-03-09 * "Expense - Entertainment"
+  Expenses:Entertainment  176.55 USD
+  Assets:Bank:Checking
+
+2024-03-10 * "Expense - Shopping"
+  Expenses:Shopping  94.87 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Income - Freelance"
+  Assets:Bank:Checking  7552.21 USD
+  Income:Freelance
+
+2024-03-12 * "Expense - Food"
+  Expenses:Food  75.02 USD
+  Assets:Bank:Checking
+
+2024-03-13 * "Expense - Shopping"
+  Expenses:Shopping  441.92 USD
+  Assets:Bank:Checking
+
+2024-03-14 * "Expense - Transport"
+  Expenses:Transport  8.37 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Expense - Entertainment"
+  Expenses:Entertainment  80.94 USD
+  Assets:Bank:Checking
+
+2024-03-16 * "Expense - Shopping"
+  Expenses:Shopping  342.43 USD
+  Assets:Bank:Checking
+
+2024-03-17 * "Expense - Entertainment"
+  Expenses:Entertainment  173.42 USD
+  Assets:Bank:Checking
+
+2024-03-18 * "Expense - Shopping"
+  Expenses:Shopping  479.36 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Expense - Shopping"
+  Expenses:Shopping  442.57 USD
+  Assets:Bank:Checking
+
+2024-03-20 * "Expense - Food"
+  Expenses:Food  65.57 USD
+  Assets:Bank:Checking
+
+2024-03-21 * "Expense - Transport"
+  Expenses:Transport  33.40 USD
+  Assets:Bank:Checking
+
+2024-03-22 * "Expense - Entertainment"
+  Expenses:Entertainment  199.54 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Expense - Food"
+  Expenses:Food  49.06 USD
+  Assets:Bank:Checking
+
+2024-03-24 * "Expense - Food"
+  Expenses:Food  78.43 USD
+  Assets:Bank:Checking
+
+2024-03-25 * "Expense - Food"
+  Expenses:Food  49.93 USD
+  Assets:Bank:Checking
+
+2024-03-26 * "Income - Salary"
+  Assets:Bank:Checking  6470.01 USD
+  Income:Salary
+
+2024-03-27 * "Expense - Food"
+  Expenses:Food  14.14 USD
+  Assets:Bank:Checking
+
+2024-03-28 * "Expense - Food"
+  Expenses:Food  36.40 USD
+  Assets:Bank:Checking
+
+2024-03-29 * "Expense - Entertainment"
+  Expenses:Entertainment  97.52 USD
+  Assets:Bank:Checking
+
+2024-03-30 * "Expense - Transport"
+  Expenses:Transport  28.90 USD
+  Assets:Bank:Checking
+
+2024-03-31 * "Expense - Transport"
+  Expenses:Transport  12.65 USD
+  Assets:Bank:Checking
+
+2024-04-01 * "Expense - Food"
+  Expenses:Food  64.85 USD
+  Assets:Bank:Checking
+
+2024-04-02 * "Expense - Shopping"
+  Expenses:Shopping  328.87 USD
+  Assets:Bank:Checking
+
+2024-04-03 * "Expense - Transport"
+  Expenses:Transport  27.40 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Expense - Transport"
+  Expenses:Transport  15.45 USD
+  Assets:Bank:Checking
+
+2024-04-05 * "Expense - Entertainment"
+  Expenses:Entertainment  102.72 USD
+  Assets:Bank:Checking
+
+2024-04-06 * "Expense - Food"
+  Expenses:Food  90.90 USD
+  Assets:Bank:Checking
+
+2024-04-07 * "Expense - Shopping"
+  Expenses:Shopping  455.54 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Expense - Transport"
+  Expenses:Transport  8.32 USD
+  Assets:Bank:Checking
+
+2024-04-09 * "Expense - Entertainment"
+  Expenses:Entertainment  197.78 USD
+  Assets:Bank:Checking
+
+2024-04-10 * "Income - Freelance"
+  Assets:Bank:Checking  4495.77 USD
+  Income:Freelance
+
+2024-04-11 * "Expense - Shopping"
+  Expenses:Shopping  360.64 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Expense - Shopping"
+  Expenses:Shopping  430.39 USD
+  Assets:Bank:Checking
+
+2024-04-13 * "Expense - Transport"
+  Expenses:Transport  49.97 USD
+  Assets:Bank:Checking
+
+2024-04-14 * "Expense - Shopping"
+  Expenses:Shopping  97.99 USD
+  Assets:Bank:Checking
+
+2024-04-15 * "Expense - Shopping"
+  Expenses:Shopping  307.37 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Expense - Entertainment"
+  Expenses:Entertainment  198.68 USD
+  Assets:Bank:Checking
+
+2024-04-17 * "Expense - Entertainment"
+  Expenses:Entertainment  23.95 USD
+  Assets:Bank:Checking
+
+2024-04-18 * "Expense - Shopping"
+  Expenses:Shopping  173.52 USD
+  Assets:Bank:Checking
+
+2024-04-19 * "Expense - Food"
+  Expenses:Food  91.96 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Expense - Shopping"
+  Expenses:Shopping  424.78 USD
+  Assets:Bank:Checking
+
+2024-04-21 * "Expense - Entertainment"
+  Expenses:Entertainment  159.63 USD
+  Assets:Bank:Checking
+
+2024-04-22 * "Expense - Transport"
+  Expenses:Transport  32.32 USD
+  Assets:Bank:Checking
+
+2024-04-23 * "Expense - Entertainment"
+  Expenses:Entertainment  59.42 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Expense - Transport"
+  Expenses:Transport  32.94 USD
+  Assets:Bank:Checking
+
+2024-04-25 * "Income - Salary"
+  Assets:Bank:Checking  6388.82 USD
+  Income:Salary
+
+2024-04-26 * "Expense - Transport"
+  Expenses:Transport  33.27 USD
+  Assets:Bank:Checking
+
+2024-04-27 * "Expense - Food"
+  Expenses:Food  37.80 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Expense - Shopping"
+  Expenses:Shopping  65.01 USD
+  Assets:Bank:Checking
+
+2024-04-29 * "Expense - Entertainment"
+  Expenses:Entertainment  151.82 USD
+  Assets:Bank:Checking
+
+2024-04-30 * "Expense - Food"
+  Expenses:Food  91.87 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Expense - Entertainment"
+  Expenses:Entertainment  154.55 USD
+  Assets:Bank:Checking
+
+2024-05-02 * "Expense - Transport"
+  Expenses:Transport  14.04 USD
+  Assets:Bank:Checking
+
+2024-05-03 * "Expense - Entertainment"
+  Expenses:Entertainment  115.55 USD
+  Assets:Bank:Checking
+
+2024-05-04 * "Expense - Entertainment"
+  Expenses:Entertainment  169.49 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Expense - Entertainment"
+  Expenses:Entertainment  184.53 USD
+  Assets:Bank:Checking
+
+2024-05-06 * "Expense - Shopping"
+  Expenses:Shopping  485.32 USD
+  Assets:Bank:Checking
+
+2024-05-07 * "Expense - Entertainment"
+  Expenses:Entertainment  154.38 USD
+  Assets:Bank:Checking
+
+2024-05-08 * "Expense - Entertainment"
+  Expenses:Entertainment  164.76 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Expense - Shopping"
+  Expenses:Shopping  483.30 USD
+  Assets:Bank:Checking
+
+2024-05-10 * "Income - Freelance"
+  Assets:Bank:Checking  3703.79 USD
+  Income:Freelance
+
+2024-05-11 * "Expense - Transport"
+  Expenses:Transport  43.71 USD
+  Assets:Bank:Checking
+
+2024-05-12 * "Expense - Shopping"
+  Expenses:Shopping  485.27 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Expense - Entertainment"
+  Expenses:Entertainment  36.25 USD
+  Assets:Bank:Checking
+
+2024-05-14 * "Expense - Shopping"
+  Expenses:Shopping  56.26 USD
+  Assets:Bank:Checking
+
+
+

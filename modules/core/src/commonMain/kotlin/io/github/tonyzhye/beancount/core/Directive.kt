@@ -46,6 +46,15 @@ sealed class Directive : Comparable<Directive> {
 }
 
 /**
+ * Include directive - includes another beancount file.
+ */
+data class Include(
+    override val meta: Meta,
+    override val date: LocalDate,
+    val filename: String
+) : Directive()
+
+/**
  * Open account directive.
  */
 data class Open(

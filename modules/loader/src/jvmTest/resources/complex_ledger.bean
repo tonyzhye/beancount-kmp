@@ -1,0 +1,74 @@
+option "title" "Complex Test Ledger"
+option "operating_currency" "USD"
+option "name_assets" "Assets"
+option "name_liabilities" "Liabilities"
+
+; Commodity definitions
+2023-01-01 commodity USD
+2023-01-01 commodity EUR
+2023-01-01 commodity HOOL
+2023-01-01 commodity CAD
+
+; Account openings
+2023-01-01 open Assets:Bank:Checking USD
+2023-01-01 open Assets:Brokerage HOOL
+2023-01-01 open Assets:Cash USD
+2023-01-01 open Liabilities:CreditCard USD
+2023-01-01 open Expenses:Food USD
+2023-01-01 open Expenses:Travel USD
+2023-01-01 open Income:Salary USD
+2023-01-01 open Income:Investments USD
+2023-01-01 open Equity:OpeningBalances USD
+
+; Event
+2023-01-01 event "location" "New York"
+2023-06-01 event "location" "San Francisco"
+
+; Price history
+2023-01-01 price EUR 1.10 USD
+2023-06-01 price EUR 1.08 USD
+2023-01-01 price HOOL 100.00 USD
+2023-06-01 price HOOL 120.00 USD
+
+; Note with metadata
+2023-01-05 note Assets:Bank:Checking "Account opened"
+  tag: "important"
+
+; Transaction with tags and links
+2023-01-15 * "Grocery shopping" #food #monthly ^grocery-2023-01
+  Expenses:Food  50.00 USD
+  Assets:Cash
+
+; Transaction with posting-level metadata
+2023-01-20 * "Salary deposit"
+  Assets:Bank:Checking  5000.00 USD
+    employer: "Acme Corp"
+  Income:Salary
+
+; Simple transaction
+2023-02-01 * "Dinner"
+  Expenses:Food  80.00 USD
+  Assets:Cash
+
+; Investment transaction with cost basis
+2023-03-01 * "Buy HOOL stock"
+  Assets:Brokerage  10 HOOL {100.00 USD}
+  Assets:Bank:Checking  -1000.00 USD
+
+; Investment sale with cost basis
+2023-07-01 * "Sell HOOL stock"
+  Assets:Brokerage  -10 HOOL {100.00 USD}
+  Assets:Bank:Checking  1000.00 USD
+  Income:Investments
+
+; Balance assertion
+2023-12-31 balance Assets:Bank:Checking 5000.00 USD
+
+; Query directive
+2023-01-01 query "cash_flow" "SELECT date, narration, position WHERE account ~ 'Cash'"
+
+; Custom directive
+2023-01-01 custom "budget" "monthly" 1000.00 USD
+
+; Close account
+2023-12-31 close Liabilities:CreditCard

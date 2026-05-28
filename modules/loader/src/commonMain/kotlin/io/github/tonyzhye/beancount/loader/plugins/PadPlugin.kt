@@ -10,8 +10,6 @@ import kotlinx.datetime.LocalDate
  * For each Pad directive, this plugin inserts a transaction that transfers the
  * difference between the current account balance and the expected balance from
  * the next Balance assertion.
- *
- * This is a simplified implementation that handles the most common case.
  */
 object PadPlugin {
 
@@ -22,13 +20,11 @@ object PadPlugin {
         val errors = mutableListOf<BeancountError>()
         val result = entries.toMutableList()
         val padEntries = entries.filterIsInstance<Pad>()
+        val usedPads = mutableSetOf<Pad>()
 
         for (pad in padEntries) {
             // Find the next Balance assertion for this account after the pad date
-            val nextBalance = entries
-                .filterIsInstance<Balance>()
-                .filter { it.account == pad.account && it.date >= pad.date }
-                .minByOrNull { it.date }
+            val nextBalance = findNextBalance(entries, pad)
 
             if (nextBalance == null) {
                 errors.add(
@@ -52,12 +48,14 @@ object PadPlugin {
             val diff = expectedAmount.number - currentBalance
 
             if (!diff.isZero()) {
-                // Create a pad transaction
+                usedPads.add(pad)
+                // Create a pad transaction with narration matching Python beancount
+                val narration = "(Padding inserted for Balance of $expectedAmount for difference ${Amount(diff, expectedAmount.currency)})"
                 val padTransaction = Transaction(
                     meta = newMetadata(options.filename, 0),
                     date = pad.date,
                     flag = "P",
-                    narration = "Padding for balance assertion",
+                    narration = narration,
                     postings = listOf(
                         Posting(
                             account = pad.account,
@@ -70,10 +68,37 @@ object PadPlugin {
                     )
                 )
                 result.add(padTransaction)
+            } else {
+                // Pad was used even if diff is zero (the balance already matched)
+                usedPads.add(pad)
+            }
+        }
+
+        // Generate errors for unused pad entries
+        for (pad in padEntries) {
+            if (pad !in usedPads) {
+                errors.add(
+                    LoadError(
+                        pad.meta,
+                        "Unused Pad entry",
+                        pad
+                    )
+                )
             }
         }
 
         return Pair(result.sorted(), errors)
+    }
+
+    /**
+     * Find the next Balance assertion for a pad directive.
+     * This is the first balance assertion after the pad date for the same account.
+     */
+    private fun findNextBalance(entries: List<Directive>, pad: Pad): Balance? {
+        return entries
+            .filterIsInstance<Balance>()
+            .filter { it.account == pad.account && it.date > pad.date }
+            .minByOrNull { it.date }
     }
 
     /**

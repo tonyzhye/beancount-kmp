@@ -1,0 +1,65 @@
+; ============================================================
+; Error Scenarios Ledger - 错误场景测试账本
+; 包含各种语法错误和逻辑错误
+; ============================================================
+
+option "title" "错误场景测试"
+option "operating_currency" "USD"
+
+; ---------- 基本账户 ----------
+2023-01-01 open Assets:Bank USD
+2023-01-01 open Assets:Cash USD
+2023-01-01 open Expenses:Food USD
+2023-01-01 open Income:Salary USD
+
+; ---------- 错误1: 重复开设账户 ----------
+2023-01-01 open Assets:Bank USD
+2023-01-01 open Assets:Bank EUR
+
+; ---------- 错误2: 未开设账户就使用 ----------
+2023-01-05 * "未知账户"
+  Expenses:Unknown  100.00 USD
+  Assets:Bank
+
+; ---------- 错误3: 交易不平衡 ----------
+2023-01-10 * "不平衡交易"
+  Expenses:Food  50.00 USD
+  Assets:Bank  30.00 USD
+
+; ---------- 错误4: 货币不匹配 ----------
+2023-01-15 * "错误货币"
+  Expenses:Food  100.00 EUR
+  Assets:Bank
+
+; ---------- 错误5: 关闭未开设的账户 ----------
+2023-01-20 close Assets:Missing
+
+; ---------- 错误6: 在关闭后使用账户 ----------
+2023-01-01 open Assets:Temp USD
+2023-01-25 close Assets:Temp
+2023-01-30 * "使用已关闭账户"
+  Expenses:Food  50.00 USD
+  Assets:Temp
+
+; ---------- 错误7: 重复余额断言 ----------
+2023-02-01 balance Assets:Bank 1000.00 USD
+2023-02-01 balance Assets:Bank 2000.00 USD
+
+; ---------- 错误8: 余额断言失败 ----------
+2023-03-01 * "支出"
+  Expenses:Food  200.00 USD
+  Assets:Bank
+
+2023-03-31 balance Assets:Bank 10000.00 USD
+
+; ---------- 错误9: 语法错误 - 缺少账户 ----------
+2023-04-01 open USD
+
+; ---------- 正确交易（作为对比） ----------
+2023-05-01 * "正常工资"
+  Assets:Bank  5000.00 USD
+  Income:Salary
+
+2023-05-15 * "正常支出"
+  Expenses:Food  150.00 USD
+  Assets:Bank

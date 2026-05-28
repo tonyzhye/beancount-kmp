@@ -1,0 +1,153 @@
+; ============================================================
+; Investment Ledger - 投资账本
+; 模拟投资组合管理，包含股票、基金、外汇
+; ============================================================
+
+option "title" "投资组合 2023"
+option "operating_currency" "USD"
+
+; ---------- 商品定义 ----------
+2023-01-01 commodity USD
+2023-01-01 commodity CNY
+2023-01-01 commodity EUR
+2023-01-01 commodity AAPL
+2023-01-01 commodity GOOGL
+2023-01-01 commodity MSFT
+2023-01-01 commodity VOO
+2023-01-01 commodity BTC
+
+; ---------- 账户开设 ----------
+2023-01-01 open Assets:Brokerage:Stocks AAPL,GOOGL,MSFT,VOO
+2023-01-01 open Assets:Brokerage:Crypto BTC
+2023-01-01 open Assets:Bank:Checking USD,CNY
+2023-01-01 open Assets:Bank:Savings USD
+2023-01-01 open Assets:Forex CNY,EUR
+2023-01-01 open Liabilities:Margin USD
+2023-01-01 open Equity:OpeningBalances
+
+; 收入账户
+2023-01-01 open Income:Investments:Dividends USD
+2023-01-01 open Income:Investments:CapitalGains USD
+2023-01-01 open Income:Salary USD
+
+; 支出账户
+2023-01-01 open Expenses:Financial:Fees USD
+2023-01-01 open Expenses:Financial:Interest USD
+
+; ---------- 价格历史 ----------
+; AAPL
+2023-01-01 price AAPL 150.00 USD
+2023-02-01 price AAPL 145.00 USD
+2023-03-01 price AAPL 165.00 USD
+2023-06-01 price AAPL 180.00 USD
+2023-09-01 price AAPL 175.00 USD
+2023-12-01 price AAPL 190.00 USD
+
+; GOOGL
+2023-01-01 price GOOGL 90.00 USD
+2023-03-01 price GOOGL 95.00 USD
+2023-06-01 price GOOGL 120.00 USD
+2023-09-01 price GOOGL 135.00 USD
+2023-12-01 price GOOGL 140.00 USD
+
+; MSFT
+2023-01-01 price MSFT 240.00 USD
+2023-03-01 price MSFT 255.00 USD
+2023-06-01 price MSFT 330.00 USD
+2023-09-01 price MSFT 320.00 USD
+2023-12-01 price MSFT 370.00 USD
+
+; VOO (ETF)
+2023-01-01 price VOO 350.00 USD
+2023-06-01 price VOO 380.00 USD
+2023-12-01 price VOO 410.00 USD
+
+; BTC
+2023-01-01 price BTC 16500.00 USD
+2023-03-01 price BTC 28000.00 USD
+2023-06-01 price BTC 30000.00 USD
+2023-09-01 price BTC 27000.00 USD
+2023-12-01 price BTC 42000.00 USD
+
+; 外汇
+2023-01-01 price CNY 0.145 USD
+2023-06-01 price CNY 0.138 USD
+2023-12-01 price CNY 0.141 USD
+
+2023-01-01 price EUR 1.08 USD
+2023-06-01 price EUR 1.09 USD
+2023-12-01 price EUR 1.10 USD
+
+; ---------- 初始资金 ----------
+2023-01-01 pad Assets:Bank:Checking Equity:OpeningBalances
+2023-01-02 balance Assets:Bank:Checking 100000.00 USD
+
+; ---------- Q1 交易 ----------
+; 买入 AAPL
+2023-01-10 * "买入苹果股票"
+  Assets:Brokerage:Stocks  100 AAPL {150.00 USD}
+  Assets:Bank:Checking  -15000.00 USD
+
+; 买入 GOOGL
+2023-01-15 * "买入谷歌股票"
+  Assets:Brokerage:Stocks  50 GOOGL {90.00 USD}
+  Assets:Bank:Checking  -4500.00 USD
+
+; 工资收入
+2023-01-20 * "工资收入"
+  Assets:Bank:Checking  8000.00 USD
+  Income:Salary
+
+; 买入 MSFT
+2023-02-01 * "买入微软股票"
+  Assets:Brokerage:Stocks  30 MSFT {240.00 USD}
+  Assets:Bank:Checking  -7200.00 USD
+
+; 买入 ETF
+2023-02-15 * "买入标普500 ETF"
+  Assets:Brokerage:Stocks  20 VOO {350.00 USD}
+  Assets:Bank:Checking  -7000.00 USD
+
+; 外汇兑换
+2023-02-20 * "兑换人民币"
+  Assets:Forex  10000.00 CNY @@ 1450.00 USD
+  Assets:Bank:Checking
+
+; 卖出部分 AAPL（盈利）
+2023-03-15 * "卖出部分苹果股票"
+  Assets:Brokerage:Stocks  -50 AAPL {150.00 USD}
+  Assets:Bank:Checking  8250.00 USD
+  Income:Investments:CapitalGains  -750.00 USD
+
+; ---------- Q2 交易 ----------
+; 买入 BTC
+2023-04-01 * "买入比特币"
+  Assets:Brokerage:Crypto  0.5 BTC {30000.00 USD}
+  Assets:Bank:Checking  -15000.00 USD
+
+; 股息收入
+2023-04-15 * "VOO 股息"
+  Assets:Bank:Checking  120.00 USD
+  Income:Investments:Dividends
+
+; 卖出 GOOGL（盈利）
+2023-05-10 * "卖出谷歌股票"
+  Assets:Brokerage:Stocks  -50 GOOGL {90.00 USD}
+  Assets:Bank:Checking  6000.00 USD
+  Income:Investments:CapitalGains  -1500.00 USD
+
+; 追加买入 MSFT
+2023-06-01 * "追加买入微软"
+  Assets:Brokerage:Stocks  20 MSFT {330.00 USD}
+  Assets:Bank:Checking  -6600.00 USD
+
+; ---------- 事件记录 ----------
+2023-01-01 event "portfolio" "建立投资组合"
+2023-04-01 event "portfolio" "开始加密货币投资"
+2023-07-01 event "portfolio" "半年回顾"
+
+; ---------- 年末平衡检查 ----------
+2023-12-31 balance Assets:Bank:Checking 65620.00 USD
+
+; ---------- 关闭账户 ----------
+2023-12-31 close Liabilities:Margin

@@ -1,0 +1,232 @@
+; ============================================================
+; Company Ledger - 公司账目
+; 模拟一个小型科技公司的财务账目
+; ============================================================
+
+option "title" "科技公司 2023 年度账目"
+option "operating_currency" "CNY"
+; option "account_rounding" "Assets:Bank:Checking"
+
+; ---------- 商品定义 ----------
+2023-01-01 commodity CNY
+2023-01-01 commodity USD
+2023-01-01 commodity EUR
+
+; ---------- 资产账户 ----------
+2023-01-01 open Assets:Current:Cash CNY
+2023-01-01 open Assets:Current:Bank:ICBC CNY,USD
+2023-01-01 open Assets:Current:Bank:HSBC USD
+2023-01-01 open Assets:Current:Receivables CNY
+2023-01-01 open Assets:Fixed:Equipment CNY
+2023-01-01 open Assets:Fixed:Software CNY
+2023-01-01 open Assets:Intangible:Patents CNY
+
+; ---------- 负债账户 ----------
+2023-01-01 open Liabilities:Current:Payables CNY
+2023-01-01 open Liabilities:Current:TaxPayable CNY
+2023-01-01 open Liabilities:Current:SalaryPayable CNY
+2023-01-01 open Liabilities:LongTerm:Loans CNY
+
+; ---------- 权益账户 ----------
+2023-01-01 open Equity:Capital CNY
+2023-01-01 open Equity:RetainedEarnings CNY
+
+; ---------- 收入账户 ----------
+2023-01-01 open Income:Revenue:Software CNY
+2023-01-01 open Income:Revenue:Consulting CNY
+2023-01-01 open Income:Revenue:License USD
+2023-01-01 open Income:Other:Interest CNY
+
+; ---------- 成本账户 ----------
+2023-01-01 open Expenses:COGS:Software CNY
+2023-01-01 open Expenses:COGS:Hosting CNY
+
+; ---------- 费用账户 ----------
+2023-01-01 open Expenses:Operating:Salaries CNY
+2023-01-01 open Expenses:Operating:Rent CNY
+2023-01-01 open Expenses:Operating:Utilities CNY
+2023-01-01 open Expenses:Operating:Marketing CNY
+2023-01-01 open Expenses:Operating:Travel CNY
+2023-01-01 open Expenses:Operating:OfficeSupplies CNY
+2023-01-01 open Expenses:Operating:Legal CNY
+2023-01-01 open Expenses:Depreciation:Equipment CNY
+2023-01-01 open Expenses:Tax:IncomeTax CNY
+2023-01-01 open Expenses:Tax:ValueAddedTax CNY
+
+; ---------- 初始投资 ----------
+2023-01-01 * "股东初始投资"
+  Assets:Current:Bank:ICBC  1000000.00 CNY
+  Equity:Capital
+
+; ---------- Q1 交易 ----------
+; 1月
+2023-01-05 * "购买办公设备"
+  Assets:Fixed:Equipment  50000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-01-10 * "支付房租"
+  Expenses:Operating:Rent  30000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-01-15 * "发放工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-01-20 * "软件销售收入"
+  Assets:Current:Bank:ICBC  200000.00 CNY
+  Income:Revenue:Software
+
+2023-01-25 * "支付云服务费用"
+  Expenses:COGS:Hosting  5000.00 CNY
+  Assets:Current:Bank:ICBC
+
+; 2月
+2023-02-05 * "咨询服务收入"
+  Assets:Current:Bank:ICBC  50000.00 CNY
+  Income:Revenue:Consulting
+
+2023-02-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-02-15 * "市场推广费用"
+  Expenses:Operating:Marketing  20000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-02-20 * "支付律师费"
+  Expenses:Operating:Legal  10000.00 CNY
+  Assets:Current:Bank:ICBC
+
+; 3月
+2023-03-05 * "软件许可收入（美元）"
+  Assets:Current:Bank:HSBC  10000.00 USD
+  Income:Revenue:License
+
+2023-03-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-03-15 * "购买软件许可"
+  Assets:Fixed:Software  30000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-03-20 * "软件销售收入"
+  Assets:Current:Bank:ICBC  300000.00 CNY
+  Income:Revenue:Software
+
+2023-03-25 * "支付水电费"
+  Expenses:Operating:Utilities  5000.00 CNY
+  Assets:Current:Bank:ICBC
+
+; ---------- Q2 交易 ----------
+2023-04-05 * "差旅费"
+  Expenses:Operating:Travel  8000.00 CNY
+  Assets:Current:Cash
+
+2023-04-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-04-15 * "办公用品"
+  Expenses:Operating:OfficeSupplies  2000.00 CNY
+  Assets:Current:Cash
+
+2023-05-05 * "软件销售收入"
+  Assets:Current:Bank:ICBC  250000.00 CNY
+  Income:Revenue:Software
+
+2023-05-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-05-15 * "设备折旧"
+  Expenses:Depreciation:Equipment  2500.00 CNY
+  Assets:Fixed:Equipment
+
+2023-06-05 * "咨询服务收入"
+  Assets:Current:Bank:ICBC  80000.00 CNY
+  Income:Revenue:Consulting
+
+2023-06-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-06-15 * "增值税"
+  Expenses:Tax:ValueAddedTax  35000.00 CNY
+  Liabilities:Current:TaxPayable
+
+; ---------- Q3 交易 ----------
+2023-07-05 * "软件销售收入"
+  Assets:Current:Bank:ICBC  400000.00 CNY
+  Income:Revenue:Software
+
+2023-07-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-08-05 * "软件许可收入（美元）"
+  Assets:Current:Bank:HSBC  15000.00 USD
+  Income:Revenue:License
+
+2023-08-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-09-05 * "支付房租"
+  Expenses:Operating:Rent  30000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-09-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+; ---------- Q4 交易 ----------
+2023-10-05 * "软件销售收入"
+  Assets:Current:Bank:ICBC  350000.00 CNY
+  Income:Revenue:Software
+
+2023-10-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-11-05 * "咨询服务收入"
+  Assets:Current:Bank:ICBC  60000.00 CNY
+  Income:Revenue:Consulting
+
+2023-11-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-12-05 * "软件销售收入"
+  Assets:Current:Bank:ICBC  500000.00 CNY
+  Income:Revenue:Software
+
+2023-12-10 * "支付工资"
+  Expenses:Operating:Salaries  150000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-12-15 * "年终奖"
+  Expenses:Operating:Salaries  300000.00 CNY
+  Assets:Current:Bank:ICBC
+
+2023-12-20 * "设备折旧"
+  Expenses:Depreciation:Equipment  2500.00 CNY
+  Assets:Fixed:Equipment
+
+2023-12-25 * "支付增值税"
+  Liabilities:Current:TaxPayable  35000.00 CNY
+  Assets:Current:Bank:ICBC
+
+; ---------- 年末处理 ----------
+2023-12-31 * "计提所得税"
+  Expenses:Tax:IncomeTax  80000.00 CNY
+  Liabilities:Current:TaxPayable
+
+; ---------- 事件记录 ----------
+2023-01-01 event "company" "公司成立"
+2023-06-30 event "company" "上半年结束"
+2023-12-31 event "company" "年度结束"
+
+; ---------- 查询 ----------
+2023-01-01 query "annual_revenue" "SELECT SUM(position) WHERE account ~ 'Income'"
+2023-01-01 query "monthly_expenses" "SELECT month, SUM(position) WHERE account ~ 'Expenses' GROUP BY month"

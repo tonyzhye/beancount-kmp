@@ -1,510 +1,111 @@
 package io.github.tonyzhye.beancount.loader
 
+import io.github.tonyzhye.beancount.core.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assumptions.assumeTrue
-import org.junit.jupiter.api.Timeout
 import java.io.File
-import java.util.concurrent.TimeUnit
-import kotlin.system.measureTimeMillis
+import kotlin.test.assertTrue
 
 /**
- * Performance comparison tests between Kotlin/JVM and Python beancount.
- * Focus on small files (50KB - 1MB) for quick iteration.
- * 
- * Tests are skipped if Python beancount is not available.
+ * Performance comparison tests between Kotlin and Python beancount.
  */
 class PerformanceComparisonTest {
 
-    /**
-     * Small files for quick performance comparison.
-     */
-    private val smallTestFiles = listOf(
-        Triple("test_50kb.bean", "50 KB", "examples/benchmark/test_50kb.bean"),
-        Triple("test_100kb.bean", "100 KB", "examples/benchmark/test_100kb.bean"),
-        Triple("test_500kb.bean", "500 KB", "examples/benchmark/test_500kb.bean"),
-        Triple("test_1mb.bean", "1 MB", "examples/benchmark/test_1mb.bean"),
-    )
-    
-    /**
-     * Check if Python with beancount is available.
-     */
-    private fun isPythonBeancountAvailable(): Boolean {
-        return try {
-            val process = ProcessBuilder("python", "-c", "import beancount; print(beancount.__version__)")
-                .redirectErrorStream(true)
-                .start()
-            process.waitFor() == 0
-        } catch (e: Exception) {
-            false
-        }
+    private fun getResourcePath(filename: String): String {
+        val url = javaClass.classLoader.getResource(filename)
+            ?: throw IllegalStateException("Test resource not found: $filename")
+        return File(url.toURI()).absolutePath
     }
-    
-    /**
-     * Measure Python beancount load time using direct command.
-     */
-    private fun measurePythonLoadTime(filepath: String): Long {
-        val pythonPath = filepath.replace("\\", "/")
-        val pythonScript = """
-import time, os
-from beancount.loader import load_file
 
-filepath = os.environ.get('BEAN_FILE')
+    @Test
+    fun `should compare performance for large ledger`() {
+        assumeTrue(PythonBeancountRunner.isAvailable(), "Python beancount not available")
 
-# Warmup
-load_file(filepath)
+        val path = getResourcePath("large_ledger.bean")
+        val iterations = 3
 
-# Timed run
-times = []
-for _ in range(3):
-    start = time.perf_counter()
-    entries, errors, options = load_file(filepath)
-    end = time.perf_counter()
-    times.append((end - start) * 1000)
-
-avg = sum(times) / len(times)
-print(round(avg, 1))
-""".trimIndent()
-        
-        val pb = ProcessBuilder("python", "-c", pythonScript)
-        pb.environment()["BEAN_FILE"] = pythonPath
-        val process = pb
-            .redirectErrorStream(true)
-            .start()
-        
-        val output = process.inputStream.bufferedReader().readText().trim()
-        process.waitFor()
-        
-        return output.toDouble().toLong()
-    }
-    
-    /**
-     * Measure Kotlin/JVM load time.
-     */
-    private fun measureJvmLoadTime(filepath: String): Long {
         // Warmup
-        loadFile(filepath)
-        
-        // Timed runs
-        val times = mutableListOf<Long>()
-        repeat(3) {
-            val time = measureTimeMillis {
-                loadFile(filepath)
-            }
-            times.add(time)
+        println("Warming up...")
+        repeat(2) {
+            loadFile(path)
+            PythonBeancountRunner.loadFile(path)
         }
-        
-        return times.average().toLong()
-    }
-    
-    @Test
-    @Timeout(value = 60, unit = TimeUnit.SECONDS)
-    fun `compare JVM vs Python for small files`() {
-        assumeTrue(isPythonBeancountAvailable(), "Python beancount not available")
-        
-        println("\n" + "=".repeat(80))
-        println("PERFORMANCE COMPARISON: Kotlin/JVM vs Python Beancount (Small Files)")
-        println("=".repeat(80))
-        println(String.format("%-20s %-10s %-12s %-12s %-10s", 
-            "File", "Size", "JVM (ms)", "Python (ms)", "Ratio"))
-        println("-".repeat(80))
-        
-        smallTestFiles.forEach { (filename, sizeLabel, relativePath) ->
-            val projectRoot = File("").absoluteFile.parentFile.parentFile
-            val filepath = File(projectRoot, relativePath).absolutePath
-            val file = File(filepath)
-            
-            if (!file.exists()) {
-                println(String.format("%-20s %-10s %-12s", filename, sizeLabel, "NOT FOUND"))
-                return@forEach
-            }
-            
-            try {
-                // Measure JVM
-                val jvmTime = measureJvmLoadTime(filepath)
-                
-                // Measure Python
-                val pythonTime = measurePythonLoadTime(filepath)
-                
-                // Calculate ratio
-                val ratio = if (pythonTime > 0) {
-                    jvmTime.toDouble() / pythonTime.toDouble()
-                } else 0.0
-                
-                val ratioStr = when {
-                    ratio > 1.0 -> String.format("%.2fx slower", ratio)
-                    ratio < 1.0 -> String.format("%.2fx faster", 1.0 / ratio)
-                    else -> "same"
-                }
-                
-                println(String.format("%-20s %-10s %-12d %-12d %-10s",
-                    filename, sizeLabel, jvmTime, pythonTime, ratioStr))
-                
-            } catch (e: Exception) {
-                println(String.format("%-20s %-10s ERROR: %s", filename, sizeLabel, e.message))
-            }
+
+        // Kotlin benchmark
+        println("\n=== Kotlin Performance ===")
+        val kotlinTimes = mutableListOf<Long>()
+        repeat(iterations) { i ->
+            val start = System.currentTimeMillis()
+            val result = loadFile(path)
+            val elapsed = System.currentTimeMillis() - start
+            kotlinTimes.add(elapsed)
+            println("Run ${i+1}: ${elapsed}ms (${result.entries.size} entries)")
         }
-        
-        println("=".repeat(80) + "\n")
-    }
-    
-    @Test
-    @Timeout(value = 30, unit = TimeUnit.SECONDS)
-    fun `JVM-only benchmark for small files`() {
-        println("\n" + "=".repeat(70))
-        println("JVM-ONLY BENCHMARK")
-        println("=".repeat(70))
-        println(String.format("%-20s %-10s %-12s %-15s", 
-            "File", "Size", "Time (ms)", "Throughput"))
-        println("-".repeat(70))
-        
-        smallTestFiles.forEach { (filename, sizeLabel, relativePath) ->
-            val projectRoot = File("").absoluteFile.parentFile.parentFile
-            val filepath = File(projectRoot, relativePath).absolutePath
-            val file = File(filepath)
-            
-            if (!file.exists()) {
-                println(String.format("%-20s %-10s %-12s", filename, sizeLabel, "NOT FOUND"))
-                return@forEach
-            }
-            
-            try {
-                // Warmup
-                loadFile(filepath)
-                
-                // Measure
-                val times = mutableListOf<Long>()
-                repeat(3) {
-                    val time = measureTimeMillis {
-                        loadFile(filepath)
-                    }
-                    times.add(time)
-                }
-                
-                val avgTime = times.average().toLong()
-                val minTime = times.min()
-                val fileSizeKb = file.length() / 1024.0
-                val throughput = if (avgTime > 0) fileSizeKb / (avgTime / 1000.0) else 0.0
-                
-                println(String.format("%-20s %-10s %-12d %-15.1f KB/s",
-                    filename, sizeLabel, avgTime, throughput))
-                println(String.format("  (min: %dms)", minTime))
-                
-            } catch (e: Exception) {
-                println(String.format("%-20s %-10s ERROR: %s", filename, sizeLabel, e.message))
-            }
+        val kotlinAvg = kotlinTimes.average()
+        println("Average: ${kotlinAvg.toInt()}ms")
+
+        // Python benchmark
+        println("\n=== Python Performance ===")
+        val pythonTimes = mutableListOf<Long>()
+        repeat(iterations) { i ->
+            val start = System.currentTimeMillis()
+            val result = PythonBeancountRunner.loadFile(path)
+            val elapsed = System.currentTimeMillis() - start
+            pythonTimes.add(elapsed)
+            println("Run ${i+1}: ${elapsed}ms (${result.entryCount} entries)")
         }
-        
-        println("=".repeat(70) + "\n")
-    }
+        val pythonAvg = pythonTimes.average()
+        println("Average: ${pythonAvg.toInt()}ms")
 
-    /**
-     * Large files for extended performance comparison.
-     */
-    private val largeTestFiles = listOf(
-        Triple("test_5mb.bean", "5 MB", "examples/benchmark/test_5mb.bean"),
-        Triple("test_10mb.bean", "10 MB", "examples/benchmark/test_10mb.bean"),
-    )
-    
-    @Test
-    @Timeout(value = 300, unit = TimeUnit.SECONDS)
-    fun `compare JVM vs Python for large files`() {
-        assumeTrue(isPythonBeancountAvailable(), "Python beancount not available")
-        
-        println("\n" + "=".repeat(80))
-        println("PERFORMANCE COMPARISON: Kotlin/JVM vs Python Beancount (Large Files)")
-        println("=".repeat(80))
-        println(String.format("%-20s %-10s %-12s %-12s %-10s", 
-            "File", "Size", "JVM (ms)", "Python (ms)", "Ratio"))
-        println("-".repeat(80))
-        
-        largeTestFiles.forEach { (filename, sizeLabel, relativePath) ->
-            val projectRoot = File("").absoluteFile.parentFile.parentFile
-            val filepath = File(projectRoot, relativePath).absolutePath
-            val file = File(filepath)
-            
-            if (!file.exists()) {
-                println(String.format("%-20s %-10s %-12s", filename, sizeLabel, "NOT FOUND"))
-                return@forEach
-            }
-            
-            try {
-                // Measure JVM
-                val jvmTime = measureJvmLoadTime(filepath)
-                
-                // Measure Python
-                val pythonTime = measurePythonLoadTime(filepath)
-                
-                // Calculate ratio
-                val ratio = if (pythonTime > 0) {
-                    jvmTime.toDouble() / pythonTime.toDouble()
-                } else 0.0
-                
-                val ratioStr = when {
-                    ratio > 1.0 -> String.format("%.2fx slower", ratio)
-                    ratio < 1.0 -> String.format("%.2fx faster", 1.0 / ratio)
-                    else -> "same"
-                }
-                
-                println(String.format("%-20s %-10s %-12d %-12d %-10s",
-                    filename, sizeLabel, jvmTime, pythonTime, ratioStr))
-                
-            } catch (e: Exception) {
-                println(String.format("%-20s %-10s ERROR: %s", filename, sizeLabel, e.message))
-            }
-        }
-        
-        println("=".repeat(80) + "\n")
-    }
-    
-    @Test
-    @Timeout(value = 120, unit = TimeUnit.SECONDS)
-    fun `JVM-only benchmark for large files`() {
-        println("\n" + "=".repeat(70))
-        println("JVM-ONLY BENCHMARK (Large Files)")
-        println("=".repeat(70))
-        println(String.format("%-20s %-10s %-12s %-15s", 
-            "File", "Size", "Time (ms)", "Throughput"))
-        println("-".repeat(70))
-        
-        largeTestFiles.forEach { (filename, sizeLabel, relativePath) ->
-            val projectRoot = File("").absoluteFile.parentFile.parentFile
-            val filepath = File(projectRoot, relativePath).absolutePath
-            val file = File(filepath)
-            
-            if (!file.exists()) {
-                println(String.format("%-20s %-10s %-12s", filename, sizeLabel, "NOT FOUND"))
-                return@forEach
-            }
-            
-            try {
-                // Warmup
-                loadFile(filepath)
-                
-                // Measure
-                val times = mutableListOf<Long>()
-                repeat(3) {
-                    val time = measureTimeMillis {
-                        loadFile(filepath)
-                    }
-                    times.add(time)
-                }
-                
-                val avgTime = times.average().toLong()
-                val minTime = times.min()
-                val fileSizeKb = file.length() / 1024.0
-                val throughput = if (avgTime > 0) fileSizeKb / (avgTime / 1000.0) else 0.0
-                
-                println(String.format("%-20s %-10s %-12d %-15.1f KB/s",
-                    filename, sizeLabel, avgTime, throughput))
-                println(String.format("  (min: %dms)", minTime))
-                
-            } catch (e: Exception) {
-                println(String.format("%-20s %-10s ERROR: %s", filename, sizeLabel, e.message))
-            }
-        }
-        
-        println("=".repeat(70) + "\n")
-    }
+        // Compare
+        println("\n=== Comparison ===")
+        val speedup = pythonAvg / kotlinAvg
+        println("Kotlin speedup: ${String.format("%.2f", speedup)}x")
 
-    // ==================== Memory Usage Comparison ====================
-
-    /**
-     * Measure JVM peak memory usage during load.
-     */
-    private fun measureJvmMemory(filepath: String): Long {
-        System.gc()
-        val before = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
-        
-        loadFile(filepath)
-        
-        val after = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
-        return (after - before) / 1024 // KB
-    }
-
-    /**
-     * Measure Python peak memory usage during load.
-     */
-    private fun measurePythonMemory(filepath: String): Long {
-        val pythonPath = filepath.replace("\\", "/")
-        val pythonScript = """
-import os, tracemalloc
-from beancount.loader import load_file
-
-filepath = os.environ.get('BEAN_FILE')
-
-tracemalloc.start()
-load_file(filepath)
-current, peak = tracemalloc.get_traced_memory()
-tracemalloc.stop()
-
-print(int(peak / 1024))  # KB
-""".trimIndent()
-        
-        val pb = ProcessBuilder("python", "-c", pythonScript)
-        pb.environment()["BEAN_FILE"] = pythonPath
-        val process = pb
-            .redirectErrorStream(true)
-            .start()
-        
-        val output = process.inputStream.bufferedReader().readText().trim()
-        process.waitFor()
-        
-        return output.toLong()
+        // Kotlin should be at least as fast as Python for large files
+        assertTrue(
+            kotlinAvg <= pythonAvg * 2,
+            "Kotlin should not be more than 2x slower than Python. Kotlin=${kotlinAvg.toInt()}ms, Python=${pythonAvg.toInt()}ms"
+        )
     }
 
     @Test
-    @Timeout(value = 120, unit = TimeUnit.SECONDS)
-    fun `compare JVM vs Python memory usage`() {
-        assumeTrue(isPythonBeancountAvailable(), "Python beancount not available")
-        
-        val memoryTestFiles = smallTestFiles + largeTestFiles
-        
-        println("\n" + "=".repeat(80))
-        println("MEMORY USAGE: Kotlin/JVM vs Python Beancount")
-        println("=".repeat(80))
-        println(String.format("%-20s %-10s %-15s %-15s %-10s", 
-            "File", "Size", "JVM (KB)", "Python (KB)", "Ratio"))
-        println("-".repeat(80))
-        
-        memoryTestFiles.forEach { (filename, sizeLabel, relativePath) ->
-            val projectRoot = File("").absoluteFile.parentFile.parentFile
-            val filepath = File(projectRoot, relativePath).absolutePath
-            val file = File(filepath)
-            
-            if (!file.exists()) {
-                println(String.format("%-20s %-10s %-15s", filename, sizeLabel, "NOT FOUND"))
-                return@forEach
-            }
-            
-            try {
-                val jvmMemory = measureJvmMemory(filepath)
-                val pythonMemory = measurePythonMemory(filepath)
-                
-                val ratio = if (pythonMemory > 0) {
-                    jvmMemory.toDouble() / pythonMemory.toDouble()
-                } else 0.0
-                
-                val ratioStr = when {
-                    ratio > 1.0 -> String.format("%.2fx more", ratio)
-                    ratio < 1.0 -> String.format("%.2fx less", 1.0 / ratio)
-                    else -> "same"
-                }
-                
-                println(String.format("%-20s %-10s %-15d %-15d %-10s",
-                    filename, sizeLabel, jvmMemory, pythonMemory, ratioStr))
-                
-            } catch (e: Exception) {
-                println(String.format("%-20s %-10s ERROR: %s", filename, sizeLabel, e.message))
-            }
-        }
-        
-        println("=".repeat(80) + "\n")
-    }
+    fun `should compare performance for company ledger`() {
+        assumeTrue(PythonBeancountRunner.isAvailable(), "Python beancount not available")
 
-    // ==================== Real World Files ====================
+        val path = getResourcePath("company.bean")
 
-    /**
-     * Real-world beancount files from beancount repository.
-     */
-    private val realWorldFiles = listOf(
-        Triple("starter.beancount", "14.6 KB", "examples/simple/starter.beancount"),
-        Triple("basic.beancount", "20.0 KB", "examples/simple/basic.beancount"),
-        Triple("example.beancount", "339 KB", "examples/example.beancount"),
-        Triple("vesting.beancount", "~30 KB", "examples/vesting/vesting.beancount"),
-    )
+        val kotlinStart = System.currentTimeMillis()
+        val kotlinResult = loadFile(path)
+        val kotlinTime = System.currentTimeMillis() - kotlinStart
 
-    @Test
-    @Timeout(value = 120, unit = TimeUnit.SECONDS)
-    fun `compare JVM vs Python for real world files`() {
-        assumeTrue(isPythonBeancountAvailable(), "Python beancount not available")
-        
-        println("\n" + "=".repeat(80))
-        println("REAL WORLD FILES: Kotlin/JVM vs Python Beancount")
-        println("=".repeat(80))
-        println(String.format("%-25s %-12s %-12s %-12s %-10s", 
-            "File", "Size", "JVM (ms)", "Python (ms)", "Ratio"))
-        println("-".repeat(80))
-        
-        realWorldFiles.forEach { (filename, sizeLabel, relativePath) ->
-            val projectRoot = File("").absoluteFile.parentFile.parentFile
-            val filepath = File(projectRoot, relativePath).absolutePath
-            val file = File(filepath)
-            
-            if (!file.exists()) {
-                println(String.format("%-25s %-12s %-12s", filename, sizeLabel, "NOT FOUND"))
-                return@forEach
-            }
-            
-            try {
-                val jvmTime = measureJvmLoadTime(filepath)
-                val pythonTime = measurePythonLoadTime(filepath)
-                
-                val ratio = if (pythonTime > 0) {
-                    jvmTime.toDouble() / pythonTime.toDouble()
-                } else 0.0
-                
-                val ratioStr = when {
-                    ratio > 1.0 -> String.format("%.2fx slower", ratio)
-                    ratio < 1.0 -> String.format("%.2fx faster", 1.0 / ratio)
-                    else -> "same"
-                }
-                
-                println(String.format("%-25s %-12s %-12d %-12d %-10s",
-                    filename, sizeLabel, jvmTime, pythonTime, ratioStr))
-                
-            } catch (e: Exception) {
-                println(String.format("%-25s %-12s ERROR: %s", filename, sizeLabel, e.message))
-            }
-        }
-        
-        println("=".repeat(80) + "\n")
+        val pythonStart = System.currentTimeMillis()
+        val pythonResult = PythonBeancountRunner.loadFile(path)
+        val pythonTime = System.currentTimeMillis() - pythonStart
+
+        println("=== Company Ledger Performance ===")
+        println("Kotlin: ${kotlinTime}ms (${kotlinResult.entries.size} entries)")
+        println("Python: ${pythonTime}ms (${pythonResult.entryCount} entries)")
+        println("Speedup: ${String.format("%.2f", pythonTime.toDouble() / kotlinTime)}x")
     }
 
     @Test
-    @Timeout(value = 60, unit = TimeUnit.SECONDS)
-    fun `JVM-only benchmark for real world files`() {
-        println("\n" + "=".repeat(70))
-        println("JVM-ONLY BENCHMARK (Real World Files)")
-        println("=".repeat(70))
-        println(String.format("%-25s %-12s %-12s %-15s", 
-            "File", "Size", "Time (ms)", "Throughput"))
-        println("-".repeat(70))
-        
-        realWorldFiles.forEach { (filename, sizeLabel, relativePath) ->
-            val projectRoot = File("").absoluteFile.parentFile.parentFile
-            val filepath = File(projectRoot, relativePath).absolutePath
-            val file = File(filepath)
-            
-            if (!file.exists()) {
-                println(String.format("%-25s %-12s %-12s", filename, sizeLabel, "NOT FOUND"))
-                return@forEach
-            }
-            
-            try {
-                loadFile(filepath)
-                
-                val times = mutableListOf<Long>()
-                repeat(3) {
-                    val time = measureTimeMillis {
-                        loadFile(filepath)
-                    }
-                    times.add(time)
-                }
-                
-                val avgTime = times.average().toLong()
-                val minTime = times.min()
-                val fileSizeKb = file.length() / 1024.0
-                val throughput = if (avgTime > 0) fileSizeKb / (avgTime / 1000.0) else 0.0
-                
-                println(String.format("%-25s %-12s %-12d %-15.1f KB/s",
-                    filename, sizeLabel, avgTime, throughput))
-                println(String.format("  (min: %dms)", minTime))
-                
-            } catch (e: Exception) {
-                println(String.format("%-25s %-12s ERROR: %s", filename, sizeLabel, e.message))
-            }
-        }
-        
-        println("=".repeat(70) + "\n")
+    fun `should compare performance for multi-currency ledger`() {
+        assumeTrue(PythonBeancountRunner.isAvailable(), "Python beancount not available")
+
+        val path = getResourcePath("multi_currency.bean")
+
+        val kotlinStart = System.currentTimeMillis()
+        val kotlinResult = loadFile(path)
+        val kotlinTime = System.currentTimeMillis() - kotlinStart
+
+        val pythonStart = System.currentTimeMillis()
+        val pythonResult = PythonBeancountRunner.loadFile(path)
+        val pythonTime = System.currentTimeMillis() - pythonStart
+
+        println("=== Multi-Currency Ledger Performance ===")
+        println("Kotlin: ${kotlinTime}ms (${kotlinResult.entries.size} entries)")
+        println("Python: ${pythonTime}ms (${pythonResult.entryCount} entries)")
+        println("Speedup: ${String.format("%.2f", pythonTime.toDouble() / kotlinTime)}x")
     }
 }

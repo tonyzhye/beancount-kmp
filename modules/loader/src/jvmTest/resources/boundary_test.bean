@@ -1,0 +1,123 @@
+; ============================================================
+; Boundary Test Ledger - 边界测试账本
+; 测试各种边界条件和特殊场景
+; ============================================================
+
+option "title" "边界测试"
+option "operating_currency" "USD"
+
+; ---------- 商品定义 ----------
+2023-01-01 commodity USD
+2023-01-01 commodity EUR
+
+; ---------- 账户开设 ----------
+2023-01-01 open Assets:Bank USD
+2023-01-01 open Assets:Investments AAPL
+2023-01-01 open Expenses:Test USD
+2023-01-01 open Expenses:Test:ItemA USD
+2023-01-01 open Expenses:Test:ItemB USD
+2023-01-01 open Expenses:Test:ItemC USD
+2023-01-01 open Income:Test USD
+2023-01-01 open Income:CapitalGains USD
+2023-01-01 open Equity:OpeningBalances
+
+; ---------- 1. 超大数字 ----------
+2023-01-05 * "超大收入"
+  Assets:Bank  999999999.99 USD
+  Income:Test
+
+2023-01-06 * "超大支出"
+  Expenses:Test  1000000000.00 USD
+  Assets:Bank
+
+; ---------- 2. 超小数字 ----------
+2023-01-07 * "微小交易"
+  Expenses:Test  0.01 USD
+  Assets:Bank
+
+2023-01-08 * "零金额交易"
+  Expenses:Test  0.00 USD
+  Assets:Bank
+
+; ---------- 3. 负数交易 ----------
+2023-01-09 * "退款"
+  Expenses:Test  -50.00 USD
+  Assets:Bank
+
+; ---------- 4. 长 narrations ----------
+2023-01-10 * "这是一个非常长的交易描述，用于测试系统对长字符串的处理能力。包含中文、English、123数字、!@#$特殊字符"
+  Expenses:Test  100.00 USD
+  Assets:Bank
+
+; ---------- 5. 特殊字符标签 ----------
+2023-01-11 * "带标签的交易" #tag-with-dash #tag_with_underscore #123numeric
+  Expenses:Test  75.00 USD
+  Assets:Bank
+
+; ---------- 6. 链接 ----------
+2023-01-12 * "带链接的交易" ^invoice-2023-001 ^project-alpha
+  Expenses:Test  200.00 USD
+  Assets:Bank
+
+; ---------- 7. 混合标签和链接 ----------
+2023-01-13 * "混合元数据" #important #client-a ^contract-001
+  Expenses:Test  150.00 USD
+  Assets:Bank
+
+; ---------- 8. 多行 metadata ----------
+2023-01-14 * "带 posting metadata 的交易"
+  Expenses:Test  300.00 USD
+    vendor: "Acme Corp"
+    category: "software"
+    priority: "high"
+    ticket_id: "TICKET-12345"
+  Assets:Bank
+
+; ---------- 9. 复杂成本基础 ----------
+2023-01-15 * "购买股票"
+  Assets:Bank  -1000.00 USD
+  Assets:Investments  10 AAPL {100.00 USD, 2023-01-15}
+
+2023-01-16 * "部分卖出"
+  Assets:Investments  -5 AAPL {100.00 USD, 2023-01-15}
+  Assets:Bank  600.00 USD
+  Income:CapitalGains
+
+; ---------- 10. 多 posting 交易 ----------
+2023-01-17 * "分摊费用"
+  Expenses:Test:ItemA  100.00 USD
+  Expenses:Test:ItemB  200.00 USD
+  Expenses:Test:ItemC  300.00 USD
+  Assets:Bank
+
+; ---------- 11. 日期边界 ----------
+2023-01-01 * "年初交易"
+  Expenses:Test  10.00 USD
+  Assets:Bank
+
+2023-12-31 * "年末交易"
+  Expenses:Test  20.00 USD
+  Assets:Bank
+
+; ---------- 12. 闰年日期 ----------
+2024-02-29 * "闰年交易"
+  Expenses:Test  50.00 USD
+  Assets:Bank
+
+; ---------- 13. 高精度数字 ----------
+2023-01-18 * "高精度交易"
+  Expenses:Test  123.456789 USD
+  Assets:Bank
+
+; ---------- 14. 科学计数法（测试解析） ----------
+; beancount 可能不支持，作为边界测试
+; 2023-01-19 * "科学计数"
+;   Expenses:Test  1.23e2 USD
+;   Assets:Bank
+
+; ---------- 15. 账户名边界 ----------
+2023-01-20 open Assets:Very:Deep:Nested:Account:Name:That:Is:Quite:Long:For:Testing:Purposes USD
+
+2023-01-21 * "长账户名交易"
+  Expenses:Test  25.00 USD
+  Assets:Very:Deep:Nested:Account:Name:That:Is:Quite:Long:For:Testing:Purposes
