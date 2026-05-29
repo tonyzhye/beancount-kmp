@@ -71,6 +71,9 @@ yarn.lock
 *.output
 *.picklecache
 
+# Temporary Python reference clones
+beanquery-temp/
+
 # Misc
 *.swp
 *.swo
