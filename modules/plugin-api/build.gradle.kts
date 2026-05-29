@@ -29,6 +29,7 @@ kotlin {
             dependencies {
                 implementation("org.junit.jupiter:junit-jupiter:5.10.0")
                 implementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
             }
         }
     }

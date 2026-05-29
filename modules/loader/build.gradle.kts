@@ -14,6 +14,7 @@ kotlin {
             dependencies {
                 implementation(project(":core"))
                 implementation(project(":parser"))
+                implementation(project(":plugin-api"))
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
             }
         }

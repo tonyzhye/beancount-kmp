@@ -123,6 +123,106 @@ object FunctionRegistry {
         registerFunction("coalesce", FunctionSignature(listOf(BqlType.Any, BqlType.Any), BqlType.Any)) { args ->
             if (!args[0].isNull()) args[0] else args[1]
         }
+
+        // Account functions
+        registerFunction("account", FunctionSignature(listOf(BqlType.Any), BqlType.String)) { args ->
+            when {
+                args[0].type == BqlType.String -> BqlStringValue(args[0].asString())
+                args[0].type == BqlType.Transaction -> {
+                    val txn = args[0].raw as? io.github.tonyzhye.beancount.core.Transaction
+                    BqlStringValue(txn?.postings?.firstOrNull()?.account ?: "")
+                }
+                args[0].type == BqlType.Position -> {
+                    BqlStringValue(args[0].asPosition().units.currency)
+                }
+                else -> BqlStringValue("")
+            }
+        }
+
+        registerFunction("currency", FunctionSignature(listOf(BqlType.Any), BqlType.String)) { args ->
+            when {
+                args[0].type == BqlType.Amount -> BqlStringValue(args[0].asAmount().currency)
+                args[0].type == BqlType.Position -> BqlStringValue(args[0].asPosition().units.currency)
+                else -> BqlStringValue("")
+            }
+        }
+
+        registerFunction("number", FunctionSignature(listOf(BqlType.Any), BqlType.Decimal)) { args ->
+            when {
+                args[0].type == BqlType.Amount -> BqlDecimalValue(args[0].asAmount().number)
+                args[0].type == BqlType.Position -> BqlDecimalValue(args[0].asPosition().units.number)
+                args[0].type == BqlType.Decimal -> args[0]
+                else -> BqlDecimalValue(Decimal.ZERO)
+            }
+        }
+
+        registerFunction("parent", FunctionSignature(listOf(BqlType.String), BqlType.String)) { args ->
+            val account = args[0].asString()
+            val lastColon = account.lastIndexOf(':')
+            if (lastColon > 0) {
+                BqlStringValue(account.substring(0, lastColon))
+            } else {
+                BqlStringValue("")
+            }
+        }
+
+        registerFunction("root", FunctionSignature(listOf(BqlType.String), BqlType.String)) { args ->
+            val account = args[0].asString()
+            val firstColon = account.indexOf(':')
+            if (firstColon > 0) {
+                BqlStringValue(account.substring(0, firstColon))
+            } else {
+                BqlStringValue(account)
+            }
+        }
+
+        // Position/Cost functions
+        registerFunction("position", FunctionSignature(listOf(BqlType.Amount, BqlType.Cost), BqlType.Position)) { args ->
+            val amount = args[0].asAmount()
+            val cost = args[1].raw as? io.github.tonyzhye.beancount.core.Cost
+            BqlPositionValue(io.github.tonyzhye.beancount.core.Position(amount, cost))
+        }
+
+        registerFunction("position", FunctionSignature(listOf(BqlType.Amount), BqlType.Position)) { args ->
+            val amount = args[0].asAmount()
+            BqlPositionValue(io.github.tonyzhye.beancount.core.Position(amount, null))
+        }
+
+        registerFunction("cost", FunctionSignature(listOf(BqlType.Position), BqlType.Cost)) { args ->
+            val position = args[0].asPosition()
+            position.cost?.let {
+                toBqlValue(it)
+            } ?: BqlNullValue()
+        }
+
+        // Round function
+        registerFunction("round", FunctionSignature(listOf(BqlType.Decimal, BqlType.Integer), BqlType.Decimal)) { args ->
+            val number = args[0].asDecimal()
+            val digits = args[1].asInteger()
+            // Simple rounding: multiply by 10^digits, add 0.5, truncate, divide by 10^digits
+            val multiplierStr = if (digits > 0) "1${"0".repeat(digits)}" else "1"
+            val multiplier = Decimal(multiplierStr)
+            val scaled = number * multiplier
+            val sign = if (scaled.isNegative()) -1 else 1
+            val absScaled = scaled.abs()
+            val rounded = (absScaled + Decimal("0.5")) / multiplier
+            BqlDecimalValue(if (sign < 0) -rounded else rounded)
+        }
+
+        // Date formatting
+        registerFunction("format_date", FunctionSignature(listOf(BqlType.Date, BqlType.String), BqlType.String)) { args ->
+            val date = args[0].asDate()
+            val format = args[1].asString()
+            val formatted = when (format) {
+                "%Y-%m-%d" -> date.toString()
+                "%Y" -> date.year.toString()
+                "%m" -> date.monthNumber.toString().padStart(2, '0')
+                "%d" -> date.dayOfMonth.toString().padStart(2, '0')
+                "%Y-%m" -> "${date.year}-${date.monthNumber.toString().padStart(2, '0')}"
+                else -> date.toString()
+            }
+            BqlStringValue(formatted)
+        }
     }
 
     private fun registerBuiltInAggregators() {

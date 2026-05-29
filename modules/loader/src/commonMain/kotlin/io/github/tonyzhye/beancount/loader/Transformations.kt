@@ -4,6 +4,7 @@ import io.github.tonyzhye.beancount.core.*
 import io.github.tonyzhye.beancount.loader.plugins.BalancePlugin
 import io.github.tonyzhye.beancount.loader.plugins.DocumentsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.PadPlugin
+import io.github.tonyzhye.beancount.plugin.*
 
 /**
  * Run plugin transformations on parsed entries.
@@ -25,88 +26,98 @@ fun runTransformations(
     entries: List<Directive>,
     options: Options
 ): Pair<List<Directive>, List<BeancountError>> {
-    val allErrors = mutableListOf<BeancountError>()
-    var currentEntries = entries
+    // Build the plugin pipeline
+    val pipeline = buildPipeline(options)
 
-    // Build plugin chain based on processing mode
-    val pluginChain = buildPluginChain(options)
+    // Execute the pipeline
+    val result = pipeline.execute(entries, options)
 
-    // Execute each plugin in sequence
-    for ((name, transform) in pluginChain) {
-        try {
-            val (newEntries, pluginErrors) = transform(currentEntries, options)
-            currentEntries = newEntries.sorted()
-            allErrors.addAll(pluginErrors)
-        } catch (e: Exception) {
-            allErrors.add(
-                LoadError(
-                    newMetadata(options.filename, 0),
-                    "Plugin '$name' failed: ${e.message}"
-                )
-            )
-        }
-    }
-
-    return Pair(currentEntries, allErrors)
+    return Pair(result.entries, result.errors + result.warnings)
 }
 
 /**
- * Built-in pre-processing plugins.
+ * Build a plugin pipeline based on options.
  */
-private val PLUGINS_PRE: List<Pair<String, PluginTransform>> = listOf(
-    "documents" to DocumentsPlugin::transform
-)
+private fun buildPipeline(options: Options): PluginPipeline {
+    val pipeline = PluginPipeline()
 
-/**
- * Built-in auto-plugins (enabled with --auto flag).
- */
-private val PLUGINS_AUTO: List<Pair<String, PluginTransform>> = listOf(
-    // TODO: Add auto-plugins when needed
-)
-
-/**
- * Built-in post-processing plugins.
- */
-private val PLUGINS_POST: List<Pair<String, PluginTransform>> = listOf(
-    "pad" to PadPlugin::transform,
-    "balance" to BalancePlugin::transform
-)
-
-/**
- * Build the plugin chain based on options.
- */
-private fun buildPluginChain(options: Options): List<Pair<String, PluginTransform>> {
-    return when (options.pluginProcessingMode) {
+    when (options.pluginProcessingMode) {
         PluginProcessingMode.RAW -> {
             // Only user-specified plugins
-            options.plugin.mapNotNull { spec ->
-                resolvePlugin(spec.moduleName)
+            options.plugin.forEach { spec ->
+                resolvePlugin(spec.moduleName)?.let { plugin ->
+                    pipeline.addPhase(PluginPhase.NORMAL, plugin)
+                }
             }
         }
         PluginProcessingMode.DEFAULT -> {
             // Full chain: PRE -> user -> AUTO -> POST
-            val chain = mutableListOf<Pair<String, PluginTransform>>()
-            chain.addAll(PLUGINS_PRE)
-            chain.addAll(options.plugin.mapNotNull { spec ->
-                resolvePlugin(spec.moduleName)
-            })
+            // PRE phase
+            pipeline.addPhase(PluginPhase.PRE, DocumentsPluginAdapter())
+
+            // User-specified plugins
+            options.plugin.forEach { spec ->
+                resolvePlugin(spec.moduleName)?.let { plugin ->
+                    pipeline.addPhase(PluginPhase.NORMAL, plugin)
+                }
+            }
+
             // TODO: Add auto plugins when --auto flag is supported
-            // if (options.autoPluginsEnabled) chain.addAll(PLUGINS_AUTO)
-            chain.addAll(PLUGINS_POST)
-            chain
+            // if (options.autoPluginsEnabled) { ... }
+
+            // POST phase
+            pipeline.addPhase(PluginPhase.POST, PadPluginAdapter())
+            pipeline.addPhase(PluginPhase.POST, BalancePluginAdapter())
         }
     }
+
+    return pipeline
 }
 
 /**
- * Resolve a plugin name to a transform function.
+ * Resolve a plugin name to a BeancountPlugin instance.
  * For now, only built-in plugins are supported.
  */
-private fun resolvePlugin(moduleName: String): Pair<String, PluginTransform>? {
+private fun resolvePlugin(moduleName: String): BeancountPlugin? {
     return when (moduleName) {
-        "beancount.ops.documents" -> "documents" to DocumentsPlugin::transform
-        "beancount.ops.pad" -> "pad" to PadPlugin::transform
-        "beancount.ops.balance" -> "balance" to BalancePlugin::transform
+        "beancount.ops.documents" -> DocumentsPluginAdapter()
+        "beancount.ops.pad" -> PadPluginAdapter()
+        "beancount.ops.balance" -> BalancePluginAdapter()
         else -> null // Unknown plugin - skip with warning
+    }
+}
+
+// Adapters for existing plugins
+
+private class DocumentsPluginAdapter : BeancountPlugin {
+    override val name = "documents"
+    override val description = "Process document directives"
+    override val phase = PluginPhase.PRE
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = DocumentsPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class PadPluginAdapter : BeancountPlugin {
+    override val name = "pad"
+    override val description = "Generate padding transactions for balance assertions"
+    override val phase = PluginPhase.POST
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = PadPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class BalancePluginAdapter : BeancountPlugin {
+    override val name = "balance"
+    override val description = "Validate balance assertions"
+    override val phase = PluginPhase.POST
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = BalancePlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
     }
 }

@@ -56,14 +56,19 @@ fun formatErrors(errors: List<BeancountError>): String {
  * Format a single directive entry into beancount syntax.
  * Based on beancount.parser.printer.EntryPrinter.
  */
-fun formatEntry(entry: Directive): String {
+fun formatEntry(entry: Directive): String = formatEntry(entry, null)
+
+/**
+ * Format a single directive with optional DisplayFormatter for number precision.
+ */
+private fun formatEntry(entry: Directive, formatter: DisplayFormatter?): String {
     return when (entry) {
-        is Transaction -> formatTransaction(entry)
+        is Transaction -> formatTransaction(entry, formatter)
         is Open -> formatOpen(entry)
         is Close -> formatClose(entry)
-        is Balance -> formatBalance(entry)
+        is Balance -> formatBalance(entry, formatter)
         is Commodity -> formatCommodity(entry)
-        is Price -> formatPrice(entry)
+        is Price -> formatPrice(entry, formatter)
         is Note -> formatNote(entry)
         is Document -> formatDocument(entry)
         is Pad -> formatPad(entry)
@@ -88,7 +93,16 @@ private fun formatInclude(entry: Include): String {
  * Inserts blank lines between transactions and between blocks of same-type directives.
  */
 fun formatEntries(entries: List<Directive>): String {
+    return formatEntries(entries, null)
+}
+
+/**
+ * Format entries with DisplayContext for number precision.
+ */
+fun formatEntries(entries: List<Directive>, dcontext: DisplayContext?): String {
     if (entries.isEmpty()) return ""
+
+    val formatter = dcontext?.buildFormatter()
 
     val output = StringBuilder()
     var previousType: KClass<out Directive>? = null
@@ -99,7 +113,7 @@ fun formatEntries(entries: List<Directive>): String {
             previousType = entryType
         }
 
-        output.append(formatEntry(entry))
+        output.append(formatEntry(entry, formatter))
     }
 
     return output.toString()
@@ -107,7 +121,7 @@ fun formatEntries(entries: List<Directive>): String {
 
 // ---- Private formatting helpers ----
 
-private fun formatTransaction(entry: Transaction): String {
+private fun formatTransaction(entry: Transaction, formatter: DisplayFormatter? = null): String {
     val builder = StringBuilder()
 
     // Header line: date flag payee narration tags links
@@ -126,7 +140,7 @@ private fun formatTransaction(entry: Transaction): String {
     formatMetadata(entry.meta, builder)
 
     // Postings - with simple alignment
-    val postingsStr = entry.postings.map { formatPosting(it) }
+    val postingsStr = entry.postings.map { formatPosting(it, formatter) }
     val maxAccountWidth = postingsStr.maxOfOrNull { it.first.length } ?: 0
     val minAccountWidth = maxOf(maxAccountWidth, 47) // Match Python default
 
@@ -149,18 +163,24 @@ private fun formatTransaction(entry: Transaction): String {
 /**
  * Format a posting into (account, position_string, metadata?) triple.
  */
-private fun formatPosting(posting: Posting): Triple<String, String, Meta?> {
+private fun formatPosting(posting: Posting, formatter: DisplayFormatter? = null): Triple<String, String, Meta?> {
     val flagStr = posting.flag?.let { "$it " } ?: ""
     val accountStr = flagStr + posting.account
 
     val positionStr = buildString {
         posting.units?.let { units ->
-            append("${units.number.toPlainString()} ${units.currency}")
+            val formattedNumber = formatter?.format(units.number, units.currency)
+                ?: units.number.toPlainString()
+            append("$formattedNumber ${units.currency}")
 
             posting.cost?.let { costSpec ->
                 append(" {")
                 // Print numberPer if available
-                costSpec.numberPer?.let { append(it.toPlainString()) }
+                costSpec.numberPer?.let {
+                    val formattedCost = formatter?.format(it, costSpec.currency ?: units.currency)
+                        ?: it.toPlainString()
+                    append(formattedCost)
+                }
                 // Print currency if available
                 costSpec.currency?.let { append(" $it") }
                 // Note: date is not typically displayed in cost formatting
@@ -169,7 +189,9 @@ private fun formatPosting(posting: Posting): Triple<String, String, Meta?> {
             }
 
             posting.price?.let { price ->
-                append(" @ ${price.number.toPlainString()} ${price.currency}")
+                val formattedPrice = formatter?.format(price.number, price.currency)
+                    ?: price.number.toPlainString()
+                append(" @ $formattedPrice ${price.currency}")
             }
         }
     }
@@ -194,11 +216,13 @@ private fun formatClose(entry: Close): String {
     return builder.toString()
 }
 
-private fun formatBalance(entry: Balance): String {
+private fun formatBalance(entry: Balance, formatter: DisplayFormatter? = null): String {
     val builder = StringBuilder()
+    val formattedNumber = formatter?.format(entry.amount.number, entry.amount.currency)
+        ?: entry.amount.number.toPlainString()
     val toleranceStr = entry.tolerance?.let { "~ ${it.toPlainString()} " } ?: ""
     val diffStr = entry.diffAmount?.let { "   ; Diff: $it" } ?: ""
-    builder.append("${entry.date} balance ${entry.account} ${entry.amount.number.toPlainString()} ${toleranceStr}${entry.amount.currency}$diffStr\n")
+    builder.append("${entry.date} balance ${entry.account} $formattedNumber ${toleranceStr}${entry.amount.currency}$diffStr\n")
     formatMetadata(entry.meta, builder)
     return builder.toString()
 }
@@ -210,9 +234,11 @@ private fun formatCommodity(entry: Commodity): String {
     return builder.toString()
 }
 
-private fun formatPrice(entry: Price): String {
+private fun formatPrice(entry: Price, formatter: DisplayFormatter? = null): String {
     val builder = StringBuilder()
-    builder.append("${entry.date} price ${entry.currency} ${entry.amount.number.toPlainString()} ${entry.amount.currency}\n")
+    val formattedNumber = formatter?.format(entry.amount.number, entry.amount.currency)
+        ?: entry.amount.number.toPlainString()
+    builder.append("${entry.date} price ${entry.currency} $formattedNumber ${entry.amount.currency}\n")
     formatMetadata(entry.meta, builder)
     return builder.toString()
 }
