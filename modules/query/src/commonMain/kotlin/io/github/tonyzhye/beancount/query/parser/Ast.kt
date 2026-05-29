@@ -42,6 +42,7 @@ data class AstQuery(
     val from: AstFrom? = null,
     val where: AstExpression? = null,
     val groupBy: List<AstExpression> = emptyList(),
+    val having: AstExpression? = null,
     val orderBy: List<AstOrderBy> = emptyList(),
     val limit: Int? = null
 ) : AstNode
@@ -88,6 +89,19 @@ data class AstBinaryOp(
     val operator: String,
     val left: AstExpression,
     val right: AstExpression
+) : AstExpression
+
+data class AstInOp(
+    val expression: AstExpression,
+    val values: List<AstExpression>,
+    val notIn: Boolean = false
+) : AstExpression
+
+data class AstBetweenOp(
+    val expression: AstExpression,
+    val low: AstExpression,
+    val high: AstExpression,
+    val notBetween: Boolean = false
 ) : AstExpression
 
 data class AstUnaryOp(

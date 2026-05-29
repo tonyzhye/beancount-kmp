@@ -689,4 +689,41 @@ class BookingTest {
         assertEquals(1, errors.size, "Expected ambiguous match error")
         assertTrue(errors[0].message.contains("Ambiguous matches"), "Error should mention ambiguous matches: ${errors[0].message}")
     }
+
+    // ---- AVERAGE Booking Method Tests ----
+
+    @Test
+    fun `AVERAGE booking method should return error`() {
+        val account = "Assets:Invest"
+        val entries = listOf(
+            Open(
+                mapOf("filename" to "test.beancount", "lineno" to 1),
+                LocalDate(2015, 1, 1), account, listOf("AAPL"),
+                booking = io.github.tonyzhye.beancount.core.Booking.AVERAGE
+            ),
+            Transaction(
+                mapOf("filename" to "test.beancount", "lineno" to 2),
+                LocalDate(2015, 1, 1), "*",
+                postings = listOf(
+                    Posting(account, Amount(Decimal("10"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("-1000"), "USD"))
+                )
+            ),
+            Transaction(
+                mapOf("filename" to "test.beancount", "lineno" to 3),
+                LocalDate(2015, 2, 1), "*",
+                postings = listOf(
+                    Posting(account, Amount(Decimal("-5"), "AAPL"), CostSpec(currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("500"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = Booking.book(entries, Options())
+
+        // AVERAGE should return an error, same as Python
+        assertTrue(errors.isNotEmpty(), "AVERAGE should produce errors")
+        assertTrue(errors.any { it.message.contains("AVERAGE method is not supported") },
+            "Error should mention 'AVERAGE method is not supported'")
+    }
 }

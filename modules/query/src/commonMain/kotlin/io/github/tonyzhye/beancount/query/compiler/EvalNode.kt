@@ -69,8 +69,8 @@ class EvalFunction(
 class EvalBinaryOp(
     override val dtype: BqlType,
     val operator: String,
-    private val left: EvalNode,
-    private val right: EvalNode
+    val left: EvalNode,
+    val right: EvalNode
 ) : EvalNode {
     override fun evaluate(context: RowContext): BqlValue {
         val l = left.evaluate(context)
@@ -100,7 +100,7 @@ class EvalBinaryOp(
 class EvalUnaryOp(
     override val dtype: BqlType,
     val operator: String,
-    private val operand: EvalNode
+    val operand: EvalNode
 ) : EvalNode {
     override fun evaluate(context: RowContext): BqlValue {
         val value = operand.evaluate(context)
@@ -114,6 +114,46 @@ class EvalUnaryOp(
             "+" -> value
             else -> throw IllegalArgumentException("Unknown unary operator: $operator")
         }
+    }
+}
+
+/**
+ * IN operator node.
+ */
+class EvalInOp(
+    private val expression: EvalNode,
+    private val values: List<EvalNode>,
+    private val notIn: Boolean = false
+) : EvalNode {
+    override val dtype: BqlType = BqlType.Boolean
+    override fun evaluate(context: RowContext): BqlValue {
+        val exprValue = expression.evaluate(context)
+        val found = values.any { valueNode ->
+            val value = valueNode.evaluate(context)
+            evaluateEqual(exprValue, value).value
+        }
+        return BqlBooleanValue(if (notIn) !found else found)
+    }
+}
+
+/**
+ * BETWEEN operator node.
+ */
+class EvalBetweenOp(
+    private val expression: EvalNode,
+    private val low: EvalNode,
+    private val high: EvalNode,
+    private val notBetween: Boolean = false
+) : EvalNode {
+    override val dtype: BqlType = BqlType.Boolean
+    override fun evaluate(context: RowContext): BqlValue {
+        val exprValue = expression.evaluate(context)
+        val lowValue = low.evaluate(context)
+        val highValue = high.evaluate(context)
+        val geLow = evaluateGreaterThanOrEqual(exprValue, lowValue).value
+        val leHigh = evaluateLessThanOrEqual(exprValue, highValue).value
+        val inRange = geLow && leHigh
+        return BqlBooleanValue(if (notBetween) !inRange else inRange)
     }
 }
 

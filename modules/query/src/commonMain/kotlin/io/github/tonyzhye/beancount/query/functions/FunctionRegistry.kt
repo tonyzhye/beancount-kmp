@@ -445,5 +445,61 @@ object FunctionRegistry {
                 }
             }
         )
+
+        // Avg aggregator for Decimal
+        registerAggregator(
+            "avg",
+            FunctionSignature(listOf(BqlType.Decimal), BqlType.Decimal),
+            object : AggregatorFactory {
+                override val signature = FunctionSignature(listOf(BqlType.Decimal), BqlType.Decimal)
+                override fun create(operand: io.github.tonyzhye.beancount.query.compiler.EvalNode): io.github.tonyzhye.beancount.query.compiler.EvalAggregator {
+                    return object : EvalAggregator {
+                        override val dtype: BqlType = BqlType.Decimal
+                        override val operand = operand
+                        override fun createAccumulator(): Accumulator = object : Accumulator {
+                            var total = Decimal.ZERO
+                            var count = 0
+                            override fun update(value: BqlValue) {
+                                if (value.isNull()) return
+                                total += value.asDecimal()
+                                count++
+                            }
+                            override fun finalize(): BqlValue =
+                                if (count > 0) BqlDecimalValue(total / Decimal(count.toString()))
+                                else BqlNullValue()
+                        }
+                        override fun evaluate(context: RowContext): BqlValue = BqlNullValue()
+                    }
+                }
+            }
+        )
+
+        // Avg aggregator for Integer
+        registerAggregator(
+            "avg",
+            FunctionSignature(listOf(BqlType.Integer), BqlType.Decimal),
+            object : AggregatorFactory {
+                override val signature = FunctionSignature(listOf(BqlType.Integer), BqlType.Decimal)
+                override fun create(operand: io.github.tonyzhye.beancount.query.compiler.EvalNode): io.github.tonyzhye.beancount.query.compiler.EvalAggregator {
+                    return object : EvalAggregator {
+                        override val dtype: BqlType = BqlType.Decimal
+                        override val operand = operand
+                        override fun createAccumulator(): Accumulator = object : Accumulator {
+                            var total = 0
+                            var count = 0
+                            override fun update(value: BqlValue) {
+                                if (value.isNull()) return
+                                total += value.asInteger()
+                                count++
+                            }
+                            override fun finalize(): BqlValue =
+                                if (count > 0) BqlDecimalValue(Decimal(total.toString()) / Decimal(count.toString()))
+                                else BqlNullValue()
+                        }
+                        override fun evaluate(context: RowContext): BqlValue = BqlNullValue()
+                    }
+                }
+            }
+        )
     }
 }

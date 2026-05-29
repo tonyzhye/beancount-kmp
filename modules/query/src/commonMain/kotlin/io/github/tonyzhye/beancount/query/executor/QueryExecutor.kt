@@ -1,5 +1,6 @@
 package io.github.tonyzhye.beancount.query.executor
 
+import io.github.tonyzhye.beancount.core.Decimal
 import io.github.tonyzhye.beancount.query.*
 import io.github.tonyzhye.beancount.query.compiler.*
 import io.github.tonyzhye.beancount.query.tables.Table
@@ -44,6 +45,14 @@ data class QueryResult(
 }
 
 /**
+ * Intermediate result row that retains RowContext for ORDER BY evaluation.
+ */
+private data class ResultRow(
+    val values: List<BqlValue>,
+    val context: RowContext?  // Representative context for ORDER BY evaluation
+)
+
+/**
  * Query executor.
  * Based on beanquery.query_execute.
  */
@@ -69,8 +78,8 @@ class QueryExecutor(
             listOf(rows)
         }
 
-        // Step 4: Compute targets
-        val resultRows = mutableListOf<List<BqlValue>>()
+        // Step 4: Compute targets and apply HAVING
+        val resultRows = mutableListOf<ResultRow>()
         
         // Check if any target is an aggregator
         val hasAggregators = query.targets.any { it.node is EvalAggregator }
@@ -93,7 +102,14 @@ class QueryExecutor(
                     rowValues.add(value)
                 }
                 if (rowValues.isNotEmpty()) {
-                    resultRows.add(rowValues)
+                    // Apply HAVING filter
+                    if (query.having != null) {
+                        val havingResult = evaluateWithAggregates(query.having, group)
+                        if (!havingResult.isNull() && !havingResult.asBoolean()) {
+                            continue  // Skip groups that don't match HAVING
+                        }
+                    }
+                    resultRows.add(ResultRow(rowValues, group.firstOrNull()))
                 }
             }
         } else {
@@ -104,21 +120,28 @@ class QueryExecutor(
                     for (target in query.targets) {
                         rowValues.add(target.node.evaluate(row))
                     }
-                    resultRows.add(rowValues)
+                    // Apply HAVING filter (for non-aggregate queries, HAVING behaves like WHERE)
+                    if (query.having != null) {
+                        val havingResult = query.having.evaluate(row)
+                        if (!havingResult.isNull() && !havingResult.asBoolean()) {
+                            continue  // Skip rows that don't match HAVING
+                        }
+                    }
+                    resultRows.add(ResultRow(rowValues, row))
                 }
             }
         }
 
         // Step 5: DISTINCT
         var finalRows = if (query.distinct) {
-            resultRows.distinct()
+            resultRows.distinctBy { it.values }
         } else {
             resultRows
         }
 
-        // Step 6: ORDER BY
+        // Step 6: ORDER BY (using EvalNode for expression support)
         if (query.orderBy.isNotEmpty()) {
-            finalRows = sortRows(finalRows, query.orderBy, query.targets)
+            finalRows = sortRows(finalRows, query.orderBy)
         }
 
         // Step 7: LIMIT
@@ -128,7 +151,7 @@ class QueryExecutor(
 
         return QueryResult(
             columnNames = query.targets.map { it.name },
-            rows = finalRows
+            rows = finalRows.map { it.values }
         )
     }
 
@@ -141,24 +164,59 @@ class QueryExecutor(
         return groups.values.toList()
     }
 
+    /**
+     * Evaluate an expression that may contain aggregate functions using a group of rows.
+     * This is used for HAVING clause evaluation.
+     */
+    private fun evaluateWithAggregates(node: EvalNode, group: List<RowContext>): BqlValue {
+        return when (node) {
+            is EvalAggregator -> {
+                val accumulator = node.createAccumulator()
+                for (row in group) {
+                    accumulator.update(node.operand.evaluate(row))
+                }
+                accumulator.finalize()
+            }
+            is EvalBinaryOp -> {
+                val left = evaluateWithAggregates(node.left, group)
+                val right = evaluateWithAggregates(node.right, group)
+                when (node.operator) {
+                    "=" -> BqlBooleanValue(left == right)
+                    "!=" -> BqlBooleanValue(left != right)
+                    "<" -> BqlBooleanValue(compareMixedValues(left, right) < 0)
+                    ">" -> BqlBooleanValue(compareMixedValues(left, right) > 0)
+                    "<=" -> BqlBooleanValue(compareMixedValues(left, right) <= 0)
+                    ">=" -> BqlBooleanValue(compareMixedValues(left, right) >= 0)
+                    "AND" -> BqlBooleanValue(left.asBoolean() && right.asBoolean())
+                    "OR" -> BqlBooleanValue(left.asBoolean() || right.asBoolean())
+                    else -> throw IllegalArgumentException("Unknown operator in HAVING: ${node.operator}")
+                }
+            }
+            is EvalUnaryOp -> {
+                val value = evaluateWithAggregates(node.operand, group)
+                when (node.operator) {
+                    "NOT" -> BqlBooleanValue(!value.asBoolean())
+                    else -> throw IllegalArgumentException("Unknown unary operator in HAVING: ${node.operator}")
+                }
+            }
+            else -> node.evaluate(group.firstOrNull() ?: return BqlNullValue())
+        }
+    }
+
     private fun sortRows(
-        rows: List<List<BqlValue>>,
-        orderBy: List<OrderByNode>,
-        targets: List<TargetNode>
-    ): List<List<BqlValue>> {
+        rows: List<ResultRow>,
+        orderBy: List<OrderByNode>
+    ): List<ResultRow> {
         return rows.sortedWith { row1, row2 ->
             var result = 0
             for (order in orderBy) {
-                // Find the column index for the order expression
-                val idx = targets.indexOfFirst { it.name == (order.node as? EvalColumn)?.name }
-                if (idx >= 0) {
-                    val v1 = row1.getOrNull(idx)
-                    val v2 = row2.getOrNull(idx)
-                    result = compareValues(v1, v2)
-                    if (result != 0) {
-                        if (order.descending) result = -result
-                        break
-                    }
+                // Evaluate ORDER BY expression on the representative context
+                val v1 = row1.context?.let { order.node.evaluate(it) }
+                val v2 = row2.context?.let { order.node.evaluate(it) }
+                result = compareValues(v1, v2)
+                if (result != 0) {
+                    if (order.descending) result = -result
+                    break
                 }
             }
             result
@@ -183,5 +241,24 @@ class QueryExecutor(
                 v1.asBoolean().compareTo(v2.asBoolean())
             else -> 0
         }
+    }
+
+    /**
+     * Compare values with mixed types (e.g., Decimal vs Integer).
+     */
+    private fun compareMixedValues(v1: BqlValue, v2: BqlValue): Int {
+        if (v1.isNull() && v2.isNull()) return 0
+        if (v1.isNull()) return 1
+        if (v2.isNull()) return -1
+
+        // Handle numeric comparisons (Decimal vs Integer)
+        if ((v1.type == BqlType.Decimal || v1.type == BqlType.Integer) &&
+            (v2.type == BqlType.Decimal || v2.type == BqlType.Integer)) {
+            val d1 = if (v1.type == BqlType.Integer) Decimal(v1.asInteger().toString()) else v1.asDecimal()
+            val d2 = if (v2.type == BqlType.Decimal) v2.asDecimal() else Decimal(v2.asInteger().toString())
+            return d1.compareTo(d2)
+        }
+
+        return compareValues(v1, v2)
     }
 }

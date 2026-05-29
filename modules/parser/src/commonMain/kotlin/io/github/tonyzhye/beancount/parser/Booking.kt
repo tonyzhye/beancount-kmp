@@ -140,8 +140,18 @@ object Booking {
                     io.github.tonyzhye.beancount.core.Booking.HIFO ->
                         bookXifo(transaction, posting, costSpec, inventory, matches,
                                  sortBy = { it.cost?.number }, reverse = true)
+                    io.github.tonyzhye.beancount.core.Booking.AVERAGE -> {
+                        // AVERAGE is not supported (same as Python)
+                        BookResult(
+                            errors = listOf(LoadError(
+                                transaction.meta,
+                                "AVERAGE method is not supported",
+                                transaction
+                            ))
+                        )
+                    }
                     else -> {
-                        // AVERAGE not supported
+                        // Unknown booking method - fall back to STRICT
                         errors.add(LoadError(
                             transaction.meta,
                             "Booking method $bookingMethod is not yet supported, falling back to STRICT",

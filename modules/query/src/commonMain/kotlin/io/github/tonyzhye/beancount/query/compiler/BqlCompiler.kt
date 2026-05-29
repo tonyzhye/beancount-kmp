@@ -29,15 +29,21 @@ class BqlCompiler(private val table: io.github.tonyzhye.beancount.query.tables.T
         } else {
             query.targets.map { compileTarget(it) }
         }
+        
+        // Build alias map for ORDER BY resolution
+        val aliasMap = targetNodes.associateBy { it.name.lowercase() }
+        
         val whereNode = query.where?.let { compileExpression(it) }
         val groupByNodes = query.groupBy.map { compileExpression(it) }
-        val orderByNodes = query.orderBy.map { compileOrderBy(it) }
+        val havingNode = query.having?.let { compileExpression(it, aliasMap) }
+        val orderByNodes = query.orderBy.map { compileOrderBy(it, aliasMap) }
 
         return CompiledQuery(
             distinct = query.distinct,
             targets = targetNodes,
             where = whereNode,
             groupBy = groupByNodes,
+            having = havingNode,
             orderBy = orderByNodes,
             limit = query.limit
         )
@@ -51,30 +57,50 @@ class BqlCompiler(private val table: io.github.tonyzhye.beancount.query.tables.T
         )
     }
 
-    private fun compileOrderBy(orderBy: AstOrderBy): OrderByNode {
+    private fun compileOrderBy(orderBy: AstOrderBy, aliasMap: Map<String, TargetNode> = emptyMap()): OrderByNode {
         return OrderByNode(
-            node = compileExpression(orderBy.expression),
+            node = compileExpression(orderBy.expression, aliasMap),
             descending = orderBy.descending
         )
     }
 
-    private fun compileExpression(expr: AstExpression): EvalNode {
+    private fun compileExpression(expr: AstExpression, aliasMap: Map<String, TargetNode> = emptyMap()): EvalNode {
         return when (expr) {
-            is AstIdentifier -> compileIdentifier(expr)
+            is AstIdentifier -> compileIdentifier(expr, aliasMap)
             is AstStringLiteral -> EvalConstant(BqlType.String, BqlStringValue(expr.value))
             is AstIntegerLiteral -> EvalConstant(BqlType.Integer, BqlIntegerValue(expr.value))
             is AstDecimalLiteral -> EvalConstant(BqlType.Decimal, BqlDecimalValue(Decimal(expr.value)))
             is AstDateLiteral -> EvalConstant(BqlType.Date, BqlDateValue(expr.value))
             is AstBooleanLiteral -> EvalConstant(BqlType.Boolean, BqlBooleanValue(expr.value))
             is AstNullLiteral -> EvalConstant(BqlType.Null, BqlNullValue())
-            is AstFunctionCall -> compileFunctionCall(expr)
-            is AstBinaryOp -> compileBinaryOp(expr)
-            is AstUnaryOp -> compileUnaryOp(expr)
+            is AstFunctionCall -> compileFunctionCall(expr, aliasMap)
+            is AstBinaryOp -> compileBinaryOp(expr, aliasMap)
+            is AstUnaryOp -> compileUnaryOp(expr, aliasMap)
+            is AstInOp -> compileInOp(expr, aliasMap)
+            is AstBetweenOp -> compileBetweenOp(expr, aliasMap)
         }
     }
 
-    private fun compileIdentifier(identifier: AstIdentifier): EvalNode {
+    private fun compileInOp(op: AstInOp, aliasMap: Map<String, TargetNode> = emptyMap()): EvalNode {
+        val expr = compileExpression(op.expression, aliasMap)
+        val values = op.values.map { compileExpression(it, aliasMap) }
+        return EvalInOp(expr, values, op.notIn)
+    }
+
+    private fun compileBetweenOp(op: AstBetweenOp, aliasMap: Map<String, TargetNode> = emptyMap()): EvalNode {
+        val expr = compileExpression(op.expression, aliasMap)
+        val low = compileExpression(op.low, aliasMap)
+        val high = compileExpression(op.high, aliasMap)
+        return EvalBetweenOp(expr, low, high, op.notBetween)
+    }
+
+    private fun compileIdentifier(identifier: AstIdentifier, aliasMap: Map<String, TargetNode> = emptyMap()): EvalNode {
         val name = identifier.name.lowercase()
+        // Check alias map first (for ORDER BY referencing SELECT aliases)
+        val aliased = aliasMap[name]
+        if (aliased != null) {
+            return aliased.node
+        }
         val column = columns[name]
         if (column != null) {
             return EvalColumn(column.dtype, name) { context ->
@@ -84,14 +110,14 @@ class BqlCompiler(private val table: io.github.tonyzhye.beancount.query.tables.T
         throw CompileException("Unknown column: ${identifier.name}")
     }
 
-    private fun compileFunctionCall(call: AstFunctionCall): EvalNode {
+    private fun compileFunctionCall(call: AstFunctionCall, aliasMap: Map<String, TargetNode> = emptyMap()): EvalNode {
         val name = call.name.lowercase()
         
         // Special handling for count(*)
         val operands = if (name == "count" && call.arguments.size == 1 && call.arguments[0] is AstIdentifier && (call.arguments[0] as AstIdentifier).name == "*") {
             listOf(EvalConstant(BqlType.Integer, BqlIntegerValue(1)))
         } else {
-            call.arguments.map { compileExpression(it) }
+            call.arguments.map { compileExpression(it, aliasMap) }
         }
 
         // Check for aggregator functions first
@@ -109,15 +135,15 @@ class BqlCompiler(private val table: io.github.tonyzhye.beancount.query.tables.T
         throw CompileException("Unknown function: ${call.name}")
     }
 
-    private fun compileBinaryOp(op: AstBinaryOp): EvalNode {
-        val left = compileExpression(op.left)
-        val right = compileExpression(op.right)
+    private fun compileBinaryOp(op: AstBinaryOp, aliasMap: Map<String, TargetNode> = emptyMap()): EvalNode {
+        val left = compileExpression(op.left, aliasMap)
+        val right = compileExpression(op.right, aliasMap)
         val dtype = inferBinaryOpType(op.operator, left.dtype, right.dtype)
         return EvalBinaryOp(dtype, op.operator, left, right)
     }
 
-    private fun compileUnaryOp(op: AstUnaryOp): EvalNode {
-        val operand = compileExpression(op.operand)
+    private fun compileUnaryOp(op: AstUnaryOp, aliasMap: Map<String, TargetNode> = emptyMap()): EvalNode {
+        val operand = compileExpression(op.operand, aliasMap)
         val dtype = when (op.operator) {
             "NOT" -> BqlType.Boolean
             "-", "+" -> operand.dtype
@@ -165,6 +191,7 @@ data class CompiledQuery(
     val targets: List<TargetNode>,
     val where: EvalNode?,
     val groupBy: List<EvalNode>,
+    val having: EvalNode?,
     val orderBy: List<OrderByNode>,
     val limit: Int?
 )

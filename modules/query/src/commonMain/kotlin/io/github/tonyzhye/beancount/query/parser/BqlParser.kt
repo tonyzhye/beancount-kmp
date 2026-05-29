@@ -79,6 +79,16 @@ class BqlParser(private val input: String) {
                 continue
             }
 
+            // Date: YYYY-MM-DD (must be checked before number to avoid splitting)
+            if (char.isDigit() && pos + 9 < length &&
+                input[pos + 4] == '-' && input[pos + 7] == '-' &&
+                input.substring(pos, pos + 10).matches(Regex("\\d{4}-\\d{2}-\\d{2}"))
+            ) {
+                tokens.add(Token(TokenType.DATE, input.substring(pos, pos + 10), pos))
+                pos += 10
+                continue
+            }
+
             // Number (integer or decimal)
             if (char.isDigit() || (char == '.' && pos + 1 < length && input[pos + 1].isDigit())) {
                 val start = pos
@@ -106,16 +116,6 @@ class BqlParser(private val input: String) {
                 } else {
                     tokens.add(Token(TokenType.INTEGER, value, start))
                 }
-                continue
-            }
-
-            // Date: YYYY-MM-DD
-            if (char.isDigit() && pos + 9 < length &&
-                input[pos + 4] == '-' && input[pos + 7] == '-' &&
-                input.substring(pos, pos + 10).matches(Regex("\\d{4}-\\d{2}-\\d{2}"))
-            ) {
-                tokens.add(Token(TokenType.DATE, input.substring(pos, pos + 10), pos))
-                pos += 10
                 continue
             }
 
@@ -167,7 +167,8 @@ class BqlParser(private val input: String) {
         val keywords = setOf(
             "SELECT", "FROM", "WHERE", "GROUP", "BY", "ORDER", "LIMIT",
             "DISTINCT", "ASC", "DESC", "AS", "AND", "OR", "NOT",
-            "TRUE", "FALSE", "NULL", "OPEN", "CLOSE", "CLEAR"
+            "TRUE", "FALSE", "NULL", "OPEN", "CLOSE", "CLEAR",
+            "HAVING", "IN", "BETWEEN"
         )
         return value.uppercase() in keywords
     }
@@ -231,6 +232,7 @@ class BqlParser(private val input: String) {
         val from = if (matchKeyword("FROM")) parseFrom() else null
         val where = if (matchKeyword("WHERE")) parseWhere() else null
         val groupBy = if (matchKeyword("GROUP")) parseGroupBy() else emptyList()
+        val having = if (matchKeyword("HAVING")) parseHaving() else null
         val orderBy = if (matchKeyword("ORDER")) parseOrderBy() else emptyList()
         val limit = if (matchKeyword("LIMIT")) parseLimit() else null
 
@@ -244,6 +246,7 @@ class BqlParser(private val input: String) {
             from = from,
             where = where,
             groupBy = groupBy,
+            having = having,
             orderBy = orderBy,
             limit = limit
         )
@@ -293,9 +296,14 @@ class BqlParser(private val input: String) {
         val expressions = mutableListOf<AstExpression>()
         do {
             expressions.add(parseExpression())
-        } while (consumeKeyword(","))
+        } while (match(TokenType.COMMA).also { if (it) advance() })
 
         return expressions
+    }
+
+    private fun parseHaving(): AstExpression {
+        expect(TokenType.KEYWORD, "HAVING")
+        return parseExpression()
     }
 
     private fun parseOrderBy(): List<AstOrderBy> {
@@ -311,7 +319,7 @@ class BqlParser(private val input: String) {
                 else -> false
             }
             orders.add(AstOrderBy(expr, descending))
-        } while (consumeKeyword(","))
+        } while (match(TokenType.COMMA).also { if (it) advance() })
 
         return orders
     }
@@ -352,7 +360,19 @@ class BqlParser(private val input: String) {
         if (consumeKeyword("NOT")) {
             return AstUnaryOp("NOT", parseNotExpression())
         }
-        return parseComparisonExpression()
+        return parseBetweenExpression()
+    }
+
+    private fun parseBetweenExpression(): AstExpression {
+        var left = parseComparisonExpression()
+        // Handle BETWEEN operator: expr BETWEEN low AND high
+        if (consumeKeyword("BETWEEN")) {
+            val low = parseAddExpression()  // Use lower precedence to avoid consuming AND
+            expectKeyword("AND")
+            val high = parseAddExpression()
+            left = AstBetweenOp(left, low, high)
+        }
+        return left
     }
 
     private fun parseComparisonExpression(): AstExpression {
@@ -362,7 +382,23 @@ class BqlParser(private val input: String) {
             val right = parseAddExpression()
             left = AstBinaryOp(op, left, right)
         }
+        // Handle IN operator: expr IN (val1, val2, ...)
+        if (consumeKeyword("IN")) {
+            expect(TokenType.LPAREN)
+            val values = mutableListOf<AstExpression>()
+            if (!match(TokenType.RPAREN)) {
+                do {
+                    values.add(parseExpression())
+                } while (match(TokenType.COMMA).also { if (it) advance() })
+            }
+            expect(TokenType.RPAREN)
+            left = AstInOp(left, values)
+        }
         return left
+    }
+
+    private fun expectKeyword(keyword: String): Token {
+        return expect(TokenType.KEYWORD, keyword)
     }
 
     private fun parseAddExpression(): AstExpression {
