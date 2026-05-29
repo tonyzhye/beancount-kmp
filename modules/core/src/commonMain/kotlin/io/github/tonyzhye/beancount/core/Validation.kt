@@ -23,6 +23,18 @@ val BASIC_VALIDATIONS: List<Validation> = listOf(
 )
 
 /**
+ * Balance validation - checks balance assertions against computed balances.
+ * This is a separate validation because it requires running after basic validations
+ * and operates on a copy of entries (may modify Balance directives with diff_amount).
+ */
+fun validateBalanceAssertions(entries: List<Directive>, options: Options): List<ValidationError> {
+    val (_, balanceErrors) = validateBalances(entries, options)
+    return balanceErrors.map { error ->
+        ValidationError(error.source, error.message, error.entry)
+    }
+}
+
+/**
  * Hardcore validations - only enabled by bean-check.
  * Based on beancount.ops.validation.HARDCORE_VALIDATIONS.
  */

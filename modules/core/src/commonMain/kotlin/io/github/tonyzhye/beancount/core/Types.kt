@@ -36,6 +36,12 @@ expect class Decimal : Comparable<Decimal> {
     fun toPlainString(): String
     fun toDouble(): Double
     
+    /**
+     * Returns a Decimal whose numerical value is equal to
+     * (this * 10^n). Equivalent to Python's Decimal.scaleb().
+     */
+    fun scaleByPowerOfTen(n: Int): Decimal
+    
     override fun compareTo(other: Decimal): Int
     
     companion object {
