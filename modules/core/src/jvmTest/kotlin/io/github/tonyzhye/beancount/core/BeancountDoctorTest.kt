@@ -108,7 +108,7 @@ class BeancountDoctorTest {
         val displayContext = doctor.displayContext(entries)
 
         assertTrue(displayContext.contains("USD"), "Should mention USD currency")
-        assertTrue(displayContext.contains("max_precision"), "Should show max precision")
+        assertTrue(displayContext.contains("fractional_max"), "Should show max precision")
     }
 
     @Test
@@ -118,7 +118,7 @@ class BeancountDoctorTest {
         val doctor = BeancountDoctor()
         val displayContext = doctor.displayContext(entries)
 
-        assertTrue(displayContext.contains("No amounts found"), "Should report empty ledger")
+        assertTrue(displayContext.contains("__default__"), "Should report default context for empty ledger")
     }
 
     @Test

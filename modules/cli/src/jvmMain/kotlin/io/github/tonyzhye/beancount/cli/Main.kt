@@ -16,8 +16,7 @@ class MainCommand : CliktCommand(
             BeanCheckCommand(),
             BeanDoctorCommand(),
             BeanExampleCommand(),
-            BeanFormatCommand(),
-            BeanQueryCommand()
+            BeanFormatCommand()
         )
     }
 
