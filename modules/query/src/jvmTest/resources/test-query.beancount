@@ -1,0 +1,41 @@
+option "title" "Test Query Ledger"
+option "operating_currency" "USD"
+
+2023-01-01 open Assets:Bank:Checking USD
+2023-01-01 open Assets:Bank:Savings USD
+2023-01-01 open Expenses:Food:Groceries USD
+2023-01-01 open Expenses:Food:Coffee USD
+2023-01-01 open Expenses:Utilities:Electricity USD
+2023-01-01 open Income:Salary USD
+
+2023-01-15 * "Grocery Store" "Weekly groceries"
+  Expenses:Food:Groceries  56.78 USD
+  Assets:Bank:Checking
+
+2023-01-20 * "Coffee Shop" "Morning coffee"
+  Expenses:Food:Coffee  4.50 USD
+  Assets:Bank:Checking
+
+2023-01-25 * "Electric Company" "Monthly electricity"
+  Expenses:Utilities:Electricity  85.00 USD
+  Assets:Bank:Checking
+
+2023-02-01 * "Employer" "Monthly salary"
+  Assets:Bank:Checking  5000.00 USD
+  Income:Salary
+
+2023-02-05 * "Grocery Store" "Weekly groceries"
+  Expenses:Food:Groceries  62.15 USD
+  Assets:Bank:Checking
+
+2023-02-10 * "Coffee Shop" "Morning coffee"
+  Expenses:Food:Coffee  4.50 USD
+  Assets:Bank:Checking
+
+2023-02-15 * "Electric Company" "Monthly electricity"
+  Expenses:Utilities:Electricity  92.30 USD
+  Assets:Bank:Checking
+
+2023-03-01 * "Employer" "Monthly salary"
+  Assets:Bank:Checking  5000.00 USD
+  Income:Salary
