@@ -28,6 +28,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
+import io.github.tonyzhye.beancount.core.realize
+import io.github.tonyzhye.beancount.core.computeBalance
 import java.io.File
 
 /**
@@ -230,6 +232,133 @@ class PythonCompatTest {
         assertTrue(report.passPercentage >= 80.0,
             "Compatibility below 80% (${report.passPercentage}%)")
     }
+
+    // ===== Balance computation verification =====
+
+    private val balanceScript = File(File(System.getProperty("user.dir")).parentFile,
+        "core/src/jvmTest/resources/python_compat/compute_balances.py").absolutePath
+
+    private fun runPythonBalance(content: String): PythonBalanceResult {
+        val tempFile = File.createTempFile("beancount_balance_", ".beancount")
+        tempFile.writeText(content, Charsets.UTF_8)
+        tempFile.deleteOnExit()
+
+        return try {
+            val process = ProcessBuilder("python", balanceScript, tempFile.absolutePath)
+                .redirectErrorStream(true).start()
+            val output = process.inputStream.bufferedReader().readText()
+            val exitCode = process.waitFor()
+            if (exitCode != 0) {
+                throw RuntimeException("Python balance script failed: $output")
+            }
+            json.decodeFromString(output)
+        } finally {
+            tempFile.delete()
+        }
+    }
+
+    @Test
+    fun `should compute compatible balances for simple ledger`() {
+        val content = """
+            2024-01-01 open Assets:Bank:Checking USD
+            2024-01-01 open Income:Salary USD
+
+            2024-01-15 * "Paycheck"
+              Assets:Bank:Checking  100.00 USD
+              Income:Salary
+
+            2024-02-15 * "Paycheck"
+              Assets:Bank:Checking  150.00 USD
+              Income:Salary
+        """.trimIndent()
+
+        val kotlinResult = loadString(content)
+        val pythonBalance = runPythonBalance(content)
+
+        // Compute Kotlin balances
+        val kotlinRoot = realize(kotlinResult.entries)
+        val kotlinBalances = mutableMapOf<String, List<String>>()
+        for (account in kotlinRoot.iterate()) {
+            if (account.account.isNotEmpty()) {
+                val balance = computeBalance(account, leafOnly = false)
+                kotlinBalances[account.account] = balance.getPositions().map {
+                    "${it.units.number} ${it.units.currency}"
+                }
+            }
+        }
+
+        // Compare
+        val report = CompatReport("balance_simple")
+            .check("account_count", kotlinBalances.size, pythonBalance.balances.size) {
+                it.first == it.second
+            }
+
+        pythonBalance.balances.forEach { (account, positions) ->
+            val kotlinPos = kotlinBalances[account]
+            report.check("balance[$account].exists", kotlinPos != null, true) { it.first == it.second }
+            if (kotlinPos != null) {
+                report.check("balance[$account].count", kotlinPos.size, positions.size) {
+                    it.first == it.second
+                }
+            }
+        }
+
+        println("=== Balance Report: ${report.testName} ===")
+        println("Passed: ${report.passed}/${report.total} (${report.passPercentage}%)")
+        report.failures.forEach { println("FAIL: ${it.checkName}") }
+
+        assertTrue(report.passPercentage >= 80.0,
+            "Balance compatibility below 80% (${report.passPercentage}%)")
+    }
+
+    // ===== BQL Query verification =====
+
+    private val queryScript = File(File(System.getProperty("user.dir")).parentFile,
+        "core/src/jvmTest/resources/python_compat/run_query.py").absolutePath
+
+    private fun runPythonQuery(content: String, queryStr: String): PythonQueryResult {
+        val tempFile = File.createTempFile("beancount_query_", ".beancount")
+        tempFile.writeText(content, Charsets.UTF_8)
+        tempFile.deleteOnExit()
+
+        return try {
+            val process = ProcessBuilder("python", queryScript, tempFile.absolutePath, queryStr)
+                .redirectErrorStream(true).start()
+            val output = process.inputStream.bufferedReader().readText()
+            val exitCode = process.waitFor()
+            if (exitCode != 0) {
+                throw RuntimeException("Python query script failed: $output")
+            }
+            json.decodeFromString(output)
+        } finally {
+            tempFile.delete()
+        }
+    }
+
+    @Test
+    fun `should produce compatible query results for basic SELECT`() {
+        val content = """
+            2024-01-01 open Assets:Bank:Checking USD
+            2024-01-01 open Income:Salary USD
+
+            2024-01-15 * "Paycheck"
+              Assets:Bank:Checking  100.00 USD
+              Income:Salary
+
+            2024-02-15 * "Paycheck"
+              Assets:Bank:Checking  150.00 USD
+              Income:Salary
+        """.trimIndent()
+
+        val pythonQuery = runPythonQuery(content, "SELECT date, narration")
+
+        println("=== Query Result ===")
+        println("Python returned ${pythonQuery.row_count} rows")
+        pythonQuery.rows.take(5).forEach { println(it) }
+
+        assertNull(pythonQuery.error, "Python query failed: ${pythonQuery.error}")
+        assertTrue(pythonQuery.row_count >= 2, "Expected at least 2 transactions, got ${pythonQuery.row_count}")
+    }
 }
 
 // ===== Data classes for Python JSON output =====
@@ -343,4 +472,52 @@ data class CompatFailure(
     val checkName: String,
     val expected: String,
     val actual: String
+)
+
+// ===== Balance verification data classes =====
+
+@Serializable
+data class PythonBalanceResult(
+    val entry_count: Int,
+    val error_count: Int,
+    val accounts: List<String>,
+    val balances: Map<String, List<PythonBalancePosition>>,
+    val errors: List<PythonBalanceError> = emptyList()
+)
+
+@Serializable
+data class PythonBalancePosition(
+    val number: String,
+    val currency: String,
+    val cost: PythonBalanceCost? = null
+)
+
+@Serializable
+data class PythonBalanceCost(
+    val number: String? = null,
+    val currency: String? = null,
+    val date: String? = null,
+    val label: String? = null
+)
+
+@Serializable
+data class PythonBalanceError(
+    val message: String,
+    val source: String
+)
+
+// ===== Query verification data classes =====
+
+@Serializable
+data class PythonQueryResult(
+    val columns: List<PythonQueryColumn>,
+    val rows: List<List<String?>>,
+    val row_count: Int,
+    val error: String? = null
+)
+
+@Serializable
+data class PythonQueryColumn(
+    val name: String,
+    val type: String
 )
