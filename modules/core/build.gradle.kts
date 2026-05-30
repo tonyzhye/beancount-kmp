@@ -39,6 +39,7 @@ kotlin {
             dependencies {
                 implementation("org.junit.jupiter:junit-jupiter:5.10.0")
                 implementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
             }
         }
     }

@@ -1,0 +1,346 @@
+/*
+ * Beancount JVM - A JVM implementation of Beancount
+ * Copyright (C) 2026  Beancount JVM Contributors
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, see <https://www.gnu.org/licenses/>.
+ *
+ * Based on Beancount by Martin Blais
+ * Original project: https://github.com/beancount/beancount
+ */
+
+package io.github.tonyzhye.beancount.loader.compat
+
+import io.github.tonyzhye.beancount.core.*
+import io.github.tonyzhye.beancount.loader.loadString
+import kotlinx.datetime.LocalDate
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions.*
+import java.io.File
+
+/**
+ * End-to-end compatibility tests comparing Kotlin implementation with Python beancount.
+ *
+ * These tests parse the same beancount content with both implementations
+ * and verify that the results are semantically equivalent.
+ */
+class PythonCompatTest {
+
+    private val json = Json { ignoreUnknownKeys = true; prettyPrint = true }
+    private val pythonScript = File(System.getProperty("user.dir")).let {
+        // user.dir is modules/loader when running from loader module tests
+        File(it.parentFile, "core/src/jvmTest/resources/python_compat/parse_beancount.py")
+    }.absolutePath
+
+    /**
+     * Run Python beancount parser on a string and return parsed results.
+     * Uses a temp file to avoid command line escaping issues.
+     */
+    private fun runPythonParser(content: String): PythonResult {
+        val tempFile = File.createTempFile("beancount_compat_", ".beancount")
+        tempFile.writeText(content, Charsets.UTF_8)
+        tempFile.deleteOnExit()
+
+        return try {
+            runPythonParser(tempFile)
+        } finally {
+            tempFile.delete()
+        }
+    }
+
+    /**
+     * Run Python beancount parser on a file and return parsed results.
+     */
+    private fun runPythonParser(file: File): PythonResult {
+        val process = ProcessBuilder(
+            "python", pythonScript, file.absolutePath
+        ).redirectErrorStream(true).start()
+
+        val output = process.inputStream.bufferedReader().readText()
+        val exitCode = process.waitFor()
+
+        if (exitCode != 0) {
+            println("DEBUG: pythonScript=$pythonScript")
+            println("DEBUG: file=${file.absolutePath}")
+            println("DEBUG: user.dir=${System.getProperty("user.dir")}")
+            throw RuntimeException("Python parser failed with exit code $exitCode:\n$output")
+        }
+
+        return json.decodeFromString(output)
+    }
+
+    /**
+     * Compare Kotlin and Python parse results.
+     */
+    private fun compareResults(
+        kotlinResult: LoadResult,
+        pythonResult: PythonResult,
+        testName: String
+    ): CompatReport {
+        val report = CompatReport(testName)
+
+        // Compare entry counts
+        report.check("entry_count", kotlinResult.entries.size, pythonResult.entry_count) {
+            it.first == it.second
+        }
+
+        // Compare error counts
+        report.check("error_count", kotlinResult.errors.size, pythonResult.error_count) {
+            it.first == it.second
+        }
+
+        // Compare entries by type
+        val kotlinEntriesByType = kotlinResult.entries.groupBy { it::class.simpleName }.mapValues { it.value.size }
+        val pythonEntriesByType = pythonResult.entries.groupBy { it.type }.mapValues { it.value.size }
+        report.check("entries_by_type", kotlinEntriesByType, pythonEntriesByType) {
+            it.first == it.second
+        }
+
+        // Compare specific entries (first few)
+        val maxCompare = minOf(kotlinResult.entries.size, pythonResult.entries.size, 10)
+        for (i in 0 until maxCompare) {
+            val kEntry = kotlinResult.entries[i]
+            val pEntry = pythonResult.entries[i]
+            report.check("entry[$i].type", kEntry::class.simpleName, pEntry.type) {
+                it.first == it.second
+            }
+            report.check("entry[$i].date", kEntry.date.toString(), pEntry.date) {
+                it.first == it.second
+            }
+        }
+
+        // Compare error messages (first few)
+        val maxErrors = minOf(kotlinResult.errors.size, pythonResult.errors.size, 5)
+        for (i in 0 until maxErrors) {
+            val kError = kotlinResult.errors[i]
+            val pError = pythonResult.errors[i]
+            report.check("error[$i].message", kError.message, pError.message) {
+                it.first == it.second
+            }
+        }
+
+        return report
+    }
+
+    @Test
+    fun `should produce compatible results for simple ledger`() {
+        val content = """
+            2024-01-01 open Assets:Bank:Checking USD
+            2024-01-01 open Income:Salary USD
+
+            2024-01-15 * "Paycheck"
+              Assets:Bank:Checking  100.00 USD
+              Income:Salary
+        """.trimIndent()
+
+        val kotlinResult = loadString(content)
+        val pythonResult = runPythonParser(content)
+
+        val report = compareResults(kotlinResult, pythonResult, "simple_ledger")
+
+        println("=== Compatibility Report: ${report.testName} ===")
+        println("Passed: ${report.passed}/${report.total} (${report.passPercentage}%)")
+        report.failures.forEach { println("FAIL: ${it.checkName}: expected=${it.expected}, actual=${it.actual}") }
+
+        assertTrue(report.passPercentage >= 80.0,
+            "Compatibility below 80% (${report.passPercentage}%)\nFailures:\n${report.failures.joinToString("\n")}")
+    }
+
+    @Test
+    fun `should produce compatible results for ledger with balance assertion`() {
+        val content = """
+            2024-01-01 open Assets:Bank:Checking USD
+
+            2024-01-15 * "Deposit"
+              Assets:Bank:Checking  100.00 USD
+              Income:Salary
+
+            2024-01-31 balance Assets:Bank:Checking  100.00 USD
+        """.trimIndent()
+
+        val kotlinResult = loadString(content)
+        val pythonResult = runPythonParser(content)
+
+        val report = compareResults(kotlinResult, pythonResult, "balance_assertion")
+
+        println("=== Compatibility Report: ${report.testName} ===")
+        println("Passed: ${report.passed}/${report.total} (${report.passPercentage}%)")
+        report.failures.forEach { println("FAIL: ${it.checkName}: expected=${it.expected}, actual=${it.actual}") }
+
+        assertTrue(report.passPercentage >= 80.0,
+            "Compatibility below 80% (${report.passPercentage}%)")
+    }
+
+    @Test
+    fun `should produce compatible results for ledger with cost`() {
+        val content = """
+            2024-01-01 open Assets:Investments:Stocks
+            2024-01-01 open Assets:Bank:Checking
+
+            2024-01-15 * "Buy stock"
+              Assets:Investments:Stocks  10 HOOL {150.00 USD}
+              Assets:Bank:Checking
+        """.trimIndent()
+
+        val kotlinResult = loadString(content)
+        val pythonResult = runPythonParser(content)
+
+        val report = compareResults(kotlinResult, pythonResult, "cost_ledger")
+
+        println("=== Compatibility Report: ${report.testName} ===")
+        println("Passed: ${report.passed}/${report.total} (${report.passPercentage}%)")
+        report.failures.forEach { println("FAIL: ${it.checkName}: expected=${it.expected}, actual=${it.actual}") }
+
+        assertTrue(report.passPercentage >= 80.0,
+            "Compatibility below 80% (${report.passPercentage}%)")
+    }
+
+    @Test
+    fun `should produce compatible results for ledger with tags and links`() {
+        val content = """
+            2024-01-01 open Assets:Bank:Checking USD
+            2024-01-01 open Expenses:Food USD
+
+            2024-01-15 * "Grocery" "Weekly shopping" #shopping ^grocery-week-1
+              Expenses:Food  50.00 USD
+              Assets:Bank:Checking
+        """.trimIndent()
+
+        val kotlinResult = loadString(content)
+        val pythonResult = runPythonParser(content)
+
+        val report = compareResults(kotlinResult, pythonResult, "tags_links")
+
+        println("=== Compatibility Report: ${report.testName} ===")
+        println("Passed: ${report.passed}/${report.total} (${report.passPercentage}%)")
+        report.failures.forEach { println("FAIL: ${it.checkName}: expected=${it.expected}, actual=${it.actual}") }
+
+        assertTrue(report.passPercentage >= 80.0,
+            "Compatibility below 80% (${report.passPercentage}%)")
+    }
+}
+
+// ===== Data classes for Python JSON output =====
+
+@Serializable
+data class PythonResult(
+    val entries: List<PythonEntry>,
+    val errors: List<PythonError>,
+    val options: Map<String, JsonElement>,
+    val entry_count: Int,
+    val error_count: Int
+)
+
+@Serializable
+data class PythonEntry(
+    val type: String,
+    val date: String,
+    val meta: Map<String, JsonElement> = emptyMap(),
+    val account: String? = null,
+    val currencies: List<String> = emptyList(),
+    val booking: String? = null,
+    val amount: PythonAmount? = null,
+    val flag: String? = null,
+    val payee: String? = null,
+    val narration: String? = null,
+    val tags: List<String> = emptyList(),
+    val links: List<String> = emptyList(),
+    val postings: List<PythonPosting> = emptyList(),
+    val currency: String? = null,
+    val source_account: String? = null,
+    val comment: String? = null,
+    val filename: String? = null,
+    val description: String? = null,
+    val name: String? = null,
+    val query: String? = null,
+    val custom_type: String? = null,
+    val values: List<PythonCustomValue> = emptyList()
+)
+
+@Serializable
+data class PythonAmount(
+    val number: String,
+    val currency: String
+)
+
+@Serializable
+data class PythonPosting(
+    val account: String,
+    val flag: String? = null,
+    val units: PythonAmount? = null,
+    val cost: PythonCost? = null,
+    val price: PythonAmount? = null,
+    val meta: Map<String, JsonElement>? = null
+)
+
+@Serializable
+data class PythonCost(
+    val number: String? = null,
+    val currency: String? = null,
+    val date: String? = null,
+    val label: String? = null,
+    val number_per: String? = null,
+    val number_total: String? = null,
+    val merge: Boolean = false
+)
+
+@Serializable
+data class PythonError(
+    val source: PythonSource,
+    val message: String,
+    val entry_type: String? = null
+)
+
+@Serializable
+data class PythonSource(
+    val filename: String,
+    val lineno: Int
+)
+
+@Serializable
+data class PythonCustomValue(
+    val type: String,
+    val value: String
+)
+
+// ===== Compatibility report =====
+
+data class CompatReport(
+    val testName: String,
+    val passed: Int = 0,
+    val total: Int = 0,
+    val failures: List<CompatFailure> = emptyList()
+) {
+    val passPercentage: Double
+        get() = if (total > 0) (passed * 100.0 / total) else 100.0
+
+    fun <T> check(name: String, expected: T, actual: T, validator: (Pair<T, T>) -> Boolean): CompatReport {
+        val isValid = validator(expected to actual)
+        return if (isValid) {
+            copy(passed = passed + 1, total = total + 1)
+        } else {
+            copy(
+                total = total + 1,
+                failures = failures + CompatFailure(name, expected.toString(), actual.toString())
+            )
+        }
+    }
+}
+
+data class CompatFailure(
+    val checkName: String,
+    val expected: String,
+    val actual: String
+)
