@@ -317,6 +317,7 @@ data class Options(
     val include: List<String> = emptyList(),
     val plugin: List<PluginSpec> = emptyList(),
     val pluginProcessingMode: PluginProcessingMode = PluginProcessingMode.DEFAULT,
+    val autoPluginsEnabled: Boolean = false,
     val dcontext: DisplayContext = DisplayContext(),
     val filename: String = "",
     val line: Int = 0,
