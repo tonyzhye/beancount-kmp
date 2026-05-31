@@ -16,11 +16,19 @@ class QueryEngine(private val entries: List<Directive>) {
     private val postingsTable = PostingsTable(entries)
     private val entriesTable = EntriesTable(entries)
     private val transactionsTable = TransactionsTable(entries)
+    private val accountsTable = AccountsTable(entries)
+    private val commoditiesTable = CommoditiesTable(entries)
+    private val pricesTable = PricesTable(entries)
+    private val balancesTable = BalancesTable(entries)
 
     private val tables: Map<String, Table> = mapOf(
         "postings" to postingsTable,
         "entries" to entriesTable,
-        "transactions" to transactionsTable
+        "transactions" to transactionsTable,
+        "accounts" to accountsTable,
+        "commodities" to commoditiesTable,
+        "prices" to pricesTable,
+        "balances" to balancesTable
     )
 
     /**

@@ -4,13 +4,20 @@ import io.github.tonyzhye.beancount.core.*
 import io.github.tonyzhye.beancount.loader.plugins.AutoAccountsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.BalancePlugin
 import io.github.tonyzhye.beancount.loader.plugins.CheckClosingPlugin
+import io.github.tonyzhye.beancount.loader.plugins.CheckCommodityPlugin
+import io.github.tonyzhye.beancount.loader.plugins.CheckDrainedPlugin
+import io.github.tonyzhye.beancount.loader.plugins.CloseTreePlugin
 import io.github.tonyzhye.beancount.loader.plugins.CoherentCostPlugin
 import io.github.tonyzhye.beancount.loader.plugins.CurrencyAccountsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.DocumentsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.ImplicitPricesPlugin
 import io.github.tonyzhye.beancount.loader.plugins.LeafOnlyPlugin
+import io.github.tonyzhye.beancount.loader.plugins.NoDuplicatesPlugin
+import io.github.tonyzhye.beancount.loader.plugins.NoUnusedPlugin
+import io.github.tonyzhye.beancount.loader.plugins.OneCommodityPlugin
 import io.github.tonyzhye.beancount.loader.plugins.PadPlugin
 import io.github.tonyzhye.beancount.loader.plugins.PedanticPlugin
+import io.github.tonyzhye.beancount.loader.plugins.SellGainsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.UniquePricesPlugin
 import io.github.tonyzhye.beancount.plugin.*
 
@@ -106,6 +113,13 @@ private fun resolvePlugin(moduleName: String, config: String? = null): Beancount
         "beancount.plugins.unique_prices" -> UniquePricesPluginAdapter()
         "beancount.plugins.coherent_cost" -> CoherentCostPluginAdapter()
         "beancount.plugins.check_closing" -> CheckClosingPluginAdapter()
+        "beancount.plugins.check_commodity" -> CheckCommodityPluginAdapter()
+        "beancount.plugins.sellgains" -> SellGainsPluginAdapter()
+        "beancount.plugins.check_drained" -> CheckDrainedPluginAdapter()
+        "beancount.plugins.close_tree" -> CloseTreePluginAdapter()
+        "beancount.plugins.noduplicates" -> NoDuplicatesPluginAdapter()
+        "beancount.plugins.nounused" -> NoUnusedPluginAdapter()
+        "beancount.plugins.onecommodity" -> OneCommodityPluginAdapter()
         "beancount.plugins.pedantic" -> PedanticPluginAdapter()
         "beancount.plugins.auto" -> AutoPluginAdapter()
         else -> null // Unknown plugin - skip with warning
@@ -249,6 +263,50 @@ private class CheckClosingPluginAdapter : BeancountPlugin {
     }
 }
 
+private class CheckCommodityPluginAdapter : BeancountPlugin {
+    override val name = "check_commodity"
+    override val description = "Validate that all commodities have Commodity directives"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = CheckCommodityPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class NoDuplicatesPluginAdapter : BeancountPlugin {
+    override val name = "noduplicates"
+    override val description = "Validate that transactions are not duplicated"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = NoDuplicatesPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class NoUnusedPluginAdapter : BeancountPlugin {
+    override val name = "nounused"
+    override val description = "Validate that all open accounts are used"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = NoUnusedPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class OneCommodityPluginAdapter : BeancountPlugin {
+    override val name = "onecommodity"
+    override val description = "Validate that accounts use only one commodity"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = OneCommodityPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
 private class PedanticPluginAdapter : BeancountPlugin {
     override val name = "pedantic"
     override val description = "Enable all pedantic validation plugins"
@@ -256,6 +314,39 @@ private class PedanticPluginAdapter : BeancountPlugin {
 
     override fun transform(context: PluginContext): PluginResult {
         val (entries, errors) = PedanticPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class SellGainsPluginAdapter : BeancountPlugin {
+    override val name = "sellgains"
+    override val description = "Validate sell gains against prices on lot sales"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = SellGainsPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class CheckDrainedPluginAdapter : BeancountPlugin {
+    override val name = "check_drained"
+    override val description = "Insert balance checks for zero before balance sheet accounts are closed"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = CheckDrainedPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class CloseTreePluginAdapter : BeancountPlugin {
+    override val name = "close_tree"
+    override val description = "Automatically close subaccounts when parent account is closed"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = CloseTreePlugin.transform(context.entries, context.options)
         return PluginResult(entries = entries, errors = errors)
     }
 }

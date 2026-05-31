@@ -219,4 +219,99 @@ class ValidationPluginsTest {
         // Should have errors from leafonly (posting to parent) and unique_prices (duplicate prices)
         assertTrue(errors.isNotEmpty())
     }
+
+    // ===== CheckCommodityPlugin Tests =====
+
+    @Test
+    fun `check commodity should pass when all commodities declared`() {
+        val entries = listOf(
+            Commodity(emptyMap(), LocalDate(2024, 1, 1), "USD"),
+            Commodity(emptyMap(), LocalDate(2024, 1, 1), "AAPL"),
+            Transaction(
+                emptyMap(), LocalDate(2024, 1, 15), "*",
+                postings = listOf(
+                    Posting("Assets:Bank", Amount(Decimal("10"), "AAPL")),
+                    Posting("Assets:Cash", Amount(Decimal("-1500"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = CheckCommodityPlugin.transform(entries, Options())
+
+        assertTrue(errors.isEmpty())
+        assertEquals(entries, result)
+    }
+
+    @Test
+    fun `check commodity should fail for missing commodity in transaction`() {
+        val entries = listOf(
+            Commodity(emptyMap(), LocalDate(2024, 1, 1), "USD"),
+            Transaction(
+                emptyMap(), LocalDate(2024, 1, 15), "*",
+                postings = listOf(
+                    Posting("Assets:Bank", Amount(Decimal("10"), "AAPL")),
+                    Posting("Assets:Cash", Amount(Decimal("-1500"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = CheckCommodityPlugin.transform(entries, Options())
+
+        assertEquals(1, errors.size)
+        assertTrue(errors[0].message.contains("AAPL"))
+        assertTrue(errors[0].message.contains("Missing Commodity directive"))
+    }
+
+    @Test
+    fun `check commodity should fail for missing commodity in open directive`() {
+        val entries = listOf(
+            Open(emptyMap(), LocalDate(2024, 1, 1), "Assets:Bank", currencies = listOf("USD", "AAPL"))
+        )
+
+        val (result, errors) = CheckCommodityPlugin.transform(entries, Options())
+
+        assertEquals(2, errors.size)
+        val currencies = errors.map { (it as CheckCommodityError).currency }.toSet()
+        assertTrue("USD" in currencies)
+        assertTrue("AAPL" in currencies)
+    }
+
+    @Test
+    fun `check commodity should fail for missing commodity in price directive`() {
+        val entries = listOf(
+            Commodity(emptyMap(), LocalDate(2024, 1, 1), "USD"),
+            Price(emptyMap(), LocalDate(2024, 1, 1), "AAPL", Amount(Decimal("150"), "USD"))
+        )
+
+        val (result, errors) = CheckCommodityPlugin.transform(entries, Options())
+
+        assertEquals(1, errors.size)
+        assertTrue(errors[0].message.contains("AAPL"))
+    }
+
+    @Test
+    fun `check commodity should not report same currency twice`() {
+        val entries = listOf(
+            Transaction(
+                emptyMap(), LocalDate(2024, 1, 15), "*",
+                postings = listOf(
+                    Posting("Assets:Bank", Amount(Decimal("10"), "AAPL")),
+                    Posting("Assets:Cash", Amount(Decimal("-1500"), "USD"))
+                )
+            ),
+            Transaction(
+                emptyMap(), LocalDate(2024, 1, 16), "*",
+                postings = listOf(
+                    Posting("Assets:Bank", Amount(Decimal("5"), "AAPL")),
+                    Posting("Assets:Cash", Amount(Decimal("-750"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = CheckCommodityPlugin.transform(entries, Options())
+
+        assertEquals(2, errors.size)
+        val currencies = errors.map { (it as CheckCommodityError).currency }.toSet()
+        assertEquals(setOf("AAPL", "USD"), currencies)
+    }
 }

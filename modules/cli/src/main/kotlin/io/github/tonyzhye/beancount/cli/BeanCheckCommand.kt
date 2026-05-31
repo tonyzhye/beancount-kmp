@@ -9,6 +9,7 @@ import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import io.github.tonyzhye.beancount.core.HARDCORE_VALIDATIONS
+import io.github.tonyzhye.beancount.loader.cache.JsonFileCache
 import io.github.tonyzhye.beancount.loader.loadFile
 
 /**
@@ -40,32 +41,43 @@ class BeanCheckCommand : CliktCommand(
         .help("Implicitly enable auto-plugins")
     
     override fun run() {
-        // Phase 1: Cache is not implemented yet, ignore noCache and cacheFilename flags
         if (verbose) {
             echo("Loading ${filename.absolutePath}...")
         }
-        
+
         val startTime = System.currentTimeMillis()
-        
+
+        // Check environment variable and flags for cache configuration
+        val disableCache = System.getenv("BEANCOUNT_DISABLE_LOAD_CACHE") != null || noCache
+        val cachePattern = cacheFilename ?: System.getenv("BEANCOUNT_LOAD_CACHE_FILENAME")
+
+        val cache = if (!disableCache) {
+            JsonFileCache(
+                cacheDir = filename.parentFile,
+                cachePattern = cachePattern ?: ".{filename}.beancount.kcache"
+            )
+        } else null
+
         val result = loadFile(
             filename = filename.absolutePath,
-            extraValidations = HARDCORE_VALIDATIONS
+            extraValidations = HARDCORE_VALIDATIONS,
+            cache = cache
         )
-        
+
         val loadTime = System.currentTimeMillis() - startTime
-        
+
         if (verbose) {
             echo("Load time: ${loadTime}ms")
             echo("Entries: ${result.entries.size}")
         }
-        
+
         if (result.errors.isNotEmpty()) {
             result.errors.forEach { error ->
                 echo("ERROR: ${error.message}", err = true)
             }
             throw ProgramResult(1)
         }
-        
+
         if (verbose) {
             echo("Validation passed!")
         }

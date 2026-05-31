@@ -1,6 +1,7 @@
 package io.github.tonyzhye.beancount.loader
 
 import io.github.tonyzhye.beancount.core.*
+import io.github.tonyzhye.beancount.loader.cache.BeancountCache
 import io.github.tonyzhye.beancount.parser.BeancountParser
 import io.github.tonyzhye.beancount.parser.Booking
 import io.github.tonyzhye.beancount.parser.Parser
@@ -24,6 +25,7 @@ fun interface LoadTimingsLogger {
  * @param extraValidations Additional validation functions to run.
  * @param autoPluginsEnabled Whether to enable auto plugins (auto_accounts, implicit_prices).
  * @param encoding File encoding (currently unused, always UTF-8).
+ * @param cache Optional cache for loading results.
  * @return LoadResult containing entries, errors, and options.
  */
 fun loadFile(
@@ -32,7 +34,8 @@ fun loadFile(
     logTimings: LoadTimingsLogger? = null,
     extraValidations: List<Validation> = emptyList(),
     autoPluginsEnabled: Boolean = false,
-    encoding: String? = null
+    encoding: String? = null,
+    cache: BeancountCache? = null
 ): LoadResult {
     // Normalize filename (expand vars, make absolute)
     val normalizedFilename = File(filename).let { file ->
@@ -42,6 +45,24 @@ fun loadFile(
         if (expanded.isAbsolute) expanded else File(File(".").absolutePath, expanded.path)
     }.canonicalPath
 
+    // Try cache first
+    if (cache != null) {
+        val cached = cache.get(normalizedFilename, autoPluginsEnabled)
+        if (cached != null) {
+            // Run validations on cached result
+            logTimings?.logTiming("validate (cached)", indent = 1)
+            val allValidations = BASIC_VALIDATIONS + extraValidations
+            val validationErrors = allValidations.flatMap {
+                it(cached.entries, cached.options)
+            }
+            return LoadResult(
+                entries = cached.entries,
+                errors = cached.errors + validationErrors,
+                options = cached.options
+            )
+        }
+    }
+
     val visitedFiles = mutableSetOf<String>()
     val result = loadFileInternal(
         normalizedFilename,
@@ -50,6 +71,9 @@ fun loadFile(
         logTimings,
         autoPluginsEnabled
     )
+
+    // Store in cache
+    cache?.put(normalizedFilename, autoPluginsEnabled, result)
 
     // Run validations only on the top-level result
     logTimings?.logTiming("validate", indent = 1)

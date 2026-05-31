@@ -30,10 +30,13 @@ import io.github.tonyzhye.beancount.core.*
  * This is useful for strict validation mode.
  *
  * Plugins included:
+ * - CheckCommodityPlugin: Validates all commodities have Commodity directives
  * - CoherentCostPlugin: Validates cost consistency
  * - LeafOnlyPlugin: Ensures only leaf accounts have postings
+ * - NoDuplicatesPlugin: Ensures no duplicate transactions
+ * - NoUnusedPlugin: Ensures all open accounts are used
+ * - OneCommodityPlugin: Ensures accounts use only one commodity
  * - UniquePricesPlugin: Ensures unique prices per day
- * - CheckClosingPlugin: Expands closing metadata to balance checks
  */
 object PedanticPlugin {
 
@@ -48,6 +51,11 @@ object PedanticPlugin {
         val allErrors = mutableListOf<BeancountError>()
         var currentEntries = entries
 
+        // Run check commodity validation
+        val (entries0, errors0) = CheckCommodityPlugin.transform(currentEntries, options)
+        currentEntries = entries0
+        allErrors.addAll(errors0)
+
         // Run coherent cost validation
         val (entries1, errors1) = CoherentCostPlugin.transform(currentEntries, options)
         currentEntries = entries1
@@ -58,10 +66,25 @@ object PedanticPlugin {
         currentEntries = entries2
         allErrors.addAll(errors2)
 
-        // Run unique prices validation
-        val (entries3, errors3) = UniquePricesPlugin.transform(currentEntries, options)
+        // Run no duplicates validation
+        val (entries3, errors3) = NoDuplicatesPlugin.transform(currentEntries, options)
         currentEntries = entries3
         allErrors.addAll(errors3)
+
+        // Run no unused accounts validation
+        val (entries4, errors4) = NoUnusedPlugin.transform(currentEntries, options)
+        currentEntries = entries4
+        allErrors.addAll(errors4)
+
+        // Run one commodity validation
+        val (entries5, errors5) = OneCommodityPlugin.transform(currentEntries, options)
+        currentEntries = entries5
+        allErrors.addAll(errors5)
+
+        // Run unique prices validation
+        val (entries6, errors6) = UniquePricesPlugin.transform(currentEntries, options)
+        currentEntries = entries6
+        allErrors.addAll(errors6)
 
         return currentEntries to allErrors
     }

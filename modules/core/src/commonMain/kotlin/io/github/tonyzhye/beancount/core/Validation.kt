@@ -291,7 +291,7 @@ fun validateCheckTransactionBalances(entries: List<Directive>, options: Options)
         // Compute residual using weights (cost/price conversions applied)
         val residual = Inventory()
         for (posting in entry.postings) {
-            val weight = getWeight(posting) ?: continue
+            val weight = getWeight(posting)
             residual.addAmount(weight)
         }
 

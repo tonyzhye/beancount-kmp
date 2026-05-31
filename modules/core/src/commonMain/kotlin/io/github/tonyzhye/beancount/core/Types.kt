@@ -42,6 +42,11 @@ expect class Decimal : Comparable<Decimal> {
      */
     fun scaleByPowerOfTen(n: Int): Decimal
     
+    /**
+     * Returns a Decimal truncated towards zero (remove fractional part).
+     */
+    fun truncate(): Decimal
+    
     override fun compareTo(other: Decimal): Int
     
     companion object {

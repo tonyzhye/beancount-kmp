@@ -207,6 +207,17 @@ class PriceDatabase private constructor(
          * @return PriceDatabase instance
          */
         fun build(entries: List<Directive>): PriceDatabase {
+            return buildPriceMap(entries)
+        }
+
+        /**
+         * Build a PriceDatabase (price map) from a list of entries.
+         * Alias for [build] to match Python beancount API.
+         *
+         * @param entries List of directives
+         * @return PriceDatabase instance
+         */
+        fun buildPriceMap(entries: List<Directive>): PriceDatabase {
             // Extract Price entries
             val priceEntries = entries.filterIsInstance<Price>()
 

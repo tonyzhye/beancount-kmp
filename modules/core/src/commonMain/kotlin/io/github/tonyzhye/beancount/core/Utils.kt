@@ -51,36 +51,6 @@ fun CostSpec.toCost(defaultDate: LocalDate): Cost? {
 }
 
 /**
- * Get the weight of a posting for balance checking.
- * Based on beancount.core.convert.get_weight.
- *
- * The weight is the amount used to balance a transaction:
- * - If posting has cost: weight = cost.number * units.number (in cost.currency)
- * - If posting has price: weight = price.number * units.number (in price.currency)
- * - Otherwise: weight = units
- */
-fun getWeight(posting: Posting): Amount? {
-    val units = posting.units ?: return null
-
-    // If the posting has a cost, use that as the weight.
-    val costSpec = posting.cost
-    if (costSpec != null && costSpec.numberPer != null && costSpec.currency != null) {
-        return Amount(costSpec.numberPer * units.number, costSpec.currency)
-    }
-
-    // Otherwise use the units.
-    var weight = units
-
-    // Unless there is a price available; use that if present.
-    val price = posting.price
-    if (price != null) {
-        weight = Amount(price.number * units.number, price.currency)
-    }
-
-    return weight
-}
-
-/**
  * Check if a transaction has at least one conversion posting.
  * Based on beancount.core.data.transaction_has_conversion.
  */

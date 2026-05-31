@@ -287,8 +287,7 @@ private class EntryPrinter(
         }
 
         val weightStr = if (renderWeights && posting.units != null) {
-            val weight = getWeight(posting)
-            weight?.toString() ?: ""
+            getWeight(posting).toString()
         } else ""
 
         val priceStr = posting.price?.let { price ->

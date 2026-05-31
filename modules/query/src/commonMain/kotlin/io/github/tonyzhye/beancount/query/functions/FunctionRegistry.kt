@@ -223,6 +223,128 @@ object FunctionRegistry {
             }
             BqlStringValue(formatted)
         }
+
+        // Additional date functions
+        registerFunction("weekday", FunctionSignature(listOf(BqlType.Date), BqlType.Integer)) { args ->
+            val date = args[0].asDate()
+            // Compute day of week (1=Monday, 7=Sunday)
+            // Using Zeller's congruence simplified
+            val q = date.dayOfMonth
+            val m = if (date.monthNumber < 3) date.monthNumber + 12 else date.monthNumber
+            val year = if (date.monthNumber < 3) date.year - 1 else date.year
+            val k = year % 100
+            val j = year / 100
+            val h = (q + ((13 * (m + 1)) / 5) + k + (k / 4) + (j / 4) - 2 * j) % 7
+            val dow = if (h <= 0) h + 7 else h
+            // h: 0=Sat, 1=Sun, 2=Mon... convert to 1=Mon, 7=Sun
+            val result = if (dow == 1) 7 else dow - 1
+            BqlIntegerValue(result)
+        }
+
+        registerFunction("quarter", FunctionSignature(listOf(BqlType.Date), BqlType.Integer)) { args ->
+            val month = args[0].asDate().monthNumber
+            BqlIntegerValue((month - 1) / 3 + 1)
+        }
+
+        registerFunction("days_between", FunctionSignature(listOf(BqlType.Date, BqlType.Date), BqlType.Integer)) { args ->
+            val d1 = args[0].asDate()
+            val d2 = args[1].asDate()
+            BqlIntegerValue(daysBetweenDates(d1, d2))
+        }
+
+        // String functions
+        registerFunction("join", FunctionSignature(listOf(BqlType.String, BqlType.String), BqlType.String)) { args ->
+            // Simple 2-arg join
+            BqlStringValue(args[0].asString() + args[1].asString())
+        }
+
+        registerFunction("replace", FunctionSignature(listOf(BqlType.String, BqlType.String, BqlType.String), BqlType.String)) { args ->
+            BqlStringValue(args[0].asString().replace(args[1].asString(), args[2].asString()))
+        }
+
+        registerFunction("lstrip", FunctionSignature(listOf(BqlType.String), BqlType.String)) { args ->
+            BqlStringValue(args[0].asString().trimStart())
+        }
+
+        registerFunction("rstrip", FunctionSignature(listOf(BqlType.String), BqlType.String)) { args ->
+            BqlStringValue(args[0].asString().trimEnd())
+        }
+
+        registerFunction("strip", FunctionSignature(listOf(BqlType.String), BqlType.String)) { args ->
+            BqlStringValue(args[0].asString().trim())
+        }
+
+        // Math functions
+        registerFunction("floor", FunctionSignature(listOf(BqlType.Decimal), BqlType.Decimal)) { args ->
+            val num = args[0].asDecimal()
+            val truncated = num.truncate()
+            // If num is negative and has fractional part, floor is truncated - 1
+            BqlDecimalValue(if (num.isNegative() && num != truncated) truncated - Decimal.ONE else truncated)
+        }
+
+        registerFunction("ceil", FunctionSignature(listOf(BqlType.Decimal), BqlType.Decimal)) { args ->
+            val num = args[0].asDecimal()
+            val truncated = num.truncate()
+            // If num is positive and has fractional part, ceil is truncated + 1
+            BqlDecimalValue(if (num.isPositive() && num != truncated) truncated + Decimal.ONE else truncated)
+        }
+
+        registerFunction("sign", FunctionSignature(listOf(BqlType.Decimal), BqlType.Integer)) { args ->
+            val num = args[0].asDecimal()
+            BqlIntegerValue(when {
+                num.isZero() -> 0
+                num.isNegative() -> -1
+                else -> 1
+            })
+        }
+
+        registerFunction("safediv", FunctionSignature(listOf(BqlType.Decimal, BqlType.Decimal), BqlType.Decimal)) { args ->
+            val dividend = args[0].asDecimal()
+            val divisor = args[1].asDecimal()
+            BqlDecimalValue(if (divisor.isZero()) Decimal.ZERO else dividend / divisor)
+        }
+
+        // Account functions
+        registerFunction("depth", FunctionSignature(listOf(BqlType.String), BqlType.Integer)) { args ->
+            val account = args[0].asString()
+            BqlIntegerValue(account.count { it == ':' } + 1)
+        }
+
+        registerFunction("leaf", FunctionSignature(listOf(BqlType.String), BqlType.String)) { args ->
+            val account = args[0].asString()
+            val lastColon = account.lastIndexOf(':')
+            BqlStringValue(if (lastColon >= 0) account.substring(lastColon + 1) else account)
+        }
+
+        registerFunction("split", FunctionSignature(listOf(BqlType.String), BqlType.Set)) { args ->
+            BqlSetValue(args[0].asString().split(':').toSet())
+        }
+
+        // Null/empty check functions
+        registerFunction("empty", FunctionSignature(listOf(BqlType.Any), BqlType.Boolean)) { args ->
+            val value = args[0]
+            BqlBooleanValue(when {
+                value.isNull() -> true
+                value.type == BqlType.String -> value.asString().isEmpty()
+                value.type == BqlType.Set -> value.asSet().isEmpty()
+                else -> false
+            })
+        }
+
+        registerFunction("present", FunctionSignature(listOf(BqlType.Any), BqlType.Boolean)) { args ->
+            val value = args[0]
+            BqlBooleanValue(when {
+                value.isNull() -> false
+                value.type == BqlType.String -> value.asString().isNotEmpty()
+                value.type == BqlType.Set -> value.asSet().isNotEmpty()
+                else -> true
+            })
+        }
+    }
+
+    private fun daysBetweenDates(d1: kotlinx.datetime.LocalDate, d2: kotlinx.datetime.LocalDate): Int {
+        // Simplified day count (not accounting for leap years precisely)
+        return (d2.year - d1.year) * 365 + (d2.monthNumber - d1.monthNumber) * 30 + (d2.dayOfMonth - d1.dayOfMonth)
     }
 
     private fun registerBuiltInAggregators() {

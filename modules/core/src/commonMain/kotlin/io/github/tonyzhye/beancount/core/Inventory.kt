@@ -211,6 +211,20 @@ class Inventory : Iterable<Position> {
         return newInventory
     }
 
+    /**
+     * Negate all positions in this inventory (return new inventory).
+     */
+    fun negate(): Inventory {
+        val result = Inventory()
+        for ((key, position) in positions) {
+            result.positions[key] = Position(
+                Amount(-position.units.number, position.units.currency),
+                position.cost
+            )
+        }
+        return result
+    }
+
     // Iterable implementation
     override fun iterator(): Iterator<Position> = positions.values.iterator()
 
