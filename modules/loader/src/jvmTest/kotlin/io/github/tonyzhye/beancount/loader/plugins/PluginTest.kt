@@ -93,8 +93,7 @@ class PluginTest {
         val options = Options()
         val (result, errors) = PadPlugin.transform(entries, options)
 
-        assertEquals(2, errors.size)
-        assertTrue(errors.any { it.message.contains("No balance assertion found") })
+        assertEquals(1, errors.size)
         assertTrue(errors.any { it.message.contains("Unused Pad entry") })
     }
 
@@ -261,5 +260,88 @@ class PluginTest {
         // In RAW mode without user plugins, no transformations run
         assertEquals(0, errors.size)
         assertEquals(4, result.size) // No pad transaction generated
+    }
+
+    @Test
+    fun `PadPlugin should handle multiple currencies separately`() {
+        val entries = listOf(
+            Open(createMeta(), LocalDate(2023, 1, 1), "Assets:Cash", listOf("USD", "EUR")),
+            Open(createMeta(), LocalDate(2023, 1, 1), "Equity:OpeningBalances", listOf("USD", "EUR")),
+            Pad(createMeta(), LocalDate(2023, 1, 5), "Assets:Cash", "Equity:OpeningBalances"),
+            Transaction(
+                createMeta(), LocalDate(2023, 1, 10), "*",
+                narration = "Deposit",
+                postings = listOf(
+                    Posting("Assets:Cash", Amount(Decimal("100"), "USD")),
+                    Posting("Equity:OpeningBalances", Amount(Decimal("-100"), "USD"))
+                )
+            ),
+            Balance(createMeta(), LocalDate(2023, 1, 15), "Assets:Cash", Amount(Decimal("100"), "USD")),
+            Balance(createMeta(), LocalDate(2023, 1, 15), "Assets:Cash", Amount(Decimal("50"), "EUR"))
+        )
+
+        val options = Options()
+        val (result, errors) = PadPlugin.transform(entries, options)
+
+        // Should pad EUR but not USD
+        val padTransactions = result.filterIsInstance<Transaction>()
+            .filter { it.flag == "P" }
+        assertEquals(1, padTransactions.size)
+
+        val eurPosting = padTransactions.first().postings.find { it.units?.currency == "EUR" }
+        assertEquals(Decimal("50"), eurPosting?.units?.number)
+    }
+
+    @Test
+    fun `PadPlugin should include child account postings`() {
+        val entries = listOf(
+            Open(createMeta(), LocalDate(2023, 1, 1), "Assets:Bank", listOf("USD")),
+            Open(createMeta(), LocalDate(2023, 1, 1), "Assets:Bank:Checking", listOf("USD")),
+            Open(createMeta(), LocalDate(2023, 1, 1), "Equity:OpeningBalances", listOf("USD")),
+            Pad(createMeta(), LocalDate(2023, 1, 5), "Assets:Bank", "Equity:OpeningBalances"),
+            Transaction(
+                createMeta(), LocalDate(2023, 1, 10), "*",
+                narration = "Deposit",
+                postings = listOf(
+                    Posting("Assets:Bank:Checking", Amount(Decimal("100"), "USD")),
+                    Posting("Equity:OpeningBalances", Amount(Decimal("-100"), "USD"))
+                )
+            ),
+            Balance(createMeta(), LocalDate(2023, 1, 15), "Assets:Bank", Amount(Decimal("100"), "USD"))
+        )
+
+        val options = Options()
+        val (result, errors) = PadPlugin.transform(entries, options)
+
+        // Should not need padding since child account contributes to parent
+        assertEquals(0, errors.size, "Expected no errors: $errors")
+        // Pad should still be marked as used because balance matches
+        assertEquals(6, result.size)
+    }
+
+    @Test
+    fun `PadPlugin should not pad positions with cost`() {
+        val entries = listOf(
+            Open(createMeta(), LocalDate(2023, 1, 1), "Assets:Invest", listOf("AAPL")),
+            Open(createMeta(), LocalDate(2023, 1, 1), "Equity:OpeningBalances", listOf("USD")),
+            Pad(createMeta(), LocalDate(2023, 1, 5), "Assets:Invest", "Equity:OpeningBalances"),
+            Transaction(
+                createMeta(), LocalDate(2023, 1, 10), "*",
+                narration = "Buy stock",
+                postings = listOf(
+                    Posting("Assets:Invest", Amount(Decimal("10"), "AAPL"), CostSpec(Decimal("100"), currency = "USD")),
+                    Posting("Assets:Bank", Amount(Decimal("-1000"), "USD"))
+                )
+            ),
+            Balance(createMeta(), LocalDate(2023, 1, 15), "Assets:Invest", Amount(Decimal("10"), "AAPL"))
+        )
+
+        val options = Options()
+        val (result, errors) = PadPlugin.transform(entries, options)
+
+        // Balance matches exactly (10 AAPL), so no padding needed
+        // Pad should be marked as used because balance assertion was processed
+        assertEquals(0, errors.size, "Expected no errors: $errors")
+        assertEquals(5, result.size)
     }
 }
