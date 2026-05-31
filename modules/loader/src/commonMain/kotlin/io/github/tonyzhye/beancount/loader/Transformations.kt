@@ -3,11 +3,15 @@ package io.github.tonyzhye.beancount.loader
 import io.github.tonyzhye.beancount.core.*
 import io.github.tonyzhye.beancount.loader.plugins.AutoAccountsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.BalancePlugin
+import io.github.tonyzhye.beancount.loader.plugins.CheckClosingPlugin
+import io.github.tonyzhye.beancount.loader.plugins.CoherentCostPlugin
 import io.github.tonyzhye.beancount.loader.plugins.CurrencyAccountsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.DocumentsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.ImplicitPricesPlugin
 import io.github.tonyzhye.beancount.loader.plugins.LeafOnlyPlugin
 import io.github.tonyzhye.beancount.loader.plugins.PadPlugin
+import io.github.tonyzhye.beancount.loader.plugins.PedanticPlugin
+import io.github.tonyzhye.beancount.loader.plugins.UniquePricesPlugin
 import io.github.tonyzhye.beancount.plugin.*
 
 /**
@@ -99,6 +103,10 @@ private fun resolvePlugin(moduleName: String, config: String? = null): Beancount
         "beancount.plugins.implicit_prices" -> ImplicitPricesPluginAdapter()
         "beancount.plugins.currency_accounts" -> CurrencyAccountsPluginAdapter(config)
         "beancount.plugins.leafonly" -> LeafOnlyPluginAdapter()
+        "beancount.plugins.unique_prices" -> UniquePricesPluginAdapter()
+        "beancount.plugins.coherent_cost" -> CoherentCostPluginAdapter()
+        "beancount.plugins.check_closing" -> CheckClosingPluginAdapter()
+        "beancount.plugins.pedantic" -> PedanticPluginAdapter()
         "beancount.plugins.auto" -> AutoPluginAdapter()
         else -> null // Unknown plugin - skip with warning
     }
@@ -204,6 +212,50 @@ private class LeafOnlyPluginAdapter : BeancountPlugin {
 
     override fun transform(context: PluginContext): PluginResult {
         val (entries, errors) = LeafOnlyPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class UniquePricesPluginAdapter : BeancountPlugin {
+    override val name = "unique_prices"
+    override val description = "Validate unique prices per day for each currency pair"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = UniquePricesPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class CoherentCostPluginAdapter : BeancountPlugin {
+    override val name = "coherent_cost"
+    override val description = "Validate currencies are used consistently with or without cost"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = CoherentCostPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class CheckClosingPluginAdapter : BeancountPlugin {
+    override val name = "check_closing"
+    override val description = "Expand closing metadata to zero balance checks"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = CheckClosingPlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class PedanticPluginAdapter : BeancountPlugin {
+    override val name = "pedantic"
+    override val description = "Enable all pedantic validation plugins"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val (entries, errors) = PedanticPlugin.transform(context.entries, context.options)
         return PluginResult(entries = entries, errors = errors)
     }
 }
