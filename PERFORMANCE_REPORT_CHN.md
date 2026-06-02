@@ -1,9 +1,9 @@
 # Beancount JVM vs Python 性能基准测试报告
 
-**测试日期**: 2026-05-31  
-**Python 版本**: 3.14.5 + beancount 3.2.3  
-**JVM 版本**: OpenJDK 21 (Temurin)  
-**Kotlin 版本**: 2.3.20  
+**测试日期**: 2026-06-02
+**Python 版本**: 3.14.5 + beancount 3.2.3
+**JVM 版本**: OpenJDK 21 (Temurin)
+**Kotlin 版本**: 2.3.20
 **测试环境**: Windows (x86_64)
 
 ---
@@ -16,9 +16,9 @@
 
 | 指标 | 结果 |
 |------|------|
-| **平均加速比** | **10.83x** (Kotlin 比 Python 快约 11 倍) |
-| **最佳加速比** | **30.19x** (10MB 合成文件) |
-| **最差加速比** | **0.82x** (starter.beancount 小文件，JVM 冷启动影响) |
+| **平均加速比** | **10.67x** (Kotlin 比 Python 快约 11 倍) |
+| **最佳加速比** | **29.57x** (10MB 合成文件) |
+| **最差加速比** | **0.77x** (starter.beancount 小文件，JVM 冷启动影响) |
 | **内存占用** | 大文件 Kotlin 使用更少内存，小文件 JVM 基础开销较高 |
 | **输出一致性** | 6 个测试中有 5 个完全匹配，1 个有 minor diff (basic.beancount) |
 
@@ -52,7 +52,7 @@
 
 - **迭代次数**: 小文件 5 次，大文件 2-3 次
 - **预热**: 每次迭代前强制 GC，排除缓存影响
-- **一致性标准**: entry count 差值 ≤ 5，error count 差值 ≤ 5 视为可接受
+- **一致性标准**: entry count 差值 <= 5，error count 差值 <= 5 视为可接受
 
 ---
 
@@ -64,37 +64,37 @@
 
 | 指标 | Python | Kotlin | 比率 |
 |------|--------|--------|------|
-| 解析时间 | 0.566s | **0.164s** | 3.45x faster |
-| Entries/sec | 7,461 | **25,691** | 3.44x |
-| MB/sec | 0.82 | **2.81** | 3.43x |
-| 内存占用 | 15.47 MB | **17.00 MB** | 1.10x |
+| 解析时间 | 0.560s | **0.156s** | 3.59x faster |
+| Entries/sec | 7,534 | **27,029** | 3.59x |
+| MB/sec | 0.83 | **2.96** | 3.57x |
+| 内存占用 | 15.47 MB | **18.63 MB** | 1.20x |
 | 输出一致性 | PASS | PASS | - |
 
 #### 5MB 合成文件 (~21,000 entries)
 
 | 指标 | Python | Kotlin | 比率 |
 |------|--------|--------|------|
-| 解析时间 | 2.955s | **0.208s** | 14.21x faster |
-| Entries/sec | 7,105 | **100,980** | 14.21x |
-| MB/sec | 0.78 | **11.08** | 14.21x |
-| 内存占用 | 72.17 MB | **67.14 MB** | 0.93x (更少) |
+| 解析时间 | 2.994s | **0.205s** | 14.61x faster |
+| Entries/sec | 7,014 | **102,465** | 14.61x |
+| MB/sec | 0.77 | **11.24** | 14.60x |
+| 内存占用 | 72.17 MB | **74.29 MB** | 1.03x |
 | 输出一致性 | PASS | PASS | - |
 
 #### 10MB 合成文件 (~42,000 entries)
 
 | 指标 | Python | Kotlin | 比率 |
 |------|--------|--------|------|
-| 解析时间 | 8.615s | **0.285s** | 30.19x faster |
-| Entries/sec | 4,872 | **147,087** | 30.19x |
-| MB/sec | 0.53 | **16.13** | 30.19x |
-| 内存占用 | 146.27 MB | **136.12 MB** | 0.93x (更少) |
+| 解析时间 | 8.724s | **0.295s** | 29.57x faster |
+| Entries/sec | 4,811 | **142,241** | 29.57x |
+| MB/sec | 0.53 | **15.60** | 29.43x |
+| 内存占用 | 146.27 MB | **138.12 MB** | 0.94x (更少) |
 | 输出一致性 | PASS | PASS | - |
 
 **合成文件趋势分析**:
-- 随着文件增大，Kotlin 的加速比显著提升 (3.45x → 14.21x → 30.19x)
-- Python 的解析速度随文件增大而下降 (7,461 → 7,105 → 4,872 entries/sec)
-- Kotlin 的解析速度基本保持稳定 (~25K-147K entries/sec)
-- 大文件时 Kotlin 内存占用反而比 Python 少 7%
+- 随着文件增大，Kotlin 的加速比显著提升 (3.59x -> 14.61x -> 29.57x)
+- Python 的解析速度随文件增大而下降 (7,534 -> 7,014 -> 4,811 entries/sec)
+- Kotlin 的解析速度基本保持稳定 (~27K-142K entries/sec)
+- 大文件时 Kotlin 内存占用反而比 Python 少 6%
 
 ---
 
@@ -104,10 +104,10 @@
 
 | 指标 | Python | Kotlin | 比率 |
 |------|--------|--------|------|
-| 解析时间 | **0.008s** | 0.010s | 0.82x (Python 略快) |
-| Entries/sec | **6,023** | 4,814 | 0.80x |
-| MB/sec | **1.83** | 1.46 | 0.80x |
-| 内存占用 | **0.18 MB** | 0.69 MB | 3.84x (JVM 基础开销) |
+| 解析时间 | **0.008s** | 0.010s | 0.77x (Python 略快) |
+| Entries/sec | **6,208** | 4,530 | 0.73x |
+| MB/sec | **1.88** | 1.37 | 0.73x |
+| 内存占用 | **0.18 MB** | 0.73 MB | 4.08x (JVM 基础开销) |
 | 输出一致性 | PASS | PASS | - |
 
 **分析**: 这是唯一一个 Python 更快的场景。原因在于：
@@ -119,32 +119,32 @@
 
 | 指标 | Python | Kotlin | 比率 |
 |------|--------|--------|------|
-| 解析时间 | 0.027s | **0.008s** | 3.40x faster |
-| Entries/sec | 4,684 | **16,009** | 3.42x |
-| MB/sec | 0.72 | **2.46** | 3.42x |
-| 内存占用 | 0.29 MB | **1.44 MB** | 4.95x |
-| 输出一致性 | PASS (minor diff) | - | Entry diff: -1, Error diff: 4 |
+| 解析时间 | 0.028s | **0.007s** | 3.76x faster |
+| Entries/sec | 4,648 | **17,182** | 3.70x |
+| MB/sec | 0.71 | **2.62** | 3.69x |
+| 内存占用 | 0.29 MB | **1.62 MB** | 5.57x |
+| 输出一致性 | PASS (minor diff) | - | Entry diff: 0, Error diff: 2 |
 
 **分析**:
-- Kotlin 仍有 3.4x 加速，说明 JVM 预热后性能优势明显
-- 存在 minor diff: Python 解析出 128 entries/0 errors，Kotlin 为 127 entries/4 errors
-- 差异可能来自 Python 和 Kotlin parser 对边缘语法（如 balance assertion tolerance）的不同处理
+- Kotlin 仍有 3.76x 加速，说明 JVM 预热后性能优势明显
+- 存在 minor diff: Python 解析出 128 entries/0 errors，Kotlin 为 128 entries/2 errors
+- 差异可能来自 Python 和 Kotlin parser 对边缘语法的不同处理
 - 内存差异仍然来自 JVM 基础开销
 
 #### example.beancount (339KB, 2,247 entries)
 
 | 指标 | Python | Kotlin | 比率 |
 |------|--------|--------|------|
-| 解析时间 | 0.482s | **0.037s** | 12.90x faster |
-| Entries/sec | 4,665 | **60,159** | 12.90x |
-| MB/sec | 0.69 | **8.87** | 12.86x |
-| 内存占用 | 4.40 MB | **9.58 MB** | 2.18x |
+| 解析时间 | 0.485s | **0.041s** | 11.70x faster |
+| Entries/sec | 4,637 | **54,199** | 11.69x |
+| MB/sec | 0.68 | **7.99** | 11.75x |
+| 内存占用 | 4.40 MB | **12.48 MB** | 2.84x |
 | 输出一致性 | PASS | PASS | - |
 
 **分析**:
-- 这是最具代表性的真实场景，Kotlin 快 **12.9 倍**
+- 这是最具代表性的真实场景，Kotlin 快 **11.7 倍**
 - example.beancount 包含多种 directive 类型 (Open, Close, Commodity, Price, Transaction, Balance, Pad, Note, Document, Event, Query, Custom)
-- 内存差异 2.18x 在可接受范围内，考虑到 Kotlin 的 immutable data class 和更丰富的类型系统
+- 内存差异 2.84x 在可接受范围内，考虑到 Kotlin 的 immutable data class 和更丰富的类型系统
 
 ---
 
@@ -154,39 +154,39 @@
 
 | 文件 | 大小 | Entries | Python 时间 | Kotlin 时间 | 加速比 |
 |------|------|---------|-------------|-------------|--------|
-| 1MB Synthetic | 0.5MB | 4,220 | 0.566s | **0.164s** | 3.45x |
-| 5MB Synthetic | 2.3MB | 20,997 | 2.955s | **0.208s** | 14.21x |
-| 10MB Synthetic | 4.6MB | 41,969 | 8.615s | **0.285s** | 30.19x |
-| starter.beancount | 0.0MB | 47 | **0.008s** | 0.010s | 0.82x |
-| basic.beancount | 0.0MB | 128 | 0.027s | **0.008s** | 3.40x |
-| example.beancount | 0.3MB | 2,247 | 0.482s | **0.037s** | 12.90x |
+| 1MB Synthetic | 0.5MB | 4,220 | 0.560s | **0.156s** | 3.59x |
+| 5MB Synthetic | 2.3MB | 20,997 | 2.994s | **0.205s** | 14.61x |
+| 10MB Synthetic | 4.6MB | 41,969 | 8.724s | **0.295s** | 29.57x |
+| starter.beancount | 0.0MB | 47 | **0.008s** | 0.010s | 0.77x |
+| basic.beancount | 0.0MB | 128 | 0.028s | **0.007s** | 3.76x |
+| example.beancount | 0.3MB | 2,247 | 0.485s | **0.041s** | 11.70x |
 
 ### 内存占用汇总
 
 | 文件 | Python 内存 | Kotlin 内存 | 内存比率 |
 |------|-------------|-------------|----------|
-| 1MB Synthetic | 15.47 MB | 17.00 MB | 1.10x |
-| 5MB Synthetic | 72.17 MB | 67.14 MB | **0.93x** |
-| 10MB Synthetic | 146.27 MB | 136.12 MB | **0.93x** |
-| starter.beancount | 0.18 MB | 0.69 MB | 3.84x |
-| basic.beancount | 0.29 MB | 1.44 MB | 4.95x |
-| example.beancount | 4.40 MB | 9.58 MB | 2.18x |
+| 1MB Synthetic | 15.47 MB | 18.63 MB | 1.20x |
+| 5MB Synthetic | 72.17 MB | 74.29 MB | 1.03x |
+| 10MB Synthetic | 146.27 MB | 138.12 MB | **0.94x** |
+| starter.beancount | 0.18 MB | 0.73 MB | 4.08x |
+| basic.beancount | 0.29 MB | 1.62 MB | 5.57x |
+| example.beancount | 4.40 MB | 12.48 MB | 2.84x |
 
 ### 内存趋势分析
 
 ```
 文件大小 vs 内存占用:
 
-Python:  0.18MB ──── 4.40MB ───── 15.47MB ───── 72.17MB ───── 146.27MB
+Python:  0.18MB ---- 4.40MB ----- 15.47MB ----- 72.17MB ----- 146.27MB
          (15KB)    (339KB)      (0.5MB)       (2.3MB)        (4.6MB)
 
-Kotlin:  0.69MB ──── 9.58MB ───── 17.00MB ───── 67.14MB ───── 136.12MB
+Kotlin:  0.73MB ---- 12.48MB ---- 18.63MB ----- 74.29MB ----- 138.12MB
          (15KB)    (339KB)      (0.5MB)       (2.3MB)        (4.6MB)
 
 分析:
 - 小文件 (< 100KB): JVM 基础运行时占主导，内存为 Python 的 2-5 倍
 - 中文件 (100KB-1MB): 差距缩小到 1-2 倍
-- 大文件 (> 1MB): Kotlin 反而比 Python 节省 5-10% 内存
+- 大文件 (> 1MB): Kotlin 反而比 Python 节省 6-7% 内存
 ```
 
 ---
@@ -220,7 +220,7 @@ Kotlin:  0.69MB ──── 9.58MB ───── 17.00MB ───── 67.1
 
 ### 核心结论
 
-1. **生产环境推荐使用 Kotlin**: 对于真实账本 (≥100KB)，Kotlin 平均快 **10-13 倍**
+1. **生产环境推荐使用 Kotlin**: 对于真实账本 (>=100KB)，Kotlin 平均快 **10-12 倍**
 2. **大文件优势显著**: 10MB 文件快 30 倍，适合企业级财务系统
 3. **内存可接受**: 大文件 Kotlin 内存更少，小文件差异在可接受范围
 4. **输出一致性良好**: 5/6 测试完全匹配，1 个 minor diff 不影响核心数据
@@ -277,6 +277,6 @@ JVM 堆内存: 512MB (测试进程)
 
 ---
 
-*报告生成时间: 2026-05-31*  
-*测试框架: JUnit 5 + 自定义 Python 桥接*  
+*报告生成时间: 2026-06-02*
+*测试框架: JUnit 5 + 自定义 Python 桥接*
 *数据可信度: 多次迭代取平均值，排除异常值*

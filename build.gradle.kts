@@ -4,7 +4,7 @@ plugins {
 
 allprojects {
     group = "io.github.tonyzhye.beancount"
-    version = "0.1.0-SNAPSHOT"
+    version = "3.2.3"
 
     repositories {
         mavenCentral()

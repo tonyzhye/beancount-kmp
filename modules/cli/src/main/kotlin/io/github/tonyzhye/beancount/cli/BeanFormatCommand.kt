@@ -1,8 +1,10 @@
 package io.github.tonyzhye.beancount.cli
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
+import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
@@ -25,12 +27,16 @@ class BeanFormatCommand : CliktCommand(
     name = "bean-format",
     help = "Automatically format a Beancount ledger"
 ) {
-    private val filename by argument("FILENAME")
+    init {
+        beancountVersionOption()
+    }
+    private val filenames by argument("FILENAMES")
         .file(mustExist = true, canBeDir = false)
-        .help("Beancount input file")
+        .help("Beancount input file(s)")
+        .multiple(required = true)
 
     private val output by option("-o", "--output")
-        .help("Output file (default: stdout)")
+        .help("Output file (default: stdout, only valid with single input)")
 
     private val prefixWidth by option("-w", "--prefix-width")
         .int()
@@ -46,10 +52,13 @@ class BeanFormatCommand : CliktCommand(
 
     private val inPlace by option("-i", "--in-place")
         .flag(default = false)
-        .help("Format file in place")
+        .help("Format file(s) in place")
 
     override fun run() {
-        val contents = filename.readText()
+        if (output != null && filenames.size > 1) {
+            echo("Error: --output can only be used with a single input file.", err = true)
+            throw ProgramResult(1)
+        }
 
         val options = FormatOptions(
             prefixWidth = prefixWidth,
@@ -58,18 +67,23 @@ class BeanFormatCommand : CliktCommand(
         )
 
         val formatter = BeancountFormatter()
-        val result = formatter.format(contents, options)
 
-        if (inPlace) {
-            // Write back to the same file
-            filename.writeText(result.formattedText)
-            echo("Formatted ${filename.absolutePath}")
-        } else if (output != null) {
-            // Write to specified output file
-            File(output!!).writeText(result.formattedText)
-        } else {
-            // Write to stdout
-            echo(result.formattedText)
+        for (file in filenames) {
+            val contents = file.readText()
+            val result = formatter.format(contents, options)
+
+            when {
+                inPlace -> {
+                    file.writeText(result.formattedText)
+                    echo("Formatted ${file.absolutePath}")
+                }
+                output != null -> {
+                    File(output!!).writeText(result.formattedText)
+                }
+                else -> {
+                    echo(result.formattedText)
+                }
+            }
         }
     }
 }

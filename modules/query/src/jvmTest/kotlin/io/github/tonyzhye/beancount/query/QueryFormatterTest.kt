@@ -22,7 +22,7 @@ class QueryFormatterTest {
             )
         )
 
-        val formatted = QueryFormatter.format(result, QueryFormatter.Format.TABLE)
+        val formatted = QueryFormatter.format(result, QueryFormatter.Format.TEXT)
 
         assertTrue(formatted.contains("date"))
         assertTrue(formatted.contains("account"))
@@ -88,7 +88,7 @@ class QueryFormatterTest {
             rows = emptyList()
         )
 
-        val formatted = QueryFormatter.format(result, QueryFormatter.Format.TABLE)
+        val formatted = QueryFormatter.format(result, QueryFormatter.Format.TEXT)
 
         assertTrue(formatted.contains("date"))
         assertTrue(formatted.contains("account"))
@@ -132,7 +132,7 @@ class QueryFormatterTest {
             )
         )
 
-        val tableFormatted = QueryFormatter.format(result, QueryFormatter.Format.TABLE)
+        val tableFormatted = QueryFormatter.format(result, QueryFormatter.Format.TEXT)
         assertTrue(tableFormatted.contains("(1 rows)"))
 
         val jsonFormatted = QueryFormatter.format(result, QueryFormatter.Format.JSON)

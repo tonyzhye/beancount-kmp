@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.options.validate
 import com.github.ajalt.clikt.parameters.types.int
@@ -24,11 +25,15 @@ class BeanExampleCommand : CliktCommand(
     name = "bean-example",
     help = "Generate a sample Beancount file with fictional transactions."
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val seed by option("-s", "--seed")
         .int()
         .help("Random seed for deterministic output")
 
-    private val beginDate by option("-b", "--begin-date")
+    private val dateBegin by option("-b", "--date-begin")
         .help("Start date (YYYY-MM-DD)")
         .validate {
             try {
@@ -38,8 +43,18 @@ class BeanExampleCommand : CliktCommand(
             }
         }
 
-    private val endDate by option("-e", "--end-date")
+    private val dateEnd by option("-e", "--date-end")
         .help("End date (YYYY-MM-DD)")
+        .validate {
+            try {
+                LocalDate.parse(it)
+            } catch (e: Exception) {
+                fail("Invalid date format. Use YYYY-MM-DD")
+            }
+        }
+
+    private val dateBirth by option("--date-birth")
+        .help("Birth date (YYYY-MM-DD)")
         .validate {
             try {
                 LocalDate.parse(it)
@@ -64,25 +79,40 @@ class BeanExampleCommand : CliktCommand(
         .flag(default = false)
         .help("Exclude tax-related transactions")
 
+    private val noReformat by option("--no-reformat")
+        .flag(default = false)
+        .help("Do not reformat the output (emit a single long line)")
+
+    private val verbose by option("-v", "--verbose")
+        .choice("true" to true, "false" to false)
+        .default(false)
+        .help("Produce logging output")
+
     override fun run() {
         val defaultOptions = ExampleOptions()
         val options = ExampleOptions(
             seed = seed,
             principalCurrency = currency,
-            includeInvestments = !noInvestments,
-            includeTaxes = !noTaxes,
-            dateBegin = beginDate?.let { LocalDate.parse(it) } ?: defaultOptions.dateBegin,
-            dateEnd = endDate?.let { LocalDate.parse(it) } ?: defaultOptions.dateEnd
+            includeInvestments = noInvestments == false,
+            includeTaxes = noTaxes == false,
+            dateBegin = dateBegin?.let { LocalDate.parse(it) } ?: defaultOptions.dateBegin,
+            dateEnd = dateEnd?.let { LocalDate.parse(it) } ?: defaultOptions.dateEnd,
+            dateBirth = dateBirth?.let { LocalDate.parse(it) } ?: defaultOptions.dateBirth,
+            reformat = noReformat == false
         )
 
-        echo("Generating example ledger...", err = true)
-        
+        if (verbose) {
+            echo("Generating example ledger...", err = true)
+        }
+
         val ledger = ExampleGenerator.generateString(options)
 
         val outFile = output
         if (outFile != null) {
             outFile.writeText(ledger)
-            echo("Example ledger written to ${outFile.absolutePath}")
+            if (verbose) {
+                echo("Example ledger written to ${outFile.absolutePath}")
+            }
         } else {
             echo(ledger)
         }

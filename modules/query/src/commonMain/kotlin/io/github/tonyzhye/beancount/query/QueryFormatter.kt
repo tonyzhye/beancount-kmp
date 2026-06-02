@@ -14,22 +14,53 @@ import io.github.tonyzhye.beancount.query.executor.QueryResult
 object QueryFormatter {
 
     enum class Format {
-        TABLE,
+        TEXT,
         CSV,
         JSON,
-        TSV
+        TSV,
+        BEANCOUNT
     }
 
     /**
      * Format query result.
      */
-    fun format(result: QueryResult, format: Format = Format.TABLE): String {
+    fun format(result: QueryResult, format: Format = Format.TEXT, numberify: Boolean = false): String {
+        val numericResult = if (numberify) extractNumericColumns(result) else result
         return when (format) {
-            Format.TABLE -> formatTable(result)
-            Format.CSV -> formatCsv(result)
-            Format.JSON -> formatJson(result)
-            Format.TSV -> formatTsv(result)
+            Format.TEXT -> formatTable(numericResult)
+            Format.CSV -> formatCsv(numericResult)
+            Format.JSON -> formatJson(numericResult)
+            Format.TSV -> formatTsv(numericResult)
+            Format.BEANCOUNT -> formatBeancount(numericResult)
         }
+    }
+
+    /**
+     * Extract only numeric columns (Decimal, Integer, Amount, Position, Inventory).
+     */
+    private fun extractNumericColumns(result: QueryResult): QueryResult {
+        val numericIndices = result.columnNames.mapIndexedNotNull { index, _ ->
+            val hasNumeric = result.rows.any { row ->
+                val value = row.getOrNull(index)
+                value != null && isNumeric(value)
+            }
+            if (hasNumeric) index else null
+        }
+
+        if (numericIndices.isEmpty()) return QueryResult(emptyList(), emptyList())
+
+        val newColumnNames = numericIndices.map { result.columnNames[it] }
+        val newRows = result.rows.map { row ->
+            numericIndices.map { row[it] }
+        }
+        return QueryResult(newColumnNames, newRows)
+    }
+
+    private fun isNumeric(value: BqlValue): Boolean {
+        return value.type in setOf(
+            BqlType.Decimal, BqlType.Integer,
+            BqlType.Amount, BqlType.Position, BqlType.Inventory
+        )
     }
 
     /**
@@ -110,6 +141,41 @@ object QueryFormatter {
         // Rows
         for (row in result.rows) {
             sb.appendLine(row.map { formatValue(it) }.joinToString("\t"))
+        }
+
+        return sb.toString()
+    }
+
+    /**
+     * Format as Beancount syntax.
+     * Simplified implementation: outputs results as beancount-compatible text.
+     */
+    private fun formatBeancount(result: QueryResult): String {
+        val sb = StringBuilder()
+        sb.appendLine("; Query results in beancount format")
+        sb.appendLine()
+
+        for (row in result.rows) {
+            val date = row.getOrNull(result.columnNames.indexOf("date"))?.let { formatValue(it) } ?: ""
+            val account = row.getOrNull(result.columnNames.indexOf("account"))?.let { formatValue(it) } ?: ""
+            val narration = row.getOrNull(result.columnNames.indexOf("narration"))?.let { formatValue(it) } ?: ""
+            val flag = row.getOrNull(result.columnNames.indexOf("flag"))?.let { formatValue(it) } ?: "*"
+            val position = row.getOrNull(result.columnNames.indexOf("position"))?.let { formatValue(it) } ?: ""
+            val amount = row.getOrNull(result.columnNames.indexOf("amount"))?.let { formatValue(it) } ?: ""
+
+            if (date.isNotEmpty() && account.isNotEmpty()) {
+                sb.appendLine("$date $flag \"$narration\"")
+                val pos = position.ifEmpty { amount }
+                if (pos.isNotEmpty()) {
+                    sb.appendLine("  $account  $pos")
+                } else {
+                    sb.appendLine("  $account")
+                }
+                sb.appendLine()
+            } else {
+                // Fallback to text format for non-transaction rows
+                sb.appendLine(row.map { formatValue(it) }.joinToString(" | "))
+            }
         }
 
         return sb.toString()

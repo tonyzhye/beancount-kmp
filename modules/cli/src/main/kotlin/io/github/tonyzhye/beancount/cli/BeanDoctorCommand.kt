@@ -7,6 +7,7 @@ import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
+import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
@@ -27,6 +28,7 @@ class BeanDoctorCommand : NoOpCliktCommand(
     help = "Debugging tool for beancount ledgers"
 ) {
     init {
+        beancountVersionOption()
         subcommands(
             DoctorContextCommand(),
             DoctorMissingOpenCommand(),
@@ -34,6 +36,7 @@ class BeanDoctorCommand : NoOpCliktCommand(
             DoctorDisplayContextCommand(),
             DoctorRoundtripCommand(),
             DoctorListOptionsCommand(),
+            DoctorPrintOptionsCommand(),
             DoctorAccountsCommand(),
             DoctorCommoditiesCommand(),
             DoctorPricesCommand(),
@@ -56,6 +59,9 @@ class DoctorContextCommand : CliktCommand(
     name = "context",
     help = "Describe transaction context at a specific line"
 ) {
+    init {
+        beancountVersionOption()
+    }
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -93,6 +99,9 @@ class DoctorMissingOpenCommand : CliktCommand(
     name = "missing-open",
     help = "Print Open directives missing from the ledger"
 ) {
+    init {
+        beancountVersionOption()
+    }
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -121,6 +130,9 @@ class DoctorParseCommand : CliktCommand(
     name = "parse",
     help = "Parse a ledger and show the AST"
 ) {
+    init {
+        beancountVersionOption()
+    }
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -158,6 +170,9 @@ class DoctorDisplayContextCommand : CliktCommand(
     name = "display-context",
     help = "Print the precision inferred from parsed numbers"
 ) {
+    init {
+        beancountVersionOption()
+    }
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -176,6 +191,9 @@ class DoctorRoundtripCommand : CliktCommand(
     name = "roundtrip",
     help = "Round-trip test: parse and re-format the ledger"
 ) {
+    init {
+        beancountVersionOption()
+    }
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -192,12 +210,33 @@ class DoctorRoundtripCommand : CliktCommand(
 }
 
 /**
- * List Options subcommand - show parsed options.
+ * List Options subcommand - show all available options.
  */
 class DoctorListOptionsCommand : CliktCommand(
     name = "list-options",
-    help = "List options parsed from the ledger"
+    help = "List all available beancount options"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
+    override fun run() {
+        val doctor = BeancountDoctor()
+        echo(doctor.listAllOptions())
+    }
+}
+
+/**
+ * Print Options subcommand - show options parsed from a ledger.
+ */
+class DoctorPrintOptionsCommand : CliktCommand(
+    name = "print-options",
+    help = "List options parsed from a ledger"
+) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -216,6 +255,10 @@ class DoctorAccountsCommand : CliktCommand(
     name = "accounts",
     help = "List all accounts in the ledger"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -239,6 +282,10 @@ class DoctorCommoditiesCommand : CliktCommand(
     name = "commodities",
     help = "List all commodities in the ledger"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -263,6 +310,10 @@ class DoctorPricesCommand : CliktCommand(
     name = "prices",
     help = "List all price entries in the ledger"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -287,6 +338,10 @@ class DoctorStatsCommand : CliktCommand(
     name = "stats",
     help = "Show statistics about the ledger"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -343,6 +398,10 @@ class DoctorErrorsCommand : CliktCommand(
     name = "errors",
     help = "Show detailed error information"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -392,25 +451,40 @@ class DoctorLinkedCommand : CliktCommand(
     name = "linked",
     help = "Find entries linked by tag or link"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
 
     private val tagOrLink by argument("TAG_OR_LINK")
         .help("Tag (#tag) or link (^link) to search for")
+        .optional()
 
     override fun run() {
         val result = loadFile(filename.absolutePath)
         val entries = result.entries
+        val searchKey = tagOrLink
+
+        if (searchKey == null) {
+            echo("Linked Entries: All transactions")
+            val allTransactions = entries.filterIsInstance<io.github.tonyzhye.beancount.core.Transaction>()
+            allTransactions.forEach { entry ->
+                echo("  ${entry.date} ${entry.flag} ${entry.narration}")
+            }
+            return
+        }
 
         val linkedEntries = when {
-            tagOrLink.startsWith("#") -> {
-                val tag = tagOrLink.substring(1)
+            searchKey.startsWith("#") -> {
+                val tag = searchKey.substring(1)
                 entries.filterIsInstance<io.github.tonyzhye.beancount.core.Transaction>()
                     .filter { it.tags.contains(tag) }
             }
-            tagOrLink.startsWith("^") -> {
-                val link = tagOrLink.substring(1)
+            searchKey.startsWith("^") -> {
+                val link = searchKey.substring(1)
                 entries.filterIsInstance<io.github.tonyzhye.beancount.core.Transaction>()
                     .filter { it.links.contains(link) }
             }
@@ -436,6 +510,10 @@ class DoctorLexCommand : CliktCommand(
     name = "lex",
     help = "Dump the lexer output for a Beancount syntax file"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -504,6 +582,10 @@ class DoctorRegionCommand : CliktCommand(
     name = "region",
     help = "Print transactions within a region and compute balances"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
@@ -570,6 +652,10 @@ class DoctorDirectoriesCommand : CliktCommand(
     name = "directories",
     help = "Validate directory hierarchy against ledger account names"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")

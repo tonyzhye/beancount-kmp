@@ -19,6 +19,10 @@ class BeanDepsCommand : CliktCommand(
     name = "bean-deps",
     help = "Show dependency graph between beancount files."
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument(
         name = "FILENAME",
         help = "Beancount input file"

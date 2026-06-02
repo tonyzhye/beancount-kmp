@@ -17,7 +17,8 @@ class MainCommand : CliktCommand(
             BeanDepsCommand(),
             BeanDoctorCommand(),
             BeanExampleCommand(),
-            BeanFormatCommand()
+            BeanFormatCommand(),
+            TreeifyCommand()
         )
     }
 

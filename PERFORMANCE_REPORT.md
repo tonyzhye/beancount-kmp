@@ -1,9 +1,9 @@
 # Beancount JVM vs Python Performance Benchmark Report
 
-**Test Date**: 2026-05-31  
-**Python Version**: 3.14.5 + beancount 3.2.3  
-**JVM Version**: OpenJDK 21 (Temurin)  
-**Kotlin Version**: 2.3.20  
+**Test Date**: 2026-06-02
+**Python Version**: 3.14.5 + beancount 3.2.3
+**JVM Version**: OpenJDK 21 (Temurin)
+**Kotlin Version**: 2.3.20
 **Test Environment**: Windows (x86_64)
 
 ---
@@ -16,9 +16,9 @@ This report compares the execution performance and memory usage of Beancount JVM
 
 | Metric | Result |
 |--------|--------|
-| **Average Speedup** | **10.83x** (Kotlin is ~11x faster than Python) |
-| **Best Speedup** | **30.19x** (10MB synthetic file) |
-| **Worst Speedup** | **0.82x** (starter.beancount small file, JVM cold start impact) |
+| **Average Speedup** | **10.67x** (Kotlin is ~11x faster than Python) |
+| **Best Speedup** | **29.57x** (10MB synthetic file) |
+| **Worst Speedup** | **0.77x** (starter.beancount small file, JVM cold start impact) |
 | **Memory Usage** | Kotlin uses less memory for large files; higher JVM baseline overhead for small files |
 | **Output Consistency** | 5 out of 6 tests match perfectly; 1 has minor diff (basic.beancount) |
 
@@ -52,7 +52,7 @@ This report compares the execution performance and memory usage of Beancount JVM
 
 - **Iterations**: 5 for small files, 2-3 for large files
 - **Warmup**: Force GC before each iteration to exclude caching effects
-- **Consistency Standard**: Entry count difference ≤ 5 and error count difference ≤ 5 considered acceptable
+- **Consistency Standard**: Entry count difference <= 5 and error count difference <= 5 considered acceptable
 
 ---
 
@@ -64,37 +64,37 @@ This report compares the execution performance and memory usage of Beancount JVM
 
 | Metric | Python | Kotlin | Ratio |
 |--------|--------|--------|-------|
-| Parse Time | 0.566s | **0.164s** | 3.45x faster |
-| Entries/sec | 7,461 | **25,691** | 3.44x |
-| MB/sec | 0.82 | **2.81** | 3.43x |
-| Memory Usage | 15.47 MB | **17.00 MB** | 1.10x |
+| Parse Time | 0.560s | **0.156s** | 3.59x faster |
+| Entries/sec | 7,534 | **27,029** | 3.59x |
+| MB/sec | 0.83 | **2.96** | 3.57x |
+| Memory Usage | 15.47 MB | **18.63 MB** | 1.20x |
 | Output Consistency | PASS | PASS | - |
 
 #### 5MB Synthetic File (~21,000 entries)
 
 | Metric | Python | Kotlin | Ratio |
 |--------|--------|--------|-------|
-| Parse Time | 2.955s | **0.208s** | 14.21x faster |
-| Entries/sec | 7,105 | **100,980** | 14.21x |
-| MB/sec | 0.78 | **11.08** | 14.21x |
-| Memory Usage | 72.17 MB | **67.14 MB** | 0.93x (less) |
+| Parse Time | 2.994s | **0.205s** | 14.61x faster |
+| Entries/sec | 7,014 | **102,465** | 14.61x |
+| MB/sec | 0.77 | **11.24** | 14.60x |
+| Memory Usage | 72.17 MB | **74.29 MB** | 1.03x |
 | Output Consistency | PASS | PASS | - |
 
 #### 10MB Synthetic File (~42,000 entries)
 
 | Metric | Python | Kotlin | Ratio |
 |--------|--------|--------|-------|
-| Parse Time | 8.615s | **0.285s** | 30.19x faster |
-| Entries/sec | 4,872 | **147,087** | 30.19x |
-| MB/sec | 0.53 | **16.13** | 30.19x |
-| Memory Usage | 146.27 MB | **136.12 MB** | 0.93x (less) |
+| Parse Time | 8.724s | **0.295s** | 29.57x faster |
+| Entries/sec | 4,811 | **142,241** | 29.57x |
+| MB/sec | 0.53 | **15.60** | 29.43x |
+| Memory Usage | 146.27 MB | **138.12 MB** | 0.94x (less) |
 | Output Consistency | PASS | PASS | - |
 
 **Synthetic File Trend Analysis**:
-- Kotlin speedup increases significantly with file size (3.45x → 14.21x → 30.19x)
-- Python parse speed decreases as file size grows (7,461 → 7,105 → 4,872 entries/sec)
-- Kotlin parse speed remains relatively stable (~25K-147K entries/sec)
-- For large files, Kotlin memory usage is actually ~7% less than Python
+- Kotlin speedup increases significantly with file size (3.59x -> 14.61x -> 29.57x)
+- Python parse speed decreases as file size grows (7,534 -> 7,014 -> 4,811 entries/sec)
+- Kotlin parse speed remains relatively stable (~27K-142K entries/sec)
+- For large files, Kotlin memory usage is actually ~6% less than Python
 
 ---
 
@@ -104,10 +104,10 @@ This report compares the execution performance and memory usage of Beancount JVM
 
 | Metric | Python | Kotlin | Ratio |
 |--------|--------|--------|-------|
-| Parse Time | **0.008s** | 0.010s | 0.82x (Python slightly faster) |
-| Entries/sec | **6,023** | 4,814 | 0.80x |
-| MB/sec | **1.83** | 1.46 | 0.80x |
-| Memory Usage | **0.18 MB** | 0.69 MB | 3.84x (JVM baseline overhead) |
+| Parse Time | **0.008s** | 0.010s | 0.77x (Python slightly faster) |
+| Entries/sec | **6,208** | 4,530 | 0.73x |
+| MB/sec | **1.88** | 1.37 | 0.73x |
+| Memory Usage | **0.18 MB** | 0.73 MB | 4.08x (JVM baseline overhead) |
 | Output Consistency | PASS | PASS | - |
 
 **Analysis**: This is the only scenario where Python is faster. Reasons:
@@ -119,32 +119,32 @@ This report compares the execution performance and memory usage of Beancount JVM
 
 | Metric | Python | Kotlin | Ratio |
 |--------|--------|--------|-------|
-| Parse Time | 0.027s | **0.008s** | 3.40x faster |
-| Entries/sec | 4,684 | **16,009** | 3.42x |
-| MB/sec | 0.72 | **2.46** | 3.42x |
-| Memory Usage | 0.29 MB | **1.44 MB** | 4.95x |
-| Output Consistency | PASS (minor diff) | - | Entry diff: -1, Error diff: 4 |
+| Parse Time | 0.028s | **0.007s** | 3.76x faster |
+| Entries/sec | 4,648 | **17,182** | 3.70x |
+| MB/sec | 0.71 | **2.62** | 3.69x |
+| Memory Usage | 0.29 MB | **1.62 MB** | 5.57x |
+| Output Consistency | PASS (minor diff) | - | Entry diff: 0, Error diff: 2 |
 
 **Analysis**:
-- Kotlin still achieves 3.4x speedup, demonstrating clear performance advantage after JVM warm-up
-- Minor diff exists: Python parses 128 entries/0 errors, Kotlin parses 127 entries/4 errors
-- Difference likely stems from edge case syntax handling (e.g., balance assertion tolerance) between Python and Kotlin parsers
+- Kotlin still achieves 3.76x speedup, demonstrating clear performance advantage after JVM warm-up
+- Minor diff exists: Python parses 128 entries/0 errors, Kotlin parses 128 entries/2 errors
+- Difference likely stems from edge case syntax handling between Python and Kotlin parsers
 - Memory difference still due to JVM baseline overhead
 
 #### example.beancount (339KB, 2,247 entries)
 
 | Metric | Python | Kotlin | Ratio |
 |--------|--------|--------|-------|
-| Parse Time | 0.482s | **0.037s** | 12.90x faster |
-| Entries/sec | 4,665 | **60,159** | 12.90x |
-| MB/sec | 0.69 | **8.87** | 12.86x |
-| Memory Usage | 4.40 MB | **9.58 MB** | 2.18x |
+| Parse Time | 0.485s | **0.041s** | 11.70x faster |
+| Entries/sec | 4,637 | **54,199** | 11.69x |
+| MB/sec | 0.68 | **7.99** | 11.75x |
+| Memory Usage | 4.40 MB | **12.48 MB** | 2.84x |
 | Output Consistency | PASS | PASS | - |
 
 **Analysis**:
-- This is the most representative real-world scenario; Kotlin is **12.9x faster**
+- This is the most representative real-world scenario; Kotlin is **11.7x faster**
 - example.beancount contains diverse directive types (Open, Close, Commodity, Price, Transaction, Balance, Pad, Note, Document, Event, Query, Custom)
-- Memory difference of 2.18x is acceptable considering Kotlin's immutable data classes and richer type system
+- Memory difference of 2.84x is acceptable considering Kotlin's immutable data classes and richer type system
 
 ---
 
@@ -154,39 +154,39 @@ This report compares the execution performance and memory usage of Beancount JVM
 
 | File | Size | Entries | Python Time | Kotlin Time | Speedup |
 |------|------|---------|-------------|-------------|---------|
-| 1MB Synthetic | 0.5MB | 4,220 | 0.566s | **0.164s** | 3.45x |
-| 5MB Synthetic | 2.3MB | 20,997 | 2.955s | **0.208s** | 14.21x |
-| 10MB Synthetic | 4.6MB | 41,969 | 8.615s | **0.285s** | 30.19x |
-| starter.beancount | 0.0MB | 47 | **0.008s** | 0.010s | 0.82x |
-| basic.beancount | 0.0MB | 128 | 0.027s | **0.008s** | 3.40x |
-| example.beancount | 0.3MB | 2,247 | 0.482s | **0.037s** | 12.90x |
+| 1MB Synthetic | 0.5MB | 4,220 | 0.560s | **0.156s** | 3.59x |
+| 5MB Synthetic | 2.3MB | 20,997 | 2.994s | **0.205s** | 14.61x |
+| 10MB Synthetic | 4.6MB | 41,969 | 8.724s | **0.295s** | 29.57x |
+| starter.beancount | 0.0MB | 47 | **0.008s** | 0.010s | 0.77x |
+| basic.beancount | 0.0MB | 128 | 0.028s | **0.007s** | 3.76x |
+| example.beancount | 0.3MB | 2,247 | 0.485s | **0.041s** | 11.70x |
 
 ### Memory Usage Summary
 
 | File | Python Memory | Kotlin Memory | Memory Ratio |
 |------|---------------|---------------|--------------|
-| 1MB Synthetic | 15.47 MB | 17.00 MB | 1.10x |
-| 5MB Synthetic | 72.17 MB | 67.14 MB | **0.93x** |
-| 10MB Synthetic | 146.27 MB | 136.12 MB | **0.93x** |
-| starter.beancount | 0.18 MB | 0.69 MB | 3.84x |
-| basic.beancount | 0.29 MB | 1.44 MB | 4.95x |
-| example.beancount | 4.40 MB | 9.58 MB | 2.18x |
+| 1MB Synthetic | 15.47 MB | 18.63 MB | 1.20x |
+| 5MB Synthetic | 72.17 MB | 74.29 MB | 1.03x |
+| 10MB Synthetic | 146.27 MB | 138.12 MB | **0.94x** |
+| starter.beancount | 0.18 MB | 0.73 MB | 4.08x |
+| basic.beancount | 0.29 MB | 1.62 MB | 5.57x |
+| example.beancount | 4.40 MB | 12.48 MB | 2.84x |
 
 ### Memory Trend Analysis
 
 ```
 File Size vs Memory Usage:
 
-Python:  0.18MB ──── 4.40MB ───── 15.47MB ───── 72.17MB ───── 146.27MB
+Python:  0.18MB ---- 4.40MB ----- 15.47MB ----- 72.17MB ----- 146.27MB
          (15KB)    (339KB)      (0.5MB)       (2.3MB)        (4.6MB)
 
-Kotlin:  0.69MB ──── 9.58MB ───── 17.00MB ───── 67.14MB ───── 136.12MB
+Kotlin:  0.73MB ---- 12.48MB ---- 18.63MB ----- 74.29MB ----- 138.12MB
          (15KB)    (339KB)      (0.5MB)       (2.3MB)        (4.6MB)
 
 Analysis:
 - Small files (< 100KB): JVM baseline runtime dominates; memory is 2-5x Python
 - Medium files (100KB-1MB): Gap narrows to 1-2x
-- Large files (> 1MB): Kotlin actually saves 5-10% memory compared to Python
+- Large files (> 1MB): Kotlin actually saves 6-7% memory compared to Python
 ```
 
 ---
@@ -220,7 +220,7 @@ Analysis:
 
 ### Core Conclusions
 
-1. **Kotlin recommended for production**: For real ledgers (≥100KB), Kotlin is **10-13x faster** on average
+1. **Kotlin recommended for production**: For real ledgers (>=100KB), Kotlin is **10-12x faster** on average
 2. **Significant advantage on large files**: 30x faster on 10MB files, suitable for enterprise financial systems
 3. **Acceptable memory usage**: Kotlin uses less memory for large files; small file differences are within acceptable range
 4. **Good output consistency**: 5/6 tests match perfectly; 1 minor diff does not affect core data
@@ -277,6 +277,6 @@ JVM Heap Memory: 512MB (test process)
 
 ---
 
-*Report Generated: 2026-05-31*  
-*Test Framework: JUnit 5 + Custom Python Bridge*  
+*Report Generated: 2026-06-02*
+*Test Framework: JUnit 5 + Custom Python Bridge*
 *Data Reliability: Averaged over multiple iterations, outliers excluded*

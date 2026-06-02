@@ -267,6 +267,58 @@ class BeancountDoctor {
         return output.toString()
     }
 
+    /**
+     * List all available beancount option names (without values).
+     *
+     * @return Formatted list of all option names
+     */
+    fun listAllOptions(): String {
+        val allOptions = listOf(
+            "account_previous_balances",
+            "account_previous_earnings",
+            "account_previous_earnings_statement",
+            "account_rounding",
+            "commodity_previous_balances",
+            "commodity_previous_earnings",
+            "commodity_previous_earnings_statement",
+            "commodity_rounding",
+            "conversion_currency",
+            "default_tolerance",
+            "documents",
+            "infer_tolerance_from_cost",
+            "inferred_tolerance_default",
+            "inferred_tolerance_multiplier",
+            "long_string_maxlines",
+            "name_assets",
+            "name_equity",
+            "name_expenses",
+            "name_income",
+            "name_liabilities",
+            "operating_currency",
+            "plugin",
+            "plugin_processing_mode",
+            "pop_tag",
+            "popmeta",
+            "pushtag",
+            "pushmeta",
+            "render_commas",
+            "title",
+            "tubly_positions"
+        )
+
+        val output = StringBuilder()
+        output.append("Available Options\n")
+        output.append("=".repeat(60))
+        output.append("\n\n")
+
+        allOptions.forEach { option ->
+            output.append("  $option\n")
+        }
+
+        output.append("\nTotal: ${allOptions.size} options\n")
+        return output.toString()
+    }
+
 }
 
 /**

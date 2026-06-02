@@ -5,8 +5,10 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 import io.github.tonyzhye.beancount.loader.loadFile
 import io.github.tonyzhye.beancount.query.QueryEngine
@@ -22,28 +24,50 @@ class BeanQueryCommand : CliktCommand(
     name = "bean-query",
     help = "Query a beancount ledger using BQL"
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument("FILENAME")
         .file(mustExist = true, canBeDir = false)
         .help("Beancount input file")
 
-    private val queryFile by option("-f", "--file")
+    private val queryFile by option("--file")
         .file(mustExist = true, canBeDir = false)
         .help("Execute queries from file")
 
-    private val format by option("--format")
-        .default("table")
-        .help("Output format: table, csv, json, tsv")
+    private val format by option("-f", "--format")
+        .choice("beancount", "csv", "text")
+        .default("text")
+        .help("Output format: beancount, csv, text")
+
+    private val output by option("-o", "--output")
+        .help("Output file (default: stdout)")
+
+    private val numberify by option("-m", "--numberify")
+        .flag(default = false)
+        .help("Output only the numerical values")
+
+    private val noErrors by option("-q", "--no-errors")
+        .flag(default = false)
+        .help("Do not print errors (for scripts)")
 
     private val query by argument("QUERY")
         .help("BQL query to execute (optional in interactive mode)")
         .optional()
 
+    private val outputWriter: java.io.Writer? by lazy {
+        output?.let { java.io.FileWriter(it) }
+    }
+
     override fun run() {
         // Load ledger
-        echo("Loading ${filename.name}...", err = true)
+        if (noErrors == false) {
+            echo("Loading ${filename.name}...", err = true)
+        }
         val result = loadFile(filename.absolutePath)
 
-        if (result.errors.isNotEmpty()) {
+        if (result.errors.isNotEmpty() && noErrors == false) {
             result.errors.forEach { error ->
                 echo("ERROR: ${error.message}", err = true)
             }
@@ -66,6 +90,8 @@ class BeanQueryCommand : CliktCommand(
                 runInteractive(engine, outputFormat)
             }
         }
+
+        outputWriter?.close()
     }
 
     private fun executeQuery(engine: QueryEngine, queryString: String, format: QueryFormatter.Format) {
@@ -74,10 +100,15 @@ class BeanQueryCommand : CliktCommand(
             val queryResult = engine.execute(queryString)
             val elapsed = System.currentTimeMillis() - startTime
 
-            echo(QueryFormatter.format(queryResult, format))
-            echo("(${queryResult.rows.size} rows in ${elapsed}ms)", err = true)
+            val formatted = QueryFormatter.format(queryResult, format, numberify)
+            writeOutput(formatted)
+            if (noErrors == false) {
+                echo("(${queryResult.rows.size} rows in ${elapsed}ms)", err = true)
+            }
         } catch (e: Exception) {
-            echo("ERROR: ${e.message}", err = true)
+            if (noErrors == false) {
+                echo("ERROR: ${e.message}", err = true)
+            }
         }
     }
 
@@ -90,7 +121,9 @@ class BeanQueryCommand : CliktCommand(
             .filter { it.isNotBlank() }
 
         for (q in queries) {
-            echo("\n\u003e $q", err = true)
+            if (noErrors == false) {
+                echo("\n> $q", err = true)
+            }
             executeQuery(engine, q, format)
         }
     }
@@ -132,12 +165,21 @@ class BeanQueryCommand : CliktCommand(
         }
     }
 
+    private fun writeOutput(text: String) {
+        val writer = outputWriter
+        if (writer != null) {
+            writer.write(text)
+            writer.flush()
+        } else {
+            echo(text)
+        }
+    }
+
     private fun parseFormat(format: String): QueryFormatter.Format {
         return when (format.lowercase()) {
             "csv" -> QueryFormatter.Format.CSV
-            "json" -> QueryFormatter.Format.JSON
-            "tsv" -> QueryFormatter.Format.TSV
-            else -> QueryFormatter.Format.TABLE
+            "beancount" -> QueryFormatter.Format.BEANCOUNT
+            else -> QueryFormatter.Format.TEXT
         }
     }
 }

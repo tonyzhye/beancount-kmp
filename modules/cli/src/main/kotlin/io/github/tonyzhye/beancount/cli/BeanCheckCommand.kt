@@ -21,6 +21,10 @@ class BeanCheckCommand : CliktCommand(
     name = "bean-check",
     help = "Parse, check and realize a beancount ledger."
 ) {
+    init {
+        beancountVersionOption()
+    }
+
     private val filename by argument(
         name = "FILENAME",
         help = "Beancount input file"
@@ -40,18 +44,12 @@ class BeanCheckCommand : CliktCommand(
     private val auto by option("-a", "--auto")
         .flag(default = false)
         .help("Implicitly enable auto-plugins")
-    
-    private val format by option("-f", "--format")
-        .default("text")
-        .help("Output format (text or json)")
-    
-    override fun run() {
-        val outputFormat = format.lowercase()
-        if (outputFormat !in setOf("text", "json")) {
-            echo("Invalid format: $format. Use 'text' or 'json'.", err = true)
-            throw ProgramResult(1)
-        }
 
+    private val json by option("--json")
+        .flag(default = false)
+        .help("Output errors in JSON format")
+
+    override fun run() {
         if (verbose) {
             echo("Loading ${filename.absolutePath}...")
         }
@@ -83,14 +81,15 @@ class BeanCheckCommand : CliktCommand(
         }
 
         if (result.errors.isNotEmpty()) {
-            when (outputFormat) {
-                "json" -> outputJson(result.errors)
-                else -> outputText(result.errors, verbose)
+            if (json) {
+                outputJson(result.errors)
+            } else {
+                outputText(result.errors, verbose)
             }
             throw ProgramResult(1)
         }
 
-        if (outputFormat == "json") {
+        if (json) {
             echo("{\"errors\": [], \"summary\": {\"total\": 0, \"byType\": {}}}")
         } else if (verbose) {
             echo("Validation passed!")
