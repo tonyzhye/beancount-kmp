@@ -20,6 +20,25 @@ class FunctionRegistryExtendedTest {
         )
     )
 
+    private val entriesWithPrice = listOf(
+        Price(
+            meta = emptyMap(),
+            date = LocalDate(2024, 1, 1),
+            currency = "EUR",
+            amount = Amount(Decimal("1.10"), "USD")
+        ),
+        Transaction(
+            meta = emptyMap(),
+            date = LocalDate(2024, 1, 15),
+            flag = "*",
+            narration = "Test with EUR",
+            postings = listOf(
+                Posting(account = "Assets:Bank:Checking", units = Amount(Decimal("100.00"), "EUR")),
+                Posting(account = "Income:Salary", units = Amount(Decimal("-100.00"), "EUR"))
+            )
+        )
+    )
+
     @Test
     fun `should use account column in query`() {
         val engine = QueryEngine(testEntries)
@@ -68,5 +87,92 @@ class FunctionRegistryExtendedTest {
         assertTrue(result.rows.isNotEmpty())
         val firstNumber = result.rows[0][0]
         assertEquals(Decimal("100.00"), firstNumber.asDecimal())
+    }
+
+    @Test
+    fun `should use date_add function`() {
+        val engine = QueryEngine(testEntries)
+        val result = engine.execute("SELECT date_add(date, 5) FROM postings")
+
+        assertTrue(result.rows.isNotEmpty())
+        val addedDate = result.rows[0][0].asDate()
+        assertEquals(LocalDate(2024, 1, 6), addedDate)
+    }
+
+    @Test
+    fun `should use date_diff function`() {
+        val engine = QueryEngine(testEntries)
+        val result = engine.execute("SELECT date_diff(date, 2024-01-11) FROM postings")
+
+        assertTrue(result.rows.isNotEmpty())
+        val diff = result.rows[0][0].asInteger()
+        assertEquals(10, diff)
+    }
+
+    @Test
+    fun `should use date_trunc to month`() {
+        val engine = QueryEngine(testEntries)
+        val result = engine.execute("SELECT date_trunc(date, 'month') FROM postings")
+
+        assertTrue(result.rows.isNotEmpty())
+        val truncated = result.rows[0][0].asDate()
+        assertEquals(LocalDate(2024, 1, 1), truncated)
+    }
+
+    @Test
+    fun `should use date_trunc to year`() {
+        val engine = QueryEngine(testEntries)
+        val result = engine.execute("SELECT date_trunc(date, 'year') FROM postings")
+
+        assertTrue(result.rows.isNotEmpty())
+        val truncated = result.rows[0][0].asDate()
+        assertEquals(LocalDate(2024, 1, 1), truncated)
+    }
+
+    @Test
+    fun `should use days_between function`() {
+        val engine = QueryEngine(testEntries)
+        val result = engine.execute("SELECT days_between(date, 2024-01-11) FROM postings")
+
+        assertTrue(result.rows.isNotEmpty())
+        val days = result.rows[0][0].asInteger()
+        assertEquals(10, days)
+    }
+
+    @Test
+    fun `should use getprice function with price map`() {
+        val engine = QueryEngine(entriesWithPrice)
+        val result = engine.execute("SELECT getprice('EUR', 'USD') FROM prices")
+
+        assertTrue(result.rows.isNotEmpty())
+        val price = result.rows[0][0]
+        assertFalse(price.isNull())
+        val amount = price.asAmount()
+        assertEquals(Decimal("1.10"), amount.number)
+        assertEquals("USD", amount.currency)
+    }
+
+    @Test
+    fun `should use convert function with price map`() {
+        val engine = QueryEngine(entriesWithPrice)
+        val result = engine.execute("SELECT convert(position, 'USD') FROM postings")
+
+        assertTrue(result.rows.isNotEmpty())
+        val converted = result.rows[0][0]
+        assertFalse(converted.isNull())
+        val amount = converted.asAmount()
+        assertEquals("USD", amount.currency)
+    }
+
+    @Test
+    fun `should use getvalue function with price map`() {
+        val engine = QueryEngine(entriesWithPrice)
+        val result = engine.execute("SELECT getvalue(position, 'USD') FROM postings")
+
+        assertTrue(result.rows.isNotEmpty())
+        val value = result.rows[0][0]
+        assertFalse(value.isNull())
+        val amount = value.asAmount()
+        assertEquals("USD", amount.currency)
     }
 }

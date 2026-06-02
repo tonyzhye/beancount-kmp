@@ -45,9 +45,9 @@ class BqlParser(private val input: String) {
                 continue
             }
 
-            // Single-line comment
+            // Semicolon is statement separator - skip it
             if (char == ';') {
-                while (pos < length && input[pos] != '\n') pos++
+                pos++
                 continue
             }
 
@@ -168,7 +168,7 @@ class BqlParser(private val input: String) {
             "SELECT", "FROM", "WHERE", "GROUP", "BY", "ORDER", "LIMIT",
             "DISTINCT", "ASC", "DESC", "AS", "AND", "OR", "NOT",
             "TRUE", "FALSE", "NULL", "OPEN", "CLOSE", "CLEAR",
-            "HAVING", "IN", "BETWEEN"
+            "HAVING", "IN", "BETWEEN", "PIVOT", "JOURNAL", "DEFINE"
         )
         return value.uppercase() in keywords
     }
@@ -209,9 +209,74 @@ class BqlParser(private val input: String) {
     }
 
     /**
-     * Parse a complete query.
+     * Variables defined by DEFINE statements.
+     */
+    private val definedVariables = mutableMapOf<String, AstExpression>()
+
+    /**
+     * Parse a complete query or statement.
+     * Supports SELECT, JOURNAL, and DEFINE.
      */
     fun parseQuery(): AstQuery {
+        return when {
+            matchKeyword("DEFINE") -> {
+                parseDefine()
+                // After DEFINE, parse the next query
+                parseQuery()
+            }
+            matchKeyword("SELECT") -> parseSelectQuery()
+            matchKeyword("JOURNAL") -> parseJournalQuery()
+            else -> throw ParseException("Expected SELECT, JOURNAL, or DEFINE but found ${current().value}")
+        }
+    }
+
+    /**
+     * Parse a DEFINE statement: DEFINE variable = expression
+     */
+    private fun parseDefine() {
+        expect(TokenType.KEYWORD, "DEFINE")
+        val variable = expect(TokenType.IDENTIFIER).value
+        expect(TokenType.OPERATOR, "=")
+        val expr = parseExpression()
+        definedVariables[variable] = expr
+    }
+
+    /**
+     * Substitute defined variables in an expression.
+     */
+    private fun substituteVariables(expr: AstExpression): AstExpression {
+        return when (expr) {
+            is AstIdentifier -> {
+                definedVariables[expr.name] ?: expr
+            }
+            is AstBinaryOp -> {
+                AstBinaryOp(expr.operator, substituteVariables(expr.left), substituteVariables(expr.right))
+            }
+            is AstUnaryOp -> {
+                AstUnaryOp(expr.operator, substituteVariables(expr.operand))
+            }
+            is AstFunctionCall -> {
+                AstFunctionCall(expr.name, expr.arguments.map { substituteVariables(it) })
+            }
+            is AstInOp -> {
+                AstInOp(substituteVariables(expr.expression), expr.values.map { substituteVariables(it) }, expr.notIn)
+            }
+            is AstBetweenOp -> {
+                AstBetweenOp(
+                    substituteVariables(expr.expression),
+                    substituteVariables(expr.low),
+                    substituteVariables(expr.high),
+                    expr.notBetween
+                )
+            }
+            else -> expr
+        }
+    }
+
+    /**
+     * Parse a SELECT query.
+     */
+    private fun parseSelectQuery(): AstQuery {
         expect(TokenType.KEYWORD, "SELECT")
         val distinct = consumeKeyword("DISTINCT")
         
@@ -230,15 +295,19 @@ class BqlParser(private val input: String) {
         } while (match(TokenType.COMMA).also { if (it) advance() })
         
         val from = if (matchKeyword("FROM")) parseFrom() else null
-        val where = if (matchKeyword("WHERE")) parseWhere() else null
+        var where = if (matchKeyword("WHERE")) parseWhere() else null
         val groupBy = if (matchKeyword("GROUP")) parseGroupBy() else emptyList()
         val having = if (matchKeyword("HAVING")) parseHaving() else null
         val orderBy = if (matchKeyword("ORDER")) parseOrderBy() else emptyList()
+        val pivotBy = if (matchKeyword("PIVOT")) parsePivotBy() else null
         val limit = if (matchKeyword("LIMIT")) parseLimit() else null
 
         if (!match(TokenType.EOF)) {
             throw ParseException("Unexpected token: ${current().value}")
         }
+
+        // Apply variable substitution to WHERE clause
+        where = where?.let { substituteVariables(it) }
 
         return AstQuery(
             distinct = distinct,
@@ -248,7 +317,71 @@ class BqlParser(private val input: String) {
             groupBy = groupBy,
             having = having,
             orderBy = orderBy,
-            limit = limit
+            pivotBy = pivotBy,
+            limit = limit,
+            queryType = QueryType.SELECT
+        )
+    }
+
+    /**
+     * Parse a JOURNAL query.
+     * JOURNAL ['account'] [AT func] [FROM ...]
+     */
+    private fun parseJournalQuery(): AstQuery {
+        expect(TokenType.KEYWORD, "JOURNAL")
+        
+        // Optional account string
+        val accountExpr = if (match(TokenType.STRING)) {
+            AstStringLiteral(advance().value)
+        } else null
+        
+        // Optional AT function
+        val summaryFunc = if (consumeKeyword("AT")) {
+            expect(TokenType.IDENTIFIER).value
+        } else null
+        
+        // Optional FROM clause
+        val from = if (matchKeyword("FROM")) parseFrom() else null
+        
+        if (!match(TokenType.EOF)) {
+            throw ParseException("Unexpected token after JOURNAL: ${current().value}")
+        }
+        
+        // JOURNAL is transformed to a SELECT query
+        // SELECT date, flag, payee, narration, account, position, balance FROM ... WHERE account ~ 'account'
+        val targets = mutableListOf<AstTarget>()
+        targets.add(AstTarget(AstIdentifier("date"), null))
+        targets.add(AstTarget(AstIdentifier("flag"), null))
+        targets.add(AstTarget(AstIdentifier("payee"), null))
+        targets.add(AstTarget(AstIdentifier("narration"), null))
+        targets.add(AstTarget(AstIdentifier("account"), null))
+        
+        // Position column with optional summary function
+        val positionExpr = if (summaryFunc != null) {
+            AstFunctionCall(summaryFunc, listOf(AstIdentifier("position")))
+        } else {
+            AstIdentifier("position")
+        }
+        targets.add(AstTarget(positionExpr, null))
+        
+        // Balance column with optional summary function
+        val balanceExpr = if (summaryFunc != null) {
+            AstFunctionCall(summaryFunc, listOf(AstIdentifier("balance")))
+        } else {
+            AstIdentifier("balance")
+        }
+        targets.add(AstTarget(balanceExpr, null))
+        
+        // Build WHERE clause for account matching
+        val where = accountExpr?.let { account ->
+            AstBinaryOp("~", AstIdentifier("account"), account)
+        }
+        
+        return AstQuery(
+            targets = targets,
+            from = from,
+            where = where,
+            queryType = QueryType.JOURNAL
         )
     }
 
@@ -327,6 +460,31 @@ class BqlParser(private val input: String) {
     private fun parseLimit(): Int {
         expect(TokenType.KEYWORD, "LIMIT")
         return expect(TokenType.INTEGER).value.toInt()
+    }
+
+    private fun parsePivotBy(): AstPivotBy {
+        expect(TokenType.KEYWORD, "PIVOT")
+        expect(TokenType.KEYWORD, "BY")
+
+        val columns = mutableListOf<AstExpression>()
+        do {
+            val expr = when {
+                match(TokenType.INTEGER) -> {
+                    AstIntegerLiteral(advance().value.toInt())
+                }
+                match(TokenType.IDENTIFIER) || match(TokenType.KEYWORD) -> {
+                    AstIdentifier(advance().value)
+                }
+                else -> throw ParseException("Expected column name or index in PIVOT BY")
+            }
+            columns.add(expr)
+        } while (match(TokenType.COMMA).also { if (it) advance() })
+
+        if (columns.size != 2) {
+            throw ParseException("PIVOT BY requires exactly 2 columns, got ${columns.size}")
+        }
+
+        return AstPivotBy(columns)
     }
 
     /**
@@ -469,7 +627,7 @@ class BqlParser(private val input: String) {
                             } else {
                                 args.add(parseExpression())
                             }
-                        } while (consumeKeyword(","))
+                        } while (match(TokenType.COMMA).also { if (it) advance() })
                     }
                     expect(TokenType.RPAREN)
                     AstFunctionCall(name, args)

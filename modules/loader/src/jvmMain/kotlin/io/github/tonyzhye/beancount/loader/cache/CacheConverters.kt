@@ -89,6 +89,27 @@ fun Directive.toDto(): DirectiveDto = when (this) {
         date = date,
         filename = filename
     )
+    is PushTag -> PushTagDto(
+        meta = meta,
+        date = date,
+        tag = tag
+    )
+    is PopTag -> PopTagDto(
+        meta = meta,
+        date = date,
+        tag = tag
+    )
+    is PushMeta -> PushMetaDto(
+        meta = meta,
+        date = date,
+        key = key,
+        value = value
+    )
+    is PopMeta -> PopMetaDto(
+        meta = meta,
+        date = date,
+        key = key
+    )
 }
 
 fun Posting.toDto(): PostingDto = PostingDto(
@@ -234,6 +255,27 @@ fun DirectiveDto.toDomain(): Directive = when (this) {
         meta = meta,
         date = date,
         filename = filename
+    )
+    is PushTagDto -> PushTag(
+        meta = meta,
+        date = date,
+        tag = tag
+    )
+    is PopTagDto -> PopTag(
+        meta = meta,
+        date = date,
+        tag = tag
+    )
+    is PushMetaDto -> PushMeta(
+        meta = meta,
+        date = date,
+        key = key,
+        value = value
+    )
+    is PopMetaDto -> PopMeta(
+        meta = meta,
+        date = date,
+        key = key
     )
 }
 

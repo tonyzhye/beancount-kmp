@@ -167,7 +167,12 @@ class Lexer(private val input: String) {
                 advance()
                 Token.PLUS(startLine, startColumn)
             }
-            
+
+            char == '~' -> {
+                advance()
+                Token.TILDE(startLine, startColumn)
+            }
+
             // Unknown character - error token
             else -> {
                 advance()
@@ -425,6 +430,21 @@ class Lexer(private val input: String) {
         return char
     }
     
+    /**
+     * Tokenize the entire input and return all tokens.
+     *
+     * @return List of all tokens including EOF.
+     */
+    fun tokenize(): List<Token> {
+        val tokens = mutableListOf<Token>()
+        while (true) {
+            val token = nextToken()
+            tokens.add(token)
+            if (token is Token.EOF) break
+        }
+        return tokens
+    }
+
     private fun reportError(message: String, line: Int, column: Int, text: String) {
         errors.add(LexerError(line, column, message, text))
     }

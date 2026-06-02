@@ -256,6 +256,10 @@ private class EntryPrinter(
             is Query -> formatQuery(entry, writer)
             is Custom -> formatCustom(entry, writer)
             is Include -> formatInclude(entry, writer)
+            is PushTag -> formatPushTag(entry, writer)
+            is PopTag -> formatPopTag(entry, writer)
+            is PushMeta -> formatPushMeta(entry, writer)
+            is PopMeta -> formatPopMeta(entry, writer)
         }
 
         return writer.toString()
@@ -525,6 +529,30 @@ private fun alignPositionStrings(strings: List<String>): Pair<List<String>, Int>
     }
 
     return alignedStrings to maxTotal
+}
+
+private fun formatPushTag(entry: PushTag, writer: StringWriter) {
+    writer.write("${entry.date} pushtag #${entry.tag}\n")
+}
+
+private fun formatPopTag(entry: PopTag, writer: StringWriter) {
+    writer.write("${entry.date} poptag #${entry.tag}\n")
+}
+
+private fun formatPushMeta(entry: PushMeta, writer: StringWriter) {
+    writer.write("${entry.date} pushmeta ${entry.key}: ${formatMetadataValue(entry.value)}\n")
+}
+
+private fun formatPopMeta(entry: PopMeta, writer: StringWriter) {
+    writer.write("${entry.date} popmeta ${entry.key}:\n")
+}
+
+private fun formatMetadataValue(value: Any): String {
+    return when (value) {
+        is String -> "\"${escapeString(value)}\""
+        is Boolean -> value.toString().uppercase()
+        else -> value.toString()
+    }
 }
 
 /**

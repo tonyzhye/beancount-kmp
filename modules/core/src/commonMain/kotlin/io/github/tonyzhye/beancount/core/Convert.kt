@@ -257,3 +257,55 @@ fun convertPosting(
         via = if (valueCurrency != null) listOf(valueCurrency) else null
     )
 }
+
+/**
+ * Convert an Inventory to a target currency.
+ */
+fun convertInventory(
+    inventory: Inventory,
+    targetCurrency: Currency,
+    priceMap: PriceDatabase,
+    date: LocalDate? = null
+): Inventory {
+    val result = Inventory()
+    for (position in inventory) {
+        val converted = convertPosition(position, targetCurrency, priceMap, date)
+        result.addAmount(converted)
+    }
+    return result
+}
+
+/**
+ * Get the market value of an Inventory.
+ */
+fun getValue(inventory: Inventory, priceMap: PriceDatabase, date: LocalDate? = null): Inventory {
+    val result = Inventory()
+    for (position in inventory) {
+        val valued = getValue(position, priceMap, date)
+        result.addAmount(valued)
+    }
+    return result
+}
+
+/**
+ * Return the units of an Inventory (stripping cost).
+ */
+fun getUnits(inventory: Inventory): Inventory {
+    val result = Inventory()
+    for (position in inventory) {
+        result.addAmount(position.units)
+    }
+    return result
+}
+
+/**
+ * Return the cost of an Inventory.
+ */
+fun getCost(inventory: Inventory): Inventory {
+    val result = Inventory()
+    for (position in inventory) {
+        val costAmount = getCost(position)
+        result.addAmount(costAmount)
+    }
+    return result
+}

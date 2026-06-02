@@ -171,7 +171,15 @@ sealed class Token {
     data class RPAREN(override val line: Int, override val column: Int) : Token() {
         override val text: String = ")"
     }
-    
+
+    data class TILDE(override val line: Int, override val column: Int) : Token() {
+        override val text: String = "~"
+    }
+
+    data class HASH(override val line: Int, override val column: Int) : Token() {
+        override val text: String = "#"
+    }
+
     /** Generic symbol (fallback) */
     data class SYMBOL(
         override val text: String,

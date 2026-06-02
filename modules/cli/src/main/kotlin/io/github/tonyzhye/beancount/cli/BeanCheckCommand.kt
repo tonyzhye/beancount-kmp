@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
+import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
@@ -40,7 +41,17 @@ class BeanCheckCommand : CliktCommand(
         .flag(default = false)
         .help("Implicitly enable auto-plugins")
     
+    private val format by option("-f", "--format")
+        .default("text")
+        .help("Output format (text or json)")
+    
     override fun run() {
+        val outputFormat = format.lowercase()
+        if (outputFormat !in setOf("text", "json")) {
+            echo("Invalid format: $format. Use 'text' or 'json'.", err = true)
+            throw ProgramResult(1)
+        }
+
         if (verbose) {
             echo("Loading ${filename.absolutePath}...")
         }
@@ -72,14 +83,86 @@ class BeanCheckCommand : CliktCommand(
         }
 
         if (result.errors.isNotEmpty()) {
-            result.errors.forEach { error ->
-                echo("ERROR: ${error.message}", err = true)
+            when (outputFormat) {
+                "json" -> outputJson(result.errors)
+                else -> outputText(result.errors, verbose)
             }
             throw ProgramResult(1)
         }
 
-        if (verbose) {
+        if (outputFormat == "json") {
+            echo("{\"errors\": [], \"summary\": {\"total\": 0, \"byType\": {}}}")
+        } else if (verbose) {
             echo("Validation passed!")
         }
+    }
+    
+    private fun outputJson(errors: List<io.github.tonyzhye.beancount.core.BeancountError>) {
+        val errorList = errors.map { error ->
+            val meta = error.source
+            val filename = meta["filename"] as? String
+            val lineno = meta["lineno"] as? Int
+            """{"message": "${escapeJson(error.message)}", "filename": "${filename ?: ""}", "lineno": ${lineno ?: 0}}"""
+        }
+        
+        // Group errors by type for summary
+        val byType = errors.groupBy { error ->
+            // Extract error type from message (e.g., "BalanceError", "OpenError")
+            val message = error.message
+            when {
+                message.contains("balance", ignoreCase = true) -> "Balance"
+                message.contains("open", ignoreCase = true) -> "Open"
+                message.contains("close", ignoreCase = true) -> "Close"
+                message.contains("commodity", ignoreCase = true) -> "Commodity"
+                message.contains("duplicate", ignoreCase = true) -> "Duplicate"
+                message.contains("pad", ignoreCase = true) -> "Pad"
+                else -> "Other"
+            }
+        }
+        
+        val typeCounts = byType.map { (type, list) ->
+            "\"$type\": ${list.size}"
+        }.joinToString(", ")
+        
+        echo("{\"errors\": [${errorList.joinToString(", ")}], \"summary\": {\"total\": ${errors.size}, \"byType\": {$typeCounts}}}")
+    }
+    
+    private fun outputText(errors: List<io.github.tonyzhye.beancount.core.BeancountError>, verbose: Boolean) {
+        if (verbose) {
+            // Group errors by type for detailed output
+            val byType = errors.groupBy { error ->
+                val message = error.message
+                when {
+                    message.contains("balance", ignoreCase = true) -> "Balance"
+                    message.contains("open", ignoreCase = true) -> "Open"
+                    message.contains("close", ignoreCase = true) -> "Close"
+                    message.contains("commodity", ignoreCase = true) -> "Commodity"
+                    message.contains("duplicate", ignoreCase = true) -> "Duplicate"
+                    message.contains("pad", ignoreCase = true) -> "Pad"
+                    else -> "Other"
+                }
+            }
+            
+            echo("")
+            echo("Error Summary:")
+            echo("  Total: ${errors.size}")
+            byType.toSortedMap().forEach { (type, list) ->
+                echo("  $type: ${list.size}")
+            }
+            echo("")
+        }
+        
+        errors.forEach { error ->
+            echo("ERROR: ${error.message}", err = true)
+        }
+    }
+    
+    private fun escapeJson(value: String): String {
+        return value
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+            .replace("\n", "\\n")
+            .replace("\r", "\\r")
+            .replace("\t", "\\t")
     }
 }

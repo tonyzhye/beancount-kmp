@@ -9,7 +9,8 @@ import io.github.tonyzhye.beancount.query.compiler.RowContext
  * Based on beanquery.sources.beancount.EntriesTable.
  */
 class EntriesTable(
-    private val entries: List<Directive>
+    private val entries: List<Directive>,
+    private val priceMap: PriceDatabase? = null
 ) : Table {
 
     override val name = "entries"
@@ -75,25 +76,23 @@ class EntriesTable(
 
     override fun iterator(): Iterator<RowContext> {
         return entries.asSequence()
-            .map { entry -> SimpleRowContext(entry) }
+            .map { entry -> SimpleRowContext(entry, priceMap, entries) }
             .iterator()
     }
 }
 
-/**
- * Transactions table.
- */
 class TransactionsTable(
-    private val entries: List<Directive>
+    private val entries: List<Directive>,
+    private val priceMap: PriceDatabase? = null
 ) : Table {
     override val name = "transactions"
     override val wildcardColumns = listOf("date", "flag", "payee", "narration")
-    override val columns: Map<String, Column> = EntriesTable(entries).columns
+    override val columns: Map<String, Column> = EntriesTable(entries, priceMap).columns
 
     override fun iterator(): Iterator<RowContext> {
         return entries.asSequence()
             .filterIsInstance<Transaction>()
-            .map { entry -> SimpleRowContext(entry) }
+            .map { entry -> SimpleRowContext(entry, priceMap, entries) }
             .iterator()
     }
 }
@@ -102,7 +101,9 @@ class TransactionsTable(
  * Simple row context for entries that don't have postings.
  */
 class SimpleRowContext(
-    override val entry: Directive
+    override val entry: Directive,
+    override val priceMap: PriceDatabase? = null,
+    override val allEntries: List<Directive> = emptyList()
 ) : RowContext {
     override val posting: Posting? = null
 }

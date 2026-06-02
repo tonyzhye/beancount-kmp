@@ -111,6 +111,10 @@ class BeancountParser : Parser {
         }
     }
     
+    // Tag and meta stacks for pushtag/poptag/pushmeta/popmeta
+    private val tagStack = mutableListOf<String>()
+    private val metaStack = mutableMapOf<String, Any>()
+    
     private fun parseDatedDirective(): Directive? {
         val dateToken = consume(Token.DATE::class) as? Token.DATE
             ?: return null
@@ -132,6 +136,10 @@ class BeancountParser : Parser {
                 "query" -> parseQuery(dateToken)
                 "custom" -> parseCustom(dateToken)
                 "include" -> parseInclude(dateToken)
+                "pushtag" -> parsePushTag(dateToken)
+                "poptag" -> parsePopTag(dateToken)
+                "pushmeta" -> parsePushMeta(dateToken)
+                "popmeta" -> parsePopMeta(dateToken)
                 "plugin" -> {
                     parsePlugin(dateToken)
                     null // Plugins don't create entries
@@ -243,6 +251,9 @@ class BeancountParser : Parser {
         val tags = mutableSetOf<String>()
         val links = mutableSetOf<String>()
         
+        // Add tags from tag stack
+        tags.addAll(tagStack)
+        
         while (peek() is Token.TAG || peek() is Token.LINK) {
             when (val token = advance()) {
                 is Token.TAG -> tags.add(token.value)
@@ -255,7 +266,7 @@ class BeancountParser : Parser {
         // Parse transaction metadata (before postings)
         // Note: Don't call skipWhitespaceAndComments() here because it would consume
         // the INDENT tokens that parseMetadata() needs to identify metadata lines.
-        val txnMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
+        val txnMeta = newMetadata(currentFilename, dateToken.line) + metaStack + parseMetadata()
 
         // Parse postings
         val postings = mutableListOf<Posting>()
@@ -286,6 +297,13 @@ class BeancountParser : Parser {
     }
     
     private fun parsePosting(): Posting? {
+        // Parse optional posting-level flag
+        var postingFlag: Flag? = null
+        if (peek() is Token.FLAG) {
+            postingFlag = (consume(Token.FLAG::class) as Token.FLAG).value
+            skipWhitespaceAndComments()
+        }
+
         val account = parseAccount()
         skipWhitespaceAndComments()
 
@@ -340,6 +358,7 @@ class BeancountParser : Parser {
             units = units,
             cost = cost,
             price = price,
+            flag = postingFlag,
             meta = postingMeta.ifEmpty { null }
         )
     }
@@ -364,8 +383,23 @@ class BeancountParser : Parser {
 
         // Try to parse cost components
         if (peek() is Token.NUMBER) {
-            numberPer = Decimal((consume(Token.NUMBER::class) as Token.NUMBER).value.toString())
+            val firstNumber = Decimal((consume(Token.NUMBER::class) as Token.NUMBER).value.toString())
             skipWhitespaceAndComments()
+
+            // Check for compound cost syntax: number # total
+            // In our lexer, #total is tokenized as a TAG token with value "total"
+            // So we check if the next token is a TAG whose value is all digits
+            if (peek() is Token.TAG) {
+                val tagToken = peek() as Token.TAG
+                if (tagToken.value.all { it.isDigit() }) {
+                    // This is a compound cost: numberPer # numberTotal
+                    numberTotal = Decimal(tagToken.value)
+                    consume(Token.TAG::class)
+                    skipWhitespaceAndComments()
+                }
+            }
+
+            numberPer = firstNumber
 
             if (peek() is Token.CURRENCY) {
                 currency = parseCurrency()
@@ -423,13 +457,28 @@ class BeancountParser : Parser {
         skipWhitespaceAndComments()
         
         val amount = parseAmount()
+        skipWhitespaceAndComments()
+        
+        // Parse optional tolerance: ~ 0.01
+        var tolerance: Decimal? = null
+        if (peek() is Token.TILDE) {
+            consume(Token.TILDE::class)
+            skipWhitespaceAndComments()
+            if (peek() is Token.NUMBER) {
+                val toleranceValue = (consume(Token.NUMBER::class) as Token.NUMBER).value
+                tolerance = Decimal(toleranceValue.toString())
+                skipWhitespaceAndComments()
+            }
+        }
+        
         val balanceMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
 
         return Balance(
             meta = balanceMeta,
             date = dateToken.value,
             account = account,
-            amount = amount
+            amount = amount,
+            tolerance = tolerance
         )
     }
 
@@ -459,13 +508,29 @@ class BeancountParser : Parser {
         skipWhitespaceAndComments()
 
         val comment = (consume(Token.STRING::class) as Token.STRING).value
+        skipWhitespaceAndComments()
+
+        // Parse tags and links
+        val tags = mutableSetOf<String>()
+        val links = mutableSetOf<String>()
+        while (peek() is Token.TAG || peek() is Token.LINK) {
+            when (val token = advance()) {
+                is Token.TAG -> tags.add(token.value)
+                is Token.LINK -> links.add(token.value)
+                else -> {}
+            }
+            skipWhitespaceAndComments()
+        }
+
         val noteMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
 
         return Note(
             meta = noteMeta,
             date = dateToken.value,
             account = account,
-            comment = comment
+            comment = comment,
+            tags = tags.ifEmpty { null },
+            links = links.ifEmpty { null }
         )
     }
 
@@ -513,13 +578,29 @@ class BeancountParser : Parser {
         skipWhitespaceAndComments()
 
         val filename = (consume(Token.STRING::class) as Token.STRING).value
+        skipWhitespaceAndComments()
+
+        // Parse tags and links
+        val tags = mutableSetOf<String>()
+        val links = mutableSetOf<String>()
+        while (peek() is Token.TAG || peek() is Token.LINK) {
+            when (val token = advance()) {
+                is Token.TAG -> tags.add(token.value)
+                is Token.LINK -> links.add(token.value)
+                else -> {}
+            }
+            skipWhitespaceAndComments()
+        }
+
         val documentMeta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
 
         return Document(
             meta = documentMeta,
             date = dateToken.value,
             account = account,
-            filename = filename
+            filename = filename,
+            tags = tags.ifEmpty { null },
+            links = links.ifEmpty { null }
         )
     }
 
@@ -581,6 +662,66 @@ class BeancountParser : Parser {
             meta = includeMeta,
             date = dateToken.value,
             filename = filename
+        )
+    }
+
+    private fun parsePushTag(dateToken: Token.DATE): PushTag {
+        consume(Token.KEYWORD::class) // consume "pushtag"
+        skipWhitespaceAndComments()
+        
+        val tag = (consume(Token.TAG::class) as Token.TAG).value
+        tagStack.add(tag)
+        
+        return PushTag(
+            meta = newMetadata(currentFilename, dateToken.line),
+            date = dateToken.value,
+            tag = tag
+        )
+    }
+    
+    private fun parsePopTag(dateToken: Token.DATE): PopTag {
+        consume(Token.KEYWORD::class) // consume "poptag"
+        skipWhitespaceAndComments()
+        
+        val tag = (consume(Token.TAG::class) as Token.TAG).value
+        tagStack.remove(tag)
+        
+        return PopTag(
+            meta = newMetadata(currentFilename, dateToken.line),
+            date = dateToken.value,
+            tag = tag
+        )
+    }
+    
+    private fun parsePushMeta(dateToken: Token.DATE): PushMeta {
+        consume(Token.KEYWORD::class) // consume "pushmeta"
+        skipWhitespaceAndComments()
+        
+        val key = (consume(Token.KEY::class) as Token.KEY).value
+        skipWhitespaceAndComments()
+        
+        val value = parseMetadataValue() ?: ""
+        metaStack[key] = value
+        
+        return PushMeta(
+            meta = newMetadata(currentFilename, dateToken.line),
+            date = dateToken.value,
+            key = key,
+            value = value
+        )
+    }
+    
+    private fun parsePopMeta(dateToken: Token.DATE): PopMeta {
+        consume(Token.KEYWORD::class) // consume "popmeta"
+        skipWhitespaceAndComments()
+        
+        val key = (consume(Token.KEY::class) as Token.KEY).value
+        metaStack.remove(key)
+        
+        return PopMeta(
+            meta = newMetadata(currentFilename, dateToken.line),
+            date = dateToken.value,
+            key = key
         )
     }
 
@@ -706,6 +847,23 @@ class BeancountParser : Parser {
         }
 
         return meta
+    }
+
+    private fun parseMetadataValue(): Any? {
+        return when (val token = peek()) {
+            is Token.STRING -> (consume(Token.STRING::class) as Token.STRING).value
+            is Token.NUMBER -> (consume(Token.NUMBER::class) as Token.NUMBER).value
+            is Token.DATE -> (consume(Token.DATE::class) as Token.DATE).value
+            is Token.BOOL -> (consume(Token.BOOL::class) as Token.BOOL).value
+            is Token.NONE -> {
+                consume(Token.NONE::class)
+                null
+            }
+            else -> {
+                reportError("Expected metadata value, found ${token::class.simpleName}")
+                null
+            }
+        }
     }
 
     private fun parseAccount(): String {

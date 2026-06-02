@@ -6,7 +6,13 @@ import io.github.tonyzhye.beancount.query.compiler.Accumulator
 import io.github.tonyzhye.beancount.query.compiler.EvalAggregator
 import io.github.tonyzhye.beancount.query.compiler.EvalFunction
 import io.github.tonyzhye.beancount.query.compiler.RowContext
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.daysUntil
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 
 /**
  * Function signature for type checking.
@@ -99,6 +105,10 @@ object FunctionRegistry {
 
         registerFunction("length", FunctionSignature(listOf(BqlType.String), BqlType.Integer)) { args ->
             BqlIntegerValue(args[0].asString().length)
+        }
+
+        registerFunction("length", FunctionSignature(listOf(BqlType.Set), BqlType.Integer)) { args ->
+            BqlIntegerValue(args[0].asSet().size)
         }
 
         // Date functions
@@ -195,6 +205,144 @@ object FunctionRegistry {
             } ?: BqlNullValue()
         }
 
+        registerFunction("getweight", FunctionSignature(listOf(BqlType.Position), BqlType.Amount)) { args ->
+            val position = args[0].asPosition()
+            val cost = position.cost
+            val weight = if (cost != null) {
+                Amount(cost.number * position.units.number, cost.currency)
+            } else {
+                position.units
+            }
+            BqlAmountValue(weight)
+        }
+
+        registerFunction("getvalue", FunctionSignature(listOf(BqlType.Position, BqlType.String), BqlType.Amount, passContext = true)) { args ->
+            val position = args[0].asPosition()
+            val targetCurrency = args[1].asString()
+            val priceMap = (args.getOrNull(2) as? BqlPriceMapValue)?.priceMap
+            if (priceMap != null && position.units.currency != targetCurrency) {
+                try {
+                    val converted = io.github.tonyzhye.beancount.core.convertPosition(
+                        position, targetCurrency, priceMap, null
+                    )
+                    BqlAmountValue(converted)
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                val value = if (position.units.currency == targetCurrency) {
+                    position.units
+                } else {
+                    null
+                }
+                value?.let { BqlAmountValue(it) } ?: BqlNullValue()
+            }
+        }
+
+        registerFunction("convert", FunctionSignature(listOf(BqlType.Amount, BqlType.String), BqlType.Amount, passContext = true)) { args ->
+            val amount = args[0].asAmount()
+            val targetCurrency = args[1].asString()
+            val priceMap = (args.getOrNull(2) as? BqlPriceMapValue)?.priceMap
+            if (priceMap != null && amount.currency != targetCurrency) {
+                try {
+                    val converted = io.github.tonyzhye.beancount.core.convertAmount(
+                        amount, targetCurrency, priceMap, null
+                    )
+                    BqlAmountValue(converted)
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                val value = if (amount.currency == targetCurrency) amount else null
+                value?.let { BqlAmountValue(it) } ?: BqlNullValue()
+            }
+        }
+
+        registerFunction("convert", FunctionSignature(listOf(BqlType.Position, BqlType.String), BqlType.Amount, passContext = true)) { args ->
+            val position = args[0].asPosition()
+            val targetCurrency = args[1].asString()
+            val priceMap = (args.getOrNull(2) as? BqlPriceMapValue)?.priceMap
+            if (priceMap != null && position.units.currency != targetCurrency) {
+                try {
+                    val converted = io.github.tonyzhye.beancount.core.convertPosition(
+                        position, targetCurrency, priceMap, null
+                    )
+                    BqlAmountValue(converted)
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                val value = if (position.units.currency == targetCurrency) position.units else null
+                value?.let { BqlAmountValue(it) } ?: BqlNullValue()
+            }
+        }
+
+        registerFunction("getprice", FunctionSignature(listOf(BqlType.String, BqlType.String), BqlType.Amount, passContext = true)) { args ->
+            val currency = args[0].asString()
+            val targetCurrency = args[1].asString()
+            val priceMap = (args.getOrNull(2) as? BqlPriceMapValue)?.priceMap
+            if (priceMap != null) {
+                try {
+                    val (_, rate) = priceMap.getPrice(currency, targetCurrency)
+                    if (rate != null) {
+                        BqlAmountValue(Amount(rate, targetCurrency))
+                    } else {
+                        BqlNullValue()
+                    }
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("getunits", FunctionSignature(listOf(BqlType.Position), BqlType.Amount)) { args ->
+            val position = args[0].asPosition()
+            BqlAmountValue(position.units)
+        }
+
+        // Type casting functions
+        registerFunction("int", FunctionSignature(listOf(BqlType.Any), BqlType.Integer)) { args ->
+            val value = args[0].raw
+            val intValue = when (value) {
+                is Int -> value
+                is Long -> value.toInt()
+                is Double -> value.toInt()
+                is Decimal -> value.toDouble().toInt()
+                is String -> value.toIntOrNull() ?: 0
+                else -> 0
+            }
+            BqlIntegerValue(intValue)
+        }
+
+        registerFunction("decimal", FunctionSignature(listOf(BqlType.Any), BqlType.Decimal)) { args ->
+            val value = args[0].raw
+            val decimalValue = when (value) {
+                is Decimal -> value
+                is Int -> Decimal(value.toString())
+                is Long -> Decimal(value.toString())
+                is Double -> Decimal(value.toString())
+                is String -> Decimal(value)
+                else -> Decimal.ZERO
+            }
+            BqlDecimalValue(decimalValue)
+        }
+
+        registerFunction("date", FunctionSignature(listOf(BqlType.String), BqlType.Date)) { args ->
+            val dateStr = args[0].asString()
+            val parts = dateStr.split("-")
+            if (parts.size == 3) {
+                try {
+                    BqlDateValue(LocalDate(parts[0].toInt(), parts[1].toInt(), parts[2].toInt()))
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
         // Round function
         registerFunction("round", FunctionSignature(listOf(BqlType.Decimal, BqlType.Integer), BqlType.Decimal)) { args ->
             val number = args[0].asDecimal()
@@ -249,7 +397,39 @@ object FunctionRegistry {
         registerFunction("days_between", FunctionSignature(listOf(BqlType.Date, BqlType.Date), BqlType.Integer)) { args ->
             val d1 = args[0].asDate()
             val d2 = args[1].asDate()
-            BqlIntegerValue(daysBetweenDates(d1, d2))
+            BqlIntegerValue(d1.daysUntil(d2))
+        }
+
+        registerFunction("date_add", FunctionSignature(listOf(BqlType.Date, BqlType.Integer), BqlType.Date)) { args ->
+            val date = args[0].asDate()
+            val days = args[1].asInteger()
+            BqlDateValue(date.plus(days, DateTimeUnit.DAY))
+        }
+
+        registerFunction("date_diff", FunctionSignature(listOf(BqlType.Date, BqlType.Date), BqlType.Integer)) { args ->
+            val d1 = args[0].asDate()
+            val d2 = args[1].asDate()
+            BqlIntegerValue(d1.daysUntil(d2))
+        }
+
+        registerFunction("date_trunc", FunctionSignature(listOf(BqlType.Date, BqlType.String), BqlType.Date)) { args ->
+            val date = args[0].asDate()
+            val unit = args[1].asString().lowercase()
+            val truncated = when (unit) {
+                "year", "y" -> LocalDate(date.year, 1, 1)
+                "quarter", "q" -> {
+                    val quarterMonth = ((date.monthNumber - 1) / 3) * 3 + 1
+                    LocalDate(date.year, quarterMonth, 1)
+                }
+                "month", "m" -> LocalDate(date.year, date.monthNumber, 1)
+                "week", "w" -> {
+                    // Find Monday of the week
+                    val daysSinceMonday = (date.dayOfWeek.value + 6) % 7
+                    date.minus(daysSinceMonday, DateTimeUnit.DAY)
+                }
+                else -> date
+            }
+            BqlDateValue(truncated)
         }
 
         // String functions
@@ -340,11 +520,416 @@ object FunctionRegistry {
                 else -> true
             })
         }
-    }
 
-    private fun daysBetweenDates(d1: kotlinx.datetime.LocalDate, d2: kotlinx.datetime.LocalDate): Int {
-        // Simplified day count (not accounting for leap years precisely)
-        return (d2.year - d1.year) * 365 + (d2.monthNumber - d1.monthNumber) * 30 + (d2.dayOfMonth - d1.dayOfMonth)
+        // Negation function
+        registerFunction("neg", FunctionSignature(listOf(BqlType.Decimal), BqlType.Decimal)) { args ->
+            BqlDecimalValue(-args[0].asDecimal())
+        }
+
+        // Today function
+        registerFunction("today", FunctionSignature(emptyList(), BqlType.Date)) { _ ->
+            val now = kotlinx.datetime.Clock.System.now()
+            val tz = kotlinx.datetime.TimeZone.currentSystemDefault()
+            BqlDateValue(now.toLocalDateTime(tz).date)
+        }
+
+        // String functions (enhanced)
+        registerFunction("maxwidth", FunctionSignature(listOf(BqlType.String, BqlType.Integer), BqlType.String)) { args ->
+            val str = args[0].asString()
+            val width = args[1].asInteger()
+            if (str.length > width) {
+                BqlStringValue(str.take(width))
+            } else {
+                BqlStringValue(str)
+            }
+        }
+
+        registerFunction("grep", FunctionSignature(listOf(BqlType.String, BqlType.String), BqlType.String)) { args ->
+            val pattern = args[0].asString()
+            val text = args[1].asString()
+            val match = Regex(pattern).find(text)
+            BqlStringValue(match?.value ?: "")
+        }
+
+        registerFunction("grepn", FunctionSignature(listOf(BqlType.String, BqlType.String, BqlType.Integer), BqlType.String)) { args ->
+            val pattern = args[0].asString()
+            val text = args[1].asString()
+            val groupIndex = args[2].asInteger()
+            val match = Regex(pattern).find(text)
+            val groups = match?.groupValues
+            if (groups != null && groupIndex in groups.indices) {
+                BqlStringValue(groups[groupIndex])
+            } else {
+                BqlStringValue("")
+            }
+        }
+
+        registerFunction("subst", FunctionSignature(listOf(BqlType.String, BqlType.String, BqlType.String), BqlType.String)) { args ->
+            val pattern = args[0].asString()
+            val replacement = args[1].asString()
+            val text = args[2].asString()
+            BqlStringValue(text.replaceFirst(Regex(pattern), replacement))
+        }
+
+        registerFunction("findfirst", FunctionSignature(listOf(BqlType.String, BqlType.Set), BqlType.String)) { args ->
+            val pattern = args[0].asString()
+            val set = args[1].asSet()
+            val match = set.find { Regex(pattern).containsMatchIn(it) }
+            BqlStringValue(match ?: "")
+        }
+
+        registerFunction("joinstr", FunctionSignature(listOf(BqlType.Set), BqlType.String)) { args ->
+            val set = args[0].asSet()
+            BqlStringValue(set.joinToString(", "))
+        }
+
+        // Math functions (enhanced)
+        registerFunction("abs", FunctionSignature(listOf(BqlType.Amount), BqlType.Amount)) { args ->
+            val amount = args[0].asAmount()
+            BqlAmountValue(Amount(amount.number.abs(), amount.currency))
+        }
+
+        registerFunction("abs", FunctionSignature(listOf(BqlType.Position), BqlType.Position)) { args ->
+            val pos = args[0].asPosition()
+            BqlPositionValue(Position(Amount(pos.units.number.abs(), pos.units.currency), pos.cost))
+        }
+
+        registerFunction("abs", FunctionSignature(listOf(BqlType.Inventory), BqlType.Inventory)) { args ->
+            val inv = args[0].asInventory()
+            val result = Inventory()
+            for (pos in inv) {
+                result.addAmount(Amount(pos.units.number.abs(), pos.units.currency), pos.cost)
+            }
+            BqlInventoryValue(result)
+        }
+
+        registerFunction("safediv", FunctionSignature(listOf(BqlType.Decimal, BqlType.Integer), BqlType.Decimal)) { args ->
+            val dividend = args[0].asDecimal()
+            val divisor = args[1].asInteger()
+            BqlDecimalValue(if (divisor == 0) Decimal.ZERO else dividend / Decimal(divisor.toString()))
+        }
+
+        // Date functions (enhanced)
+        registerFunction("ymonth", FunctionSignature(listOf(BqlType.Date), BqlType.Date)) { args ->
+            val date = args[0].asDate()
+            BqlDateValue(LocalDate(date.year, date.monthNumber, 1))
+        }
+
+        registerFunction("quarter", FunctionSignature(listOf(BqlType.Date), BqlType.String)) { args ->
+            val date = args[0].asDate()
+            val q = (date.monthNumber - 1) / 3 + 1
+            BqlStringValue("${date.year}-Q$q")
+        }
+
+        registerFunction("weekday", FunctionSignature(listOf(BqlType.Date), BqlType.String)) { args ->
+            val date = args[0].asDate()
+            val names = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+            BqlStringValue(names[date.dayOfWeek.value - 1])
+        }
+
+        registerFunction("date", FunctionSignature(listOf(BqlType.Integer, BqlType.Integer, BqlType.Integer), BqlType.Date)) { args ->
+            val year = args[0].asInteger()
+            val month = args[1].asInteger()
+            val day = args[2].asInteger()
+            BqlDateValue(LocalDate(year, month, day))
+        }
+
+        // Position/Inventory functions (enhanced)
+        registerFunction("root", FunctionSignature(listOf(BqlType.String, BqlType.Integer), BqlType.String)) { args ->
+            val account = args[0].asString()
+            val depth = args[1].asInteger()
+            val parts = account.split(':')
+            if (parts.size <= depth) {
+                BqlStringValue(account)
+            } else {
+                BqlStringValue(parts.take(depth).joinToString(":"))
+            }
+        }
+
+        registerFunction("units", FunctionSignature(listOf(BqlType.Inventory), BqlType.Inventory)) { args ->
+            val inv = args[0].asInventory()
+            BqlInventoryValue(io.github.tonyzhye.beancount.core.getUnits(inv))
+        }
+
+        registerFunction("cost", FunctionSignature(listOf(BqlType.Inventory), BqlType.Inventory)) { args ->
+            val inv = args[0].asInventory()
+            BqlInventoryValue(io.github.tonyzhye.beancount.core.getCost(inv))
+        }
+
+        registerFunction("convert", FunctionSignature(listOf(BqlType.Inventory, BqlType.String), BqlType.Inventory, passContext = true)) { args ->
+            val inv = args[0].asInventory()
+            val targetCurrency = args[1].asString()
+            val priceMap = (args.getOrNull(2) as? BqlPriceMapValue)?.priceMap
+            if (priceMap != null) {
+                try {
+                    val converted = io.github.tonyzhye.beancount.core.convertInventory(inv, targetCurrency, priceMap, null)
+                    BqlInventoryValue(converted)
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("convert", FunctionSignature(listOf(BqlType.Inventory, BqlType.String, BqlType.Date), BqlType.Inventory, passContext = true)) { args ->
+            val inv = args[0].asInventory()
+            val targetCurrency = args[1].asString()
+            val date = args[2].asDate()
+            val priceMap = (args.getOrNull(3) as? BqlPriceMapValue)?.priceMap
+            if (priceMap != null) {
+                try {
+                    val converted = io.github.tonyzhye.beancount.core.convertInventory(inv, targetCurrency, priceMap, date)
+                    BqlInventoryValue(converted)
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("value", FunctionSignature(listOf(BqlType.Position, BqlType.Date), BqlType.Amount, passContext = true)) { args ->
+            val pos = args[0].asPosition()
+            val date = args[1].asDate()
+            val priceMap = (args.getOrNull(2) as? BqlPriceMapValue)?.priceMap
+            if (priceMap != null) {
+                try {
+                    val valued = io.github.tonyzhye.beancount.core.getValue(pos, priceMap, date)
+                    BqlAmountValue(valued)
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("value", FunctionSignature(listOf(BqlType.Inventory), BqlType.Inventory, passContext = true)) { args ->
+            val inv = args[0].asInventory()
+            val priceMap = (args.getOrNull(1) as? BqlPriceMapValue)?.priceMap
+            if (priceMap != null) {
+                try {
+                    val valued = io.github.tonyzhye.beancount.core.getValue(inv, priceMap, null)
+                    BqlInventoryValue(valued)
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("value", FunctionSignature(listOf(BqlType.Inventory, BqlType.Date), BqlType.Inventory, passContext = true)) { args ->
+            val inv = args[0].asInventory()
+            val date = args[1].asDate()
+            val priceMap = (args.getOrNull(2) as? BqlPriceMapValue)?.priceMap
+            if (priceMap != null) {
+                try {
+                    val valued = io.github.tonyzhye.beancount.core.getValue(inv, priceMap, date)
+                    BqlInventoryValue(valued)
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("getprice", FunctionSignature(listOf(BqlType.String, BqlType.String, BqlType.Date), BqlType.Amount, passContext = true)) { args ->
+            val currency = args[0].asString()
+            val targetCurrency = args[1].asString()
+            val date = args[2].asDate()
+            val priceMap = (args.getOrNull(3) as? BqlPriceMapValue)?.priceMap
+            if (priceMap != null) {
+                try {
+                    val (_, rate) = priceMap.getPrice(currency, targetCurrency, date)
+                    if (rate != null) {
+                        BqlAmountValue(Amount(rate, targetCurrency))
+                    } else {
+                        BqlNullValue()
+                    }
+                } catch (e: Exception) {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("possign", FunctionSignature(listOf(BqlType.Decimal, BqlType.String), BqlType.Decimal)) { args ->
+            val value = args[0].asDecimal()
+            val account = args[1].asString()
+            val sign = AccountTypes.getAccountSign(account)
+            BqlDecimalValue(value * Decimal(sign.toString()))
+        }
+
+        registerFunction("possign", FunctionSignature(listOf(BqlType.Amount, BqlType.String), BqlType.Amount)) { args ->
+            val amount = args[0].asAmount()
+            val account = args[1].asString()
+            val sign = AccountTypes.getAccountSign(account)
+            BqlAmountValue(Amount(amount.number * Decimal(sign.toString()), amount.currency))
+        }
+
+        registerFunction("possign", FunctionSignature(listOf(BqlType.Position, BqlType.String), BqlType.Position)) { args ->
+            val pos = args[0].asPosition()
+            val account = args[1].asString()
+            val sign = AccountTypes.getAccountSign(account)
+            BqlPositionValue(Position(
+                Amount(pos.units.number * Decimal(sign.toString()), pos.units.currency),
+                pos.cost
+            ))
+        }
+
+        registerFunction("possign", FunctionSignature(listOf(BqlType.Inventory, BqlType.String), BqlType.Inventory)) { args ->
+            val inv = args[0].asInventory()
+            val account = args[1].asString()
+            val sign = AccountTypes.getAccountSign(account)
+            val result = Inventory()
+            for (pos in inv) {
+                result.addAmount(
+                    Amount(pos.units.number * Decimal(sign.toString()), pos.units.currency),
+                    pos.cost
+                )
+            }
+            BqlInventoryValue(result)
+        }
+
+        registerFunction("filter_currency", FunctionSignature(listOf(BqlType.Position, BqlType.String), BqlType.Position)) { args ->
+            val pos = args[0].asPosition()
+            val currency = args[1].asString()
+            if (pos.units.currency == currency) {
+                BqlPositionValue(pos)
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("filter_currency", FunctionSignature(listOf(BqlType.Inventory, BqlType.String), BqlType.Inventory)) { args ->
+            val inv = args[0].asInventory()
+            val currency = args[1].asString()
+            val result = Inventory()
+            for (pos in inv) {
+                if (pos.units.currency == currency) {
+                    result.addPosition(pos)
+                }
+            }
+            BqlInventoryValue(result)
+        }
+
+        registerFunction("open_date", FunctionSignature(listOf(BqlType.String), BqlType.Date, passContext = true)) { args ->
+            val account = args[0].asString()
+            val entries = (args.getOrNull(1) as? BqlPriceMapValue)?.entries
+            if (entries != null) {
+                val openDates = entries
+                    .filterIsInstance<io.github.tonyzhye.beancount.core.Open>()
+                    .filter { it.account == account }
+                    .map { it.date }
+                if (openDates.isNotEmpty()) {
+                    BqlDateValue(openDates.minOrNull()!!)
+                } else {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("close_date", FunctionSignature(listOf(BqlType.String), BqlType.Date, passContext = true)) { args ->
+            val account = args[0].asString()
+            val entries = (args.getOrNull(1) as? BqlPriceMapValue)?.entries
+            if (entries != null) {
+                val closeDates = entries
+                    .filterIsInstance<io.github.tonyzhye.beancount.core.Close>()
+                    .filter { it.account == account }
+                    .map { it.date }
+                if (closeDates.isNotEmpty()) {
+                    BqlDateValue(closeDates.minOrNull()!!)
+                } else {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("account_sortkey", FunctionSignature(listOf(BqlType.String), BqlType.String)) { args ->
+            val account = args[0].asString()
+            BqlStringValue(AccountTypes.getAccountSortKey(account))
+        }
+
+        // Inventory functions
+        registerFunction("inventory", FunctionSignature(listOf(BqlType.Amount), BqlType.Inventory)) { args ->
+            val amount = args[0].asAmount()
+            val inv = Inventory()
+            inv.addAmount(amount)
+            BqlInventoryValue(inv)
+        }
+
+        // Meta function (get entry meta)
+        registerFunction("meta", FunctionSignature(listOf(BqlType.Any, BqlType.String), BqlType.Any)) { args ->
+            val entry = args[0].raw
+            val key = args[1].asString()
+            val meta = when (entry) {
+                is io.github.tonyzhye.beancount.core.Transaction -> entry.meta
+                is io.github.tonyzhye.beancount.core.Open -> entry.meta
+                is io.github.tonyzhye.beancount.core.Close -> entry.meta
+                is io.github.tonyzhye.beancount.core.Balance -> entry.meta
+                is io.github.tonyzhye.beancount.core.Note -> entry.meta
+                is io.github.tonyzhye.beancount.core.Document -> entry.meta
+                is io.github.tonyzhye.beancount.core.Commodity -> entry.meta
+                is io.github.tonyzhye.beancount.core.Event -> entry.meta
+                is io.github.tonyzhye.beancount.core.Price -> entry.meta
+                else -> emptyMap()
+            }
+            meta[key]?.let { toBqlValue(it) } ?: BqlNullValue()
+        }
+
+        registerFunction("open_meta", FunctionSignature(listOf(BqlType.String), BqlType.Any, passContext = true)) { args ->
+            val account = args[0].asString()
+            val entries = (args.getOrNull(1) as? BqlPriceMapValue)?.entries
+            if (entries != null) {
+                val openEntry = entries
+                    .filterIsInstance<io.github.tonyzhye.beancount.core.Open>()
+                    .find { it.account == account }
+                if (openEntry != null) {
+                    toBqlValue(openEntry.meta)
+                } else {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        registerFunction("commodity_meta", FunctionSignature(listOf(BqlType.String), BqlType.Any, passContext = true)) { args ->
+            val currency = args[0].asString()
+            val entries = (args.getOrNull(1) as? BqlPriceMapValue)?.entries
+            if (entries != null) {
+                val commodityEntry = entries
+                    .filterIsInstance<io.github.tonyzhye.beancount.core.Commodity>()
+                    .find { it.currency == currency }
+                if (commodityEntry != null) {
+                    toBqlValue(commodityEntry.meta)
+                } else {
+                    BqlNullValue()
+                }
+            } else {
+                BqlNullValue()
+            }
+        }
+
+        // Entry context function
+        registerFunction("has_account", FunctionSignature(listOf(BqlType.String), BqlType.Boolean, passContext = true)) { args ->
+            val pattern = args[0].asString()
+            val context = (args.getOrNull(1) as? BqlTransactionValue)?.value
+            if (context != null) {
+                val hasMatch = context.postings.any { Regex(pattern).containsMatchIn(it.account) }
+                BqlBooleanValue(hasMatch)
+            } else {
+                BqlBooleanValue(false)
+            }
+        }
     }
 
     private fun registerBuiltInAggregators() {

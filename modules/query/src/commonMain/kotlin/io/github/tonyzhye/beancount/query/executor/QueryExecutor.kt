@@ -149,10 +149,77 @@ class QueryExecutor(
             finalRows = finalRows.take(query.limit)
         }
 
+        // Step 8: PIVOT BY
+        val (finalColumnNames, finalRows2) = if (query.pivotBy != null) {
+            applyPivotBy(query, finalRows)
+        } else {
+            query.targets.map { it.name } to finalRows.map { it.values }
+        }
+
         return QueryResult(
-            columnNames = query.targets.map { it.name },
-            rows = finalRows.map { it.values }
+            columnNames = finalColumnNames,
+            rows = finalRows2
         )
+    }
+
+    /**
+     * Apply PIVOT BY transformation.
+     *
+     * pivotBy contains two column indexes:
+     * - index 0: row key column ( GROUP BY column that identifies rows)
+     * - index 1: column key column (GROUP BY column whose values become new columns)
+     */
+    private fun applyPivotBy(
+        query: CompiledQuery,
+        rows: List<ResultRow>
+    ): Pair<List<String>, List<List<BqlValue>>> {
+        val pivots = query.pivotBy!!
+        val col1 = pivots[0]
+        val col2 = pivots[1]
+        val otherCols = query.targets.indices.filter { it !in pivots }
+        val nother = otherCols.size
+
+        // Collect unique values for the column key
+        val keys = rows.map { it.values[col2] }.distinct().sortedWith(::compareValues)
+
+        // Build new column names
+        val columnNames = mutableListOf<String>()
+        columnNames.add(query.targets[col1].name)
+        for (key in keys) {
+            if (nother > 1) {
+                for (otherCol in otherCols) {
+                    columnNames.add("$key/${query.targets[otherCol].name}")
+                }
+            } else {
+                columnNames.add("$key")
+            }
+        }
+
+        // Build pivoted rows
+        val pivotedRows = mutableListOf<List<BqlValue>>()
+        val rowsByCol1 = rows.groupBy { it.values[col1] }.toList().sortedWith { a, b ->
+            compareValues(a.first, b.first)
+        }
+
+        for ((field1, group) in rowsByCol1) {
+            val outRow = MutableList<BqlValue>(columnNames.size) { BqlNullValue() }
+            outRow[0] = field1
+
+            for (row in group) {
+                val keyIndex = keys.indexOf(row.values[col2])
+                if (keyIndex >= 0) {
+                    for (i in otherCols.indices) {
+                        val colIndex = keyIndex * nother + 1 + i
+                        if (colIndex < outRow.size) {
+                            outRow[colIndex] = row.values[otherCols[i]]
+                        }
+                    }
+                }
+            }
+            pivotedRows.add(outRow)
+        }
+
+        return columnNames to pivotedRows
     }
 
     private fun groupRows(rows: List<RowContext>, groupBy: List<EvalNode>): List<List<RowContext>> {

@@ -34,6 +34,13 @@ data class AstOrderBy(
 ) : AstNode
 
 /**
+ * PIVOT BY clause
+ */
+data class AstPivotBy(
+    val columns: List<AstExpression> = emptyList()
+) : AstNode
+
+/**
  * Complete query
  */
 data class AstQuery(
@@ -44,8 +51,26 @@ data class AstQuery(
     val groupBy: List<AstExpression> = emptyList(),
     val having: AstExpression? = null,
     val orderBy: List<AstOrderBy> = emptyList(),
-    val limit: Int? = null
+    val pivotBy: AstPivotBy? = null,
+    val limit: Int? = null,
+    val queryType: QueryType = QueryType.SELECT
 ) : AstNode
+
+/**
+ * DEFINE statement for variable assignment
+ */
+data class AstDefine(
+    val variable: String,
+    val expression: AstExpression
+) : AstNode
+
+/**
+ * Query type
+ */
+enum class QueryType {
+    SELECT,
+    JOURNAL
+}
 
 /**
  * Expression nodes

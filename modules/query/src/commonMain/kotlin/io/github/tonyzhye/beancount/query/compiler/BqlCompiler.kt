@@ -37,6 +37,7 @@ class BqlCompiler(private val table: io.github.tonyzhye.beancount.query.tables.T
         val groupByNodes = query.groupBy.map { compileExpression(it) }
         val havingNode = query.having?.let { compileExpression(it, aliasMap) }
         val orderByNodes = query.orderBy.map { compileOrderBy(it, aliasMap) }
+        val pivotBy = query.pivotBy?.let { compilePivotBy(it, targetNodes, groupByNodes) }
 
         return CompiledQuery(
             distinct = query.distinct,
@@ -45,7 +46,8 @@ class BqlCompiler(private val table: io.github.tonyzhye.beancount.query.tables.T
             groupBy = groupByNodes,
             having = havingNode,
             orderBy = orderByNodes,
-            limit = query.limit
+            limit = query.limit,
+            pivotBy = pivotBy
         )
     }
 
@@ -129,7 +131,23 @@ class BqlCompiler(private val table: io.github.tonyzhye.beancount.query.tables.T
         // Check for regular functions
         val function = FunctionRegistry.resolveFunction(name, operands.map { it.dtype })
         if (function != null) {
-            return EvalFunction(function.signature.returnType, function.implementation, operands)
+            val contextAccessor: ((RowContext) -> BqlValue)? = if (function.signature.passContext) {
+                { context ->
+                    val pm = context.priceMap
+                    if (pm != null) {
+                        BqlPriceMapValue(pm, context.allEntries)
+                    } else {
+                        BqlNullValue()
+                    }
+                }
+            } else null
+            return EvalFunction(
+                function.signature.returnType,
+                function.implementation,
+                operands,
+                passContext = function.signature.passContext,
+                contextAccessor = contextAccessor
+            )
         }
 
         throw CompileException("Unknown function: ${call.name}")
@@ -172,6 +190,52 @@ class BqlCompiler(private val table: io.github.tonyzhye.beancount.query.tables.T
             else -> "expr"
         }
     }
+
+    /**
+     * Compile a PIVOT BY clause.
+     *
+     * The PIVOT BY clause accepts two name or index references to columns
+     * in the SELECT targets list. The second column should be a GROUP BY column.
+     */
+    private fun compilePivotBy(
+        pivotBy: io.github.tonyzhye.beancount.query.parser.AstPivotBy,
+        targets: List<TargetNode>,
+        groupBy: List<EvalNode>
+    ): List<Int> {
+        val names = targets.mapIndexed { index, target -> target.name to index }.toMap()
+        val indexes = mutableListOf<Int>()
+
+        for (column in pivotBy.columns) {
+            when (column) {
+                is io.github.tonyzhye.beancount.query.parser.AstIntegerLiteral -> {
+                    val index = column.value - 1 // 1-based to 0-based
+                    if (index !in targets.indices) {
+                        throw CompileException("invalid PIVOT BY column index ${column.value}")
+                    }
+                    indexes.add(index)
+                }
+                is io.github.tonyzhye.beancount.query.parser.AstIdentifier -> {
+                    val index = names[column.name.lowercase()]
+                        ?: throw CompileException("PIVOT BY column '${column.name}' is not in the targets list")
+                    indexes.add(index)
+                }
+                else -> throw CompileException("PIVOT BY column must be a name or index")
+            }
+        }
+
+        if (indexes.size != 2) {
+            throw CompileException("PIVOT BY requires exactly 2 columns")
+        }
+
+        if (indexes[0] == indexes[1]) {
+            throw CompileException("the two PIVOT BY columns cannot be the same column")
+        }
+
+        // Note: In a full implementation, we would check that indexes[1] is a GROUP BY column
+        // For simplicity, we skip this check
+
+        return indexes
+    }
 }
 
 class CompileException(message: String) : RuntimeException(message)
@@ -193,5 +257,6 @@ data class CompiledQuery(
     val groupBy: List<EvalNode>,
     val having: EvalNode?,
     val orderBy: List<OrderByNode>,
-    val limit: Int?
+    val limit: Int?,
+    val pivotBy: List<Int>? = null
 )

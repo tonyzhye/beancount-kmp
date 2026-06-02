@@ -30,6 +30,7 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.10.0")
 }
 
 // Create beanquery run task

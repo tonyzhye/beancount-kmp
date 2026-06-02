@@ -153,7 +153,7 @@ class CommoditiesTable(
     override fun iterator(): Iterator<RowContext> {
         return entries.asSequence()
             .filterIsInstance<Commodity>()
-            .map { entry -> SimpleRowContext(entry) }
+            .map { entry -> SimpleRowContext(entry, allEntries = entries) }
             .iterator()
     }
 }
@@ -163,7 +163,8 @@ class CommoditiesTable(
  * Based on beanquery.sources.beancount.PricesTable.
  */
 class PricesTable(
-    private val entries: List<Directive>
+    private val entries: List<Directive>,
+    private val priceMap: PriceDatabase? = null
 ) : Table {
 
     override val name = "prices"
@@ -198,7 +199,7 @@ class PricesTable(
     override fun iterator(): Iterator<RowContext> {
         return entries.asSequence()
             .filterIsInstance<Price>()
-            .map { entry -> SimpleRowContext(entry) }
+            .map { entry -> SimpleRowContext(entry, priceMap, entries) }
             .iterator()
     }
 }

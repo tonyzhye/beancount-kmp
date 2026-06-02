@@ -14,6 +14,7 @@ class MainCommand : CliktCommand(
     init {
         subcommands(
             BeanCheckCommand(),
+            BeanDepsCommand(),
             BeanDoctorCommand(),
             BeanExampleCommand(),
             BeanFormatCommand()

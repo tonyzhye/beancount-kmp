@@ -10,6 +10,10 @@ import kotlinx.datetime.LocalDate
 interface RowContext {
     val entry: Directive
     val posting: Posting?
+    val priceMap: PriceDatabase?
+        get() = null
+    val allEntries: List<Directive>
+        get() = emptyList()
 }
 
 /**

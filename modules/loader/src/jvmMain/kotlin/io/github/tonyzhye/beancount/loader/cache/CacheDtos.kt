@@ -161,6 +161,35 @@ sealed class DirectiveDto {
 ) : DirectiveDto()
 
 @Serializable
+ data class PushTagDto(
+    override val meta: Map<String, @Serializable(with = AnyValueSerializer::class) Any>,
+    override val date: @Serializable(with = LocalDateSerializer::class) LocalDate,
+    val tag: String
+) : DirectiveDto()
+
+@Serializable
+ data class PopTagDto(
+    override val meta: Map<String, @Serializable(with = AnyValueSerializer::class) Any>,
+    override val date: @Serializable(with = LocalDateSerializer::class) LocalDate,
+    val tag: String
+) : DirectiveDto()
+
+@Serializable
+ data class PushMetaDto(
+    override val meta: Map<String, @Serializable(with = AnyValueSerializer::class) Any>,
+    override val date: @Serializable(with = LocalDateSerializer::class) LocalDate,
+    val key: String,
+    val value: @Serializable(with = AnyValueSerializer::class) Any
+) : DirectiveDto()
+
+@Serializable
+ data class PopMetaDto(
+    override val meta: Map<String, @Serializable(with = AnyValueSerializer::class) Any>,
+    override val date: @Serializable(with = LocalDateSerializer::class) LocalDate,
+    val key: String
+) : DirectiveDto()
+
+@Serializable
  data class PostingDto(
     val account: String,
     val units: AmountDto?,

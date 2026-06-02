@@ -82,4 +82,48 @@ object AccountTypes {
     fun isIncomeStatementAccount(account: Account, config: AccountTypesConfig = AccountTypesConfig()): Boolean {
         return isIncome(account, config) || isExpenses(account, config)
     }
+
+    /**
+     * Get the sign (+1 or -1) for an account based on its type.
+     *
+     * Assets and Expenses have positive sign (debit increases).
+     * Liabilities, Income, and Equity have negative sign (credit increases).
+     */
+    fun getAccountSign(account: Account, config: AccountTypesConfig = AccountTypesConfig()): Int {
+        return when {
+            isAssets(account, config) || isExpenses(account, config) -> 1
+            isLiabilities(account, config) || isIncome(account, config) || isEquity(account, config) -> -1
+            else -> 1
+        }
+    }
+
+    /**
+     * Check if an account is an equity account.
+     */
+    fun isEquityAccount(account: Account, config: AccountTypesConfig = AccountTypesConfig()): Boolean {
+        return isEquity(account, config)
+    }
+
+    /**
+     * Check if an account has inverted sign (Liabilities, Income, or Equity).
+     */
+    fun isInvertedAccount(account: Account, config: AccountTypesConfig = AccountTypesConfig()): Boolean {
+        return isLiabilities(account, config) || isIncome(account, config) || isEquity(account, config)
+    }
+
+    /**
+     * Get a sort key for ordering accounts.
+     * Accounts are sorted by type (Assets, Liabilities, Equity, Income, Expenses) then alphabetically.
+     */
+    fun getAccountSortKey(account: Account, config: AccountTypesConfig = AccountTypesConfig()): String {
+        val typeOrder = when {
+            isAssets(account, config) -> "0"
+            isLiabilities(account, config) -> "1"
+            isEquity(account, config) -> "2"
+            isIncome(account, config) -> "3"
+            isExpenses(account, config) -> "4"
+            else -> "5"
+        }
+        return "$typeOrder:$account"
+    }
 }

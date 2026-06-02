@@ -13,7 +13,8 @@ import kotlinx.datetime.LocalDate
  * For computed balances, use the postings table with SUM(balance).
  */
 class BalancesTable(
-    private val entries: List<Directive>
+    private val entries: List<Directive>,
+    private val priceMap: PriceDatabase? = null
 ) : Table {
 
     override val name = "balances"
@@ -56,7 +57,7 @@ class BalancesTable(
     override fun iterator(): Iterator<RowContext> {
         return entries.asSequence()
             .filterIsInstance<Balance>()
-            .map { entry -> SimpleRowContext(entry) }
+            .map { entry -> SimpleRowContext(entry, priceMap, entries) }
             .iterator()
     }
 }

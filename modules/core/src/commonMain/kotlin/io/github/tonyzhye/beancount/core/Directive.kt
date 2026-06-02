@@ -184,11 +184,49 @@ data class Custom(
 ) : Directive()
 
 /**
+ * PushTag directive - pushes a tag onto the tag stack.
+ */
+data class PushTag(
+    override val meta: Meta,
+    override val date: LocalDate,
+    val tag: String
+) : Directive()
+
+/**
+ * PopTag directive - pops a tag from the tag stack.
+ */
+data class PopTag(
+    override val meta: Meta,
+    override val date: LocalDate,
+    val tag: String
+) : Directive()
+
+/**
+ * PushMeta directive - pushes metadata onto the meta stack.
+ */
+data class PushMeta(
+    override val meta: Meta,
+    override val date: LocalDate,
+    val key: String,
+    val value: Any
+) : Directive()
+
+/**
+ * PopMeta directive - pops metadata from the meta stack.
+ */
+data class PopMeta(
+    override val meta: Meta,
+    override val date: LocalDate,
+    val key: String
+) : Directive()
+
+/**
  * List of all directive types for validation.
  */
 val ALL_DIRECTIVES = listOf(
     Open::class, Close::class, Commodity::class,
     Pad::class, Balance::class, Transaction::class,
     Note::class, Event::class, Query::class,
-    Price::class, Document::class, Custom::class
+    Price::class, Document::class, Custom::class,
+    PushTag::class, PopTag::class, PushMeta::class, PopMeta::class
 )

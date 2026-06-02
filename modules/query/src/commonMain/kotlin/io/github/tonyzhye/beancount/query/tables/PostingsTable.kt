@@ -10,7 +10,9 @@ import io.github.tonyzhye.beancount.query.compiler.RowContext
 class PostingsRowContext(
     override val entry: Transaction,
     override val posting: Posting,
-    val rowid: Int
+    val rowid: Int,
+    override val priceMap: PriceDatabase? = null,
+    override val allEntries: List<Directive> = emptyList()
 ) : RowContext {
     var balance: Inventory = Inventory()
 }
@@ -20,7 +22,8 @@ class PostingsRowContext(
  * Based on beanquery.sources.beancount.PostingsTable.
  */
 class PostingsTable(
-    private val entries: List<Directive>
+    private val entries: List<Directive>,
+    private val priceMap: PriceDatabase? = null
 ) : Table {
 
     override val name = "postings"
@@ -142,6 +145,24 @@ class PostingsTable(
             val entry = it.entry as Transaction
             BqlSetValue(entry.postings.map { p -> p.account }.toSet())
         })
+        put("id", SimpleColumn(BqlType.String) {
+            val entry = it.entry as Transaction
+            val posting = it.posting!!
+            val hashStr = "${entry.date}-${entry.flag}-${posting.account}-${posting.units}".hashCode().toString(16)
+            BqlStringValue(hashStr)
+        })
+        put("filename", SimpleColumn(BqlType.String) {
+            BqlStringValue(it.entry.meta["filename"] as? String ?: "")
+        })
+        put("lineno", SimpleColumn(BqlType.Integer) {
+            val lineno = it.entry.meta["lineno"] as? Int ?: 0
+            BqlIntegerValue(lineno)
+        })
+        put("location", SimpleColumn(BqlType.String) {
+            val filename = it.entry.meta["filename"] as? String ?: ""
+            val lineno = it.entry.meta["lineno"] as? Int ?: 0
+            BqlStringValue("$filename:$lineno:")
+        })
     }
 
     override fun iterator(): Iterator<RowContext> {
@@ -151,7 +172,7 @@ class PostingsTable(
             .flatMap { entry ->
                 entry.postings.map { posting ->
                     rowid++
-                    PostingsRowContext(entry, posting, rowid)
+                    PostingsRowContext(entry, posting, rowid, priceMap, entries)
                 }
             }
             .iterator()

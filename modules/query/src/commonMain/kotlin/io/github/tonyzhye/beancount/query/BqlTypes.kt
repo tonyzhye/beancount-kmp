@@ -19,6 +19,7 @@ sealed interface BqlType {
     object Amount : BqlType
     object Cost : BqlType
     object Transaction : BqlType
+    object PriceMap : BqlType
     object Any : BqlType
     object Null : BqlType
 }
@@ -58,6 +59,9 @@ sealed interface BqlValue {
     
     fun asAmount(): io.github.tonyzhye.beancount.core.Amount = (this as? BqlAmountValue)?.value
         ?: throw TypeCastException("Cannot cast $type to Amount")
+
+    fun asPriceMap(): io.github.tonyzhye.beancount.core.PriceDatabase = (this as? BqlPriceMapValue)?.value
+        ?: throw TypeCastException("Cannot cast $type to PriceMap")
 }
 
 data class BqlNullValue(override val raw: Nothing? = null) : BqlValue {
@@ -117,6 +121,15 @@ data class BqlCostValue(val value: io.github.tonyzhye.beancount.core.Cost) : Bql
 data class BqlTransactionValue(val value: io.github.tonyzhye.beancount.core.Transaction) : BqlValue {
     override val type: BqlType = BqlType.Transaction
     override val raw: Any = value
+}
+
+data class BqlPriceMapValue(
+    val value: io.github.tonyzhye.beancount.core.PriceDatabase,
+    val entries: List<io.github.tonyzhye.beancount.core.Directive> = emptyList()
+) : BqlValue {
+    override val type: BqlType = BqlType.PriceMap
+    override val raw: Any = value
+    val priceMap: io.github.tonyzhye.beancount.core.PriceDatabase = value
 }
 
 class TypeCastException(message: String) : RuntimeException(message)
