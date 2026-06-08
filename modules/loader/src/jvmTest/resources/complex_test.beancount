@@ -1,0 +1,117 @@
+; Complex test ledger for compatibility verification
+; This file tests all directive types and edge cases
+
+option "title" "Complex Test Ledger"
+option "operating_currency" "USD"
+option "operating_currency" "EUR"
+
+; === Accounts ===
+2024-01-01 open Assets:Bank:Checking USD,EUR
+2024-01-01 open Assets:Bank:Savings USD
+2024-01-01 open Assets:Invest:Stocks
+2024-01-01 open Assets:Invest:Bonds
+2024-01-01 open Assets:Receivable USD
+
+2024-01-01 open Liabilities:CreditCard USD
+2024-01-01 open Liabilities:Mortgage USD
+
+2024-01-01 open Equity:Opening-Balances USD,EUR
+2024-01-01 open Equity:Retained-Earnings USD
+
+2024-01-01 open Income:Salary USD
+2024-01-01 open Income:Investments USD
+2024-01-01 open Income:Freelance USD
+
+2024-01-01 open Expenses:Housing USD
+2024-01-01 open Expenses:Food USD
+2024-01-01 open Expenses:Transportation USD
+2024-01-01 open Expenses:Utilities USD
+2024-01-01 open Expenses:Entertainment USD,EUR
+2024-01-01 open Expenses:Healthcare USD
+
+; === Commodities ===
+2024-01-01 commodity USD
+2024-01-01 commodity EUR
+2024-01-01 commodity HOOL
+2024-01-01 commodity AAPL
+2024-01-01 commodity BND
+
+; === Initial Balances ===
+2024-01-01 * "Opening Balances"
+  Assets:Bank:Checking  10000.00 USD
+  Assets:Bank:Savings  50000.00 USD
+  Equity:Opening-Balances
+
+; === Regular Transactions ===
+2024-01-15 * "Paycheck January"
+  Assets:Bank:Checking  5000.00 USD
+  Income:Salary
+
+2024-01-20 * "Grocery Shopping" #food
+  Expenses:Food  150.00 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Electric Bill"
+  Expenses:Utilities  120.00 USD
+  Assets:Bank:Checking
+
+; === Investment Transactions ===
+2024-02-01 * "Buy HOOL stock"
+  Assets:Invest:Stocks  10 HOOL {150.00 USD, 2024-02-01}
+  Assets:Bank:Checking
+
+2024-02-15 * "Buy more HOOL"
+  Assets:Invest:Stocks  5 HOOL {155.00 USD, 2024-02-15}
+  Assets:Bank:Checking
+
+2024-03-01 * "Sell HOOL (FIFO)"
+  Assets:Invest:Stocks  -8 HOOL {150.00 USD}
+  Assets:Bank:Checking  1200.00 USD
+  Income:Investments
+
+; === Multi-currency Transaction ===
+2024-03-15 * "European Vacation" #travel
+  Expenses:Entertainment  500.00 EUR @ 1.10 USD
+  Assets:Bank:Checking  -550.00 USD
+
+; === Document Directive ===
+2024-03-20 document Assets:Bank:Checking "/path/to/statement.pdf"
+
+; === Event Directive ===
+2024-04-01 event "location" "Moved to San Francisco"
+
+; === Note Directive ===
+2024-04-15 note Assets:Bank:Checking "Account review completed"
+
+; === Price Directive ===
+2024-05-01 price HOOL 160.00 USD
+2024-05-01 price EUR 1.12 USD
+
+; === Balance Assertion ===
+2024-06-01 balance Assets:Bank:Checking  13105.00 USD ~ 0.01
+
+; === Pad Directive ===
+2024-07-01 pad Assets:Bank:Checking Equity:Opening-Balances
+
+2024-07-02 balance Assets:Bank:Checking  16000.00 USD
+
+; === Query Directive ===
+2024-08-01 query "monthly_expenses" "SELECT date, narration, account, position WHERE account ~ 'Expenses'"
+
+; === Custom Directive ===
+2024-09-01 custom "budget" "monthly" 2000.00 USD
+
+; === Transaction with Links ===
+2024-10-01 * "Doctor Visit" ^health-2024
+  Expenses:Healthcare  200.00 USD
+  Assets:Bank:Checking
+
+; === Transaction with Metadata ===
+2024-11-01 * "Freelance Project"
+  Assets:Bank:Checking  3000.00 USD
+  Income:Freelance
+    client: "TechCorp"
+    project: "Website Redesign"
+
+; === Close Directive ===
+2024-12-31 close Expenses:Entertainment

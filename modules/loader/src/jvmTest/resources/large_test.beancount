@@ -1,0 +1,4013 @@
+﻿option "title" "Large Test Ledger"
+option "operating_currency" "USD"
+
+2024-01-01 open Assets:Bank:Checking USD
+2024-01-01 open Expenses:Food USD
+2024-01-01 open Income:Salary USD
+2024-01-01 open Equity:Opening-Balances USD
+
+2024-01-01 * "Opening Balance"
+  Assets:Bank:Checking  100000.00 USD
+  Equity:Opening-Balances
+
+2024-02-02 * "Transaction 1"
+  Expenses:Food  472.23 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 2"
+  Expenses:Food  375 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 3"
+  Expenses:Food  341.03 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 4"
+  Expenses:Food  328.74 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 5"
+  Expenses:Food  79.35 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 6"
+  Expenses:Food  294.17 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 7"
+  Expenses:Food  203.93 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 8"
+  Expenses:Food  494.22 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 9"
+  Expenses:Food  366.98 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 10"
+  Expenses:Food  223.73 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 11"
+  Expenses:Food  368.67 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 12"
+  Expenses:Food  387.36 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 13"
+  Expenses:Food  66.78 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 14"
+  Expenses:Food  301.83 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 15"
+  Expenses:Food  476.32 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 16"
+  Expenses:Food  103.84 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 17"
+  Expenses:Food  301.1 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 18"
+  Expenses:Food  221.26 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 19"
+  Expenses:Food  464.12 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 20"
+  Expenses:Food  245.06 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 21"
+  Expenses:Food  88.75 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 22"
+  Expenses:Food  118.46 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 23"
+  Expenses:Food  313.54 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 24"
+  Expenses:Food  472.04 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 25"
+  Expenses:Food  157.21 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 26"
+  Expenses:Food  263.72 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 27"
+  Expenses:Food  309.43 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 28"
+  Expenses:Food  232.05 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 29"
+  Expenses:Food  382.91 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 30"
+  Expenses:Food  393.7 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 31"
+  Expenses:Food  323.83 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 32"
+  Expenses:Food  382.63 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 33"
+  Expenses:Food  435.09 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 34"
+  Expenses:Food  369.16 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 35"
+  Expenses:Food  276.71 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 36"
+  Expenses:Food  165.6 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 37"
+  Expenses:Food  136.16 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 38"
+  Expenses:Food  485.27 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 39"
+  Expenses:Food  291.15 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 40"
+  Expenses:Food  363.09 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 41"
+  Expenses:Food  328.2 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 42"
+  Expenses:Food  110.25 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 43"
+  Expenses:Food  205.01 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 44"
+  Expenses:Food  203.6 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 45"
+  Expenses:Food  74.37 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 46"
+  Expenses:Food  74.94 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 47"
+  Expenses:Food  108.3 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 48"
+  Expenses:Food  274.82 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 49"
+  Expenses:Food  179.49 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 50"
+  Expenses:Food  350.6 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 51"
+  Expenses:Food  185.52 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 52"
+  Expenses:Food  425.63 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 53"
+  Expenses:Food  145.9 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 54"
+  Expenses:Food  374.66 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 55"
+  Expenses:Food  26.51 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 56"
+  Expenses:Food  51.23 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 57"
+  Expenses:Food  358.65 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 58"
+  Expenses:Food  184.17 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 59"
+  Expenses:Food  13.28 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 60"
+  Expenses:Food  59.49 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 61"
+  Expenses:Food  164.5 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 62"
+  Expenses:Food  10.8 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 63"
+  Expenses:Food  453.48 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 64"
+  Expenses:Food  487.6 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 65"
+  Expenses:Food  157.15 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 66"
+  Expenses:Food  464.55 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 67"
+  Expenses:Food  368.78 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 68"
+  Expenses:Food  19.16 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 69"
+  Expenses:Food  149.09 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 70"
+  Expenses:Food  108.53 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 71"
+  Expenses:Food  311.64 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 72"
+  Expenses:Food  237.94 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 73"
+  Expenses:Food  280.4 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 74"
+  Expenses:Food  259.85 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 75"
+  Expenses:Food  168.75 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 76"
+  Expenses:Food  221.95 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 77"
+  Expenses:Food  361.61 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 78"
+  Expenses:Food  312.75 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 79"
+  Expenses:Food  451.11 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 80"
+  Expenses:Food  256.27 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 81"
+  Expenses:Food  250.64 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 82"
+  Expenses:Food  227.38 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 83"
+  Expenses:Food  81.83 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 84"
+  Expenses:Food  122.69 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 85"
+  Expenses:Food  255.63 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 86"
+  Expenses:Food  490.04 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 87"
+  Expenses:Food  460.24 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 88"
+  Expenses:Food  198.31 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 89"
+  Expenses:Food  358.56 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 90"
+  Expenses:Food  52.74 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 91"
+  Expenses:Food  123.48 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 92"
+  Expenses:Food  289.65 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 93"
+  Expenses:Food  344.18 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 94"
+  Expenses:Food  44.01 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 95"
+  Expenses:Food  264.93 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 96"
+  Expenses:Food  37.24 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 97"
+  Expenses:Food  214.34 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 98"
+  Expenses:Food  196.14 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 99"
+  Expenses:Food  313.52 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 100"
+  Expenses:Food  468.14 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 101"
+  Expenses:Food  61.5 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 102"
+  Expenses:Food  123.25 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 103"
+  Expenses:Food  119.36 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 104"
+  Expenses:Food  74.08 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 105"
+  Expenses:Food  364.07 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 106"
+  Expenses:Food  274.24 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 107"
+  Expenses:Food  489.8 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 108"
+  Expenses:Food  190.96 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 109"
+  Expenses:Food  23.21 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 110"
+  Expenses:Food  175.91 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 111"
+  Expenses:Food  193.27 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 112"
+  Expenses:Food  312.76 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 113"
+  Expenses:Food  374.39 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 114"
+  Expenses:Food  35.58 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 115"
+  Expenses:Food  139.54 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 116"
+  Expenses:Food  160.38 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 117"
+  Expenses:Food  45.48 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 118"
+  Expenses:Food  432.91 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 119"
+  Expenses:Food  404.29 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 120"
+  Expenses:Food  353.52 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 121"
+  Expenses:Food  218.27 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 122"
+  Expenses:Food  166.64 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 123"
+  Expenses:Food  213 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 124"
+  Expenses:Food  290.33 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 125"
+  Expenses:Food  100.95 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 126"
+  Expenses:Food  168 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 127"
+  Expenses:Food  178.42 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 128"
+  Expenses:Food  219.85 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 129"
+  Expenses:Food  45.85 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 130"
+  Expenses:Food  471.23 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 131"
+  Expenses:Food  359.9 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 132"
+  Expenses:Food  59.75 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 133"
+  Expenses:Food  166.66 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 134"
+  Expenses:Food  424.37 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 135"
+  Expenses:Food  305.71 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 136"
+  Expenses:Food  309.97 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 137"
+  Expenses:Food  133.65 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 138"
+  Expenses:Food  468.85 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 139"
+  Expenses:Food  189.69 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 140"
+  Expenses:Food  450.83 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 141"
+  Expenses:Food  183.63 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 142"
+  Expenses:Food  405.89 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 143"
+  Expenses:Food  469.17 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 144"
+  Expenses:Food  269.31 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 145"
+  Expenses:Food  384.65 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 146"
+  Expenses:Food  61.78 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 147"
+  Expenses:Food  371.67 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 148"
+  Expenses:Food  262.96 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 149"
+  Expenses:Food  466.95 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 150"
+  Expenses:Food  136.49 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 151"
+  Expenses:Food  278.03 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 152"
+  Expenses:Food  224.86 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 153"
+  Expenses:Food  102.83 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 154"
+  Expenses:Food  131.04 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 155"
+  Expenses:Food  333.15 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 156"
+  Expenses:Food  178.81 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 157"
+  Expenses:Food  53.19 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 158"
+  Expenses:Food  215.31 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 159"
+  Expenses:Food  106.65 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 160"
+  Expenses:Food  310.31 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 161"
+  Expenses:Food  437.79 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 162"
+  Expenses:Food  152.58 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 163"
+  Expenses:Food  187.9 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 164"
+  Expenses:Food  351.45 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 165"
+  Expenses:Food  175.2 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 166"
+  Expenses:Food  329.92 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 167"
+  Expenses:Food  13.15 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 168"
+  Expenses:Food  367.52 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 169"
+  Expenses:Food  413.69 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 170"
+  Expenses:Food  238.51 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 171"
+  Expenses:Food  168.11 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 172"
+  Expenses:Food  402.81 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 173"
+  Expenses:Food  169.17 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 174"
+  Expenses:Food  337.05 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 175"
+  Expenses:Food  42.59 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 176"
+  Expenses:Food  305.23 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 177"
+  Expenses:Food  38.47 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 178"
+  Expenses:Food  268.12 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 179"
+  Expenses:Food  210.58 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 180"
+  Expenses:Food  483.11 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 181"
+  Expenses:Food  457.13 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 182"
+  Expenses:Food  204.47 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 183"
+  Expenses:Food  349.89 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 184"
+  Expenses:Food  367.63 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 185"
+  Expenses:Food  461.61 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 186"
+  Expenses:Food  484.46 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 187"
+  Expenses:Food  144.57 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 188"
+  Expenses:Food  342.8 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 189"
+  Expenses:Food  405.65 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 190"
+  Expenses:Food  208.56 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 191"
+  Expenses:Food  224.82 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 192"
+  Expenses:Food  426.19 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 193"
+  Expenses:Food  34.12 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 194"
+  Expenses:Food  120.25 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 195"
+  Expenses:Food  184.95 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 196"
+  Expenses:Food  269.82 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 197"
+  Expenses:Food  322.55 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 198"
+  Expenses:Food  479.16 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 199"
+  Expenses:Food  407.51 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 200"
+  Expenses:Food  385.95 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 201"
+  Expenses:Food  487.45 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 202"
+  Expenses:Food  27.65 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 203"
+  Expenses:Food  86.72 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 204"
+  Expenses:Food  357.49 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 205"
+  Expenses:Food  404.26 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 206"
+  Expenses:Food  225.22 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 207"
+  Expenses:Food  32.28 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 208"
+  Expenses:Food  24.31 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 209"
+  Expenses:Food  138.4 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 210"
+  Expenses:Food  491.17 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 211"
+  Expenses:Food  62.7 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 212"
+  Expenses:Food  120.54 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 213"
+  Expenses:Food  27.42 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 214"
+  Expenses:Food  140.3 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 215"
+  Expenses:Food  238.05 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 216"
+  Expenses:Food  454.73 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 217"
+  Expenses:Food  293.4 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 218"
+  Expenses:Food  492.28 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 219"
+  Expenses:Food  261.04 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 220"
+  Expenses:Food  17.23 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 221"
+  Expenses:Food  80.89 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 222"
+  Expenses:Food  390.05 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 223"
+  Expenses:Food  304.28 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 224"
+  Expenses:Food  444.43 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 225"
+  Expenses:Food  237.58 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 226"
+  Expenses:Food  162.52 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 227"
+  Expenses:Food  295.16 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 228"
+  Expenses:Food  160.97 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 229"
+  Expenses:Food  314.77 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 230"
+  Expenses:Food  284.89 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 231"
+  Expenses:Food  447.73 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 232"
+  Expenses:Food  261.18 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 233"
+  Expenses:Food  307.82 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 234"
+  Expenses:Food  235.14 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 235"
+  Expenses:Food  25.37 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 236"
+  Expenses:Food  202.74 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 237"
+  Expenses:Food  127.08 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 238"
+  Expenses:Food  481.13 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 239"
+  Expenses:Food  409.31 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 240"
+  Expenses:Food  295.28 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 241"
+  Expenses:Food  247.47 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 242"
+  Expenses:Food  90.74 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 243"
+  Expenses:Food  299.15 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 244"
+  Expenses:Food  201.33 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 245"
+  Expenses:Food  225.18 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 246"
+  Expenses:Food  55.86 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 247"
+  Expenses:Food  292.2 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 248"
+  Expenses:Food  287.5 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 249"
+  Expenses:Food  449.44 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 250"
+  Expenses:Food  206.67 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 251"
+  Expenses:Food  70.63 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 252"
+  Expenses:Food  460.1 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 253"
+  Expenses:Food  376.46 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 254"
+  Expenses:Food  284.76 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 255"
+  Expenses:Food  89.35 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 256"
+  Expenses:Food  12.02 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 257"
+  Expenses:Food  131.33 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 258"
+  Expenses:Food  240.26 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 259"
+  Expenses:Food  273.06 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 260"
+  Expenses:Food  222.02 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 261"
+  Expenses:Food  228.96 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 262"
+  Expenses:Food  156.72 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 263"
+  Expenses:Food  480.66 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 264"
+  Expenses:Food  220.24 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 265"
+  Expenses:Food  389.48 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 266"
+  Expenses:Food  356.58 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 267"
+  Expenses:Food  227.3 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 268"
+  Expenses:Food  463.27 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 269"
+  Expenses:Food  323.43 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 270"
+  Expenses:Food  241.25 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 271"
+  Expenses:Food  48.79 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 272"
+  Expenses:Food  403.02 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 273"
+  Expenses:Food  320.85 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 274"
+  Expenses:Food  364.75 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 275"
+  Expenses:Food  372.54 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 276"
+  Expenses:Food  357.06 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 277"
+  Expenses:Food  295.34 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 278"
+  Expenses:Food  364.42 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 279"
+  Expenses:Food  493.48 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 280"
+  Expenses:Food  382.45 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 281"
+  Expenses:Food  165.39 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 282"
+  Expenses:Food  311.35 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 283"
+  Expenses:Food  432.43 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 284"
+  Expenses:Food  443.73 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 285"
+  Expenses:Food  147.64 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 286"
+  Expenses:Food  487.13 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 287"
+  Expenses:Food  398.55 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 288"
+  Expenses:Food  91.15 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 289"
+  Expenses:Food  263.49 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 290"
+  Expenses:Food  452.76 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 291"
+  Expenses:Food  90.54 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 292"
+  Expenses:Food  32.66 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 293"
+  Expenses:Food  467.53 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 294"
+  Expenses:Food  132.66 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 295"
+  Expenses:Food  59.1 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 296"
+  Expenses:Food  333.25 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 297"
+  Expenses:Food  323.4 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 298"
+  Expenses:Food  318.89 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 299"
+  Expenses:Food  454.75 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 300"
+  Expenses:Food  211.64 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 301"
+  Expenses:Food  255.15 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 302"
+  Expenses:Food  133.49 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 303"
+  Expenses:Food  53.59 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 304"
+  Expenses:Food  237.87 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 305"
+  Expenses:Food  348.45 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 306"
+  Expenses:Food  240.9 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 307"
+  Expenses:Food  458.51 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 308"
+  Expenses:Food  25.47 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 309"
+  Expenses:Food  258.77 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 310"
+  Expenses:Food  45.97 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 311"
+  Expenses:Food  137.01 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 312"
+  Expenses:Food  221.18 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 313"
+  Expenses:Food  475.36 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 314"
+  Expenses:Food  392.23 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 315"
+  Expenses:Food  173.47 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 316"
+  Expenses:Food  477.9 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 317"
+  Expenses:Food  353.62 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 318"
+  Expenses:Food  382.72 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 319"
+  Expenses:Food  325.88 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 320"
+  Expenses:Food  365.36 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 321"
+  Expenses:Food  331.69 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 322"
+  Expenses:Food  19.02 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 323"
+  Expenses:Food  380.35 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 324"
+  Expenses:Food  144.86 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 325"
+  Expenses:Food  69.06 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 326"
+  Expenses:Food  70.64 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 327"
+  Expenses:Food  171.32 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 328"
+  Expenses:Food  300.36 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 329"
+  Expenses:Food  436.97 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 330"
+  Expenses:Food  66.44 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 331"
+  Expenses:Food  313.75 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 332"
+  Expenses:Food  371.21 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 333"
+  Expenses:Food  106.98 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 334"
+  Expenses:Food  75.47 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 335"
+  Expenses:Food  169.47 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 336"
+  Expenses:Food  142.4 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 337"
+  Expenses:Food  198.69 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 338"
+  Expenses:Food  142.52 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 339"
+  Expenses:Food  196.27 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 340"
+  Expenses:Food  385.93 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 341"
+  Expenses:Food  110.83 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 342"
+  Expenses:Food  395.51 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 343"
+  Expenses:Food  131.88 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 344"
+  Expenses:Food  404.82 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 345"
+  Expenses:Food  275.59 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 346"
+  Expenses:Food  447.93 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 347"
+  Expenses:Food  101.67 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 348"
+  Expenses:Food  181.94 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 349"
+  Expenses:Food  432.73 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 350"
+  Expenses:Food  416.5 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 351"
+  Expenses:Food  174.52 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 352"
+  Expenses:Food  10.28 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 353"
+  Expenses:Food  316.42 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 354"
+  Expenses:Food  77.73 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 355"
+  Expenses:Food  267.25 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 356"
+  Expenses:Food  268.71 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 357"
+  Expenses:Food  91.15 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 358"
+  Expenses:Food  259.91 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 359"
+  Expenses:Food  142.52 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 360"
+  Expenses:Food  381.73 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 361"
+  Expenses:Food  285.68 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 362"
+  Expenses:Food  409.9 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 363"
+  Expenses:Food  235.42 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 364"
+  Expenses:Food  419.86 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 365"
+  Expenses:Food  450.36 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 366"
+  Expenses:Food  330.36 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 367"
+  Expenses:Food  229.51 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 368"
+  Expenses:Food  464.72 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 369"
+  Expenses:Food  135.93 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 370"
+  Expenses:Food  432.26 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 371"
+  Expenses:Food  490.09 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 372"
+  Expenses:Food  143.05 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 373"
+  Expenses:Food  120.16 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 374"
+  Expenses:Food  252.13 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 375"
+  Expenses:Food  18.35 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 376"
+  Expenses:Food  256.34 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 377"
+  Expenses:Food  56.46 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 378"
+  Expenses:Food  263.43 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 379"
+  Expenses:Food  353.75 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 380"
+  Expenses:Food  101.62 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 381"
+  Expenses:Food  447.23 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 382"
+  Expenses:Food  487.33 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 383"
+  Expenses:Food  267.31 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 384"
+  Expenses:Food  421.39 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 385"
+  Expenses:Food  36.21 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 386"
+  Expenses:Food  433.44 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 387"
+  Expenses:Food  233.9 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 388"
+  Expenses:Food  60.08 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 389"
+  Expenses:Food  164.05 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 390"
+  Expenses:Food  282.39 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 391"
+  Expenses:Food  207.91 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 392"
+  Expenses:Food  271.98 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 393"
+  Expenses:Food  83.82 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 394"
+  Expenses:Food  407.07 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 395"
+  Expenses:Food  89.5 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 396"
+  Expenses:Food  289.05 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 397"
+  Expenses:Food  60.83 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 398"
+  Expenses:Food  259.09 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 399"
+  Expenses:Food  314.4 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 400"
+  Expenses:Food  324.04 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 401"
+  Expenses:Food  279.24 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 402"
+  Expenses:Food  300.93 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 403"
+  Expenses:Food  189.12 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 404"
+  Expenses:Food  32.14 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 405"
+  Expenses:Food  233.63 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 406"
+  Expenses:Food  24.66 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 407"
+  Expenses:Food  452.54 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 408"
+  Expenses:Food  298.06 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 409"
+  Expenses:Food  380.85 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 410"
+  Expenses:Food  38.25 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 411"
+  Expenses:Food  291.14 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 412"
+  Expenses:Food  170.28 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 413"
+  Expenses:Food  114.09 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 414"
+  Expenses:Food  75.45 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 415"
+  Expenses:Food  167.75 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 416"
+  Expenses:Food  394.89 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 417"
+  Expenses:Food  98.78 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 418"
+  Expenses:Food  183.65 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 419"
+  Expenses:Food  327.88 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 420"
+  Expenses:Food  367.7 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 421"
+  Expenses:Food  258.35 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 422"
+  Expenses:Food  106.79 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 423"
+  Expenses:Food  245.88 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 424"
+  Expenses:Food  233.01 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 425"
+  Expenses:Food  258.87 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 426"
+  Expenses:Food  279.74 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 427"
+  Expenses:Food  17.5 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 428"
+  Expenses:Food  276.57 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 429"
+  Expenses:Food  243.7 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 430"
+  Expenses:Food  332.31 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 431"
+  Expenses:Food  282.18 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 432"
+  Expenses:Food  486.09 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 433"
+  Expenses:Food  299.73 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 434"
+  Expenses:Food  35.98 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 435"
+  Expenses:Food  494.31 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 436"
+  Expenses:Food  108.82 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 437"
+  Expenses:Food  336.55 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 438"
+  Expenses:Food  340.09 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 439"
+  Expenses:Food  175.85 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 440"
+  Expenses:Food  165.97 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 441"
+  Expenses:Food  457.97 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 442"
+  Expenses:Food  335.95 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 443"
+  Expenses:Food  60.6 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 444"
+  Expenses:Food  120.89 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 445"
+  Expenses:Food  483.19 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 446"
+  Expenses:Food  377.23 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 447"
+  Expenses:Food  419.97 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 448"
+  Expenses:Food  358.83 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 449"
+  Expenses:Food  10.16 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 450"
+  Expenses:Food  112.09 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 451"
+  Expenses:Food  226.22 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 452"
+  Expenses:Food  490.51 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 453"
+  Expenses:Food  406.19 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 454"
+  Expenses:Food  166.86 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 455"
+  Expenses:Food  178.38 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 456"
+  Expenses:Food  47.44 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 457"
+  Expenses:Food  487.04 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 458"
+  Expenses:Food  392.74 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 459"
+  Expenses:Food  298.16 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 460"
+  Expenses:Food  395.13 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 461"
+  Expenses:Food  199.47 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 462"
+  Expenses:Food  170.4 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 463"
+  Expenses:Food  468.91 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 464"
+  Expenses:Food  385.68 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 465"
+  Expenses:Food  325.37 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 466"
+  Expenses:Food  55.24 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 467"
+  Expenses:Food  174.77 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 468"
+  Expenses:Food  78.65 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 469"
+  Expenses:Food  203.74 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 470"
+  Expenses:Food  54.72 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 471"
+  Expenses:Food  391.58 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 472"
+  Expenses:Food  239.9 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 473"
+  Expenses:Food  321.79 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 474"
+  Expenses:Food  20.93 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 475"
+  Expenses:Food  400.05 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 476"
+  Expenses:Food  451.84 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 477"
+  Expenses:Food  71.57 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 478"
+  Expenses:Food  353.71 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 479"
+  Expenses:Food  15.22 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 480"
+  Expenses:Food  92.17 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 481"
+  Expenses:Food  231.67 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 482"
+  Expenses:Food  411.77 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 483"
+  Expenses:Food  94.62 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 484"
+  Expenses:Food  372.62 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 485"
+  Expenses:Food  448.67 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 486"
+  Expenses:Food  250.42 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 487"
+  Expenses:Food  258.01 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 488"
+  Expenses:Food  158.91 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 489"
+  Expenses:Food  427.52 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 490"
+  Expenses:Food  235.03 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 491"
+  Expenses:Food  197.77 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 492"
+  Expenses:Food  475.77 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 493"
+  Expenses:Food  417.53 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 494"
+  Expenses:Food  282.32 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 495"
+  Expenses:Food  190.22 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 496"
+  Expenses:Food  456 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 497"
+  Expenses:Food  215.93 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 498"
+  Expenses:Food  93.54 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 499"
+  Expenses:Food  195.53 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 500"
+  Expenses:Food  203.04 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 501"
+  Expenses:Food  457.72 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 502"
+  Expenses:Food  69.65 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 503"
+  Expenses:Food  279.98 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 504"
+  Expenses:Food  474.16 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 505"
+  Expenses:Food  38.56 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 506"
+  Expenses:Food  90.22 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 507"
+  Expenses:Food  222.87 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 508"
+  Expenses:Food  236.91 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 509"
+  Expenses:Food  75.26 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 510"
+  Expenses:Food  145.78 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 511"
+  Expenses:Food  120.23 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 512"
+  Expenses:Food  435.15 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 513"
+  Expenses:Food  298.17 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 514"
+  Expenses:Food  375.69 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 515"
+  Expenses:Food  464.3 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 516"
+  Expenses:Food  221.25 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 517"
+  Expenses:Food  11.12 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 518"
+  Expenses:Food  85.15 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 519"
+  Expenses:Food  285.92 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 520"
+  Expenses:Food  77.98 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 521"
+  Expenses:Food  175.25 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 522"
+  Expenses:Food  85 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 523"
+  Expenses:Food  75.43 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 524"
+  Expenses:Food  452.8 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 525"
+  Expenses:Food  236.41 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 526"
+  Expenses:Food  70.1 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 527"
+  Expenses:Food  13.34 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 528"
+  Expenses:Food  434.71 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 529"
+  Expenses:Food  409.93 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 530"
+  Expenses:Food  237.23 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 531"
+  Expenses:Food  274.95 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 532"
+  Expenses:Food  188.36 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 533"
+  Expenses:Food  164.32 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 534"
+  Expenses:Food  431.09 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 535"
+  Expenses:Food  197.03 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 536"
+  Expenses:Food  51.17 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 537"
+  Expenses:Food  458.92 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 538"
+  Expenses:Food  60.58 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 539"
+  Expenses:Food  311.9 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 540"
+  Expenses:Food  291.74 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 541"
+  Expenses:Food  154.54 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 542"
+  Expenses:Food  50.34 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 543"
+  Expenses:Food  463.63 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 544"
+  Expenses:Food  15.91 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 545"
+  Expenses:Food  301.23 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 546"
+  Expenses:Food  314.86 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 547"
+  Expenses:Food  218.49 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 548"
+  Expenses:Food  39.61 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 549"
+  Expenses:Food  298.83 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 550"
+  Expenses:Food  385.72 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 551"
+  Expenses:Food  299.4 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 552"
+  Expenses:Food  431.33 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 553"
+  Expenses:Food  84.28 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 554"
+  Expenses:Food  278.28 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 555"
+  Expenses:Food  97.34 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 556"
+  Expenses:Food  290.53 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 557"
+  Expenses:Food  103.67 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 558"
+  Expenses:Food  359.95 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 559"
+  Expenses:Food  204.49 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 560"
+  Expenses:Food  91.71 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 561"
+  Expenses:Food  39.22 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 562"
+  Expenses:Food  179.76 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 563"
+  Expenses:Food  460.74 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 564"
+  Expenses:Food  129.64 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 565"
+  Expenses:Food  109.2 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 566"
+  Expenses:Food  212.22 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 567"
+  Expenses:Food  439.59 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 568"
+  Expenses:Food  213.48 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 569"
+  Expenses:Food  21.49 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 570"
+  Expenses:Food  339.65 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 571"
+  Expenses:Food  377.56 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 572"
+  Expenses:Food  187.97 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 573"
+  Expenses:Food  391.53 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 574"
+  Expenses:Food  239.15 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 575"
+  Expenses:Food  15.18 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 576"
+  Expenses:Food  78.46 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 577"
+  Expenses:Food  279.11 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 578"
+  Expenses:Food  444.43 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 579"
+  Expenses:Food  347.85 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 580"
+  Expenses:Food  100.45 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 581"
+  Expenses:Food  387.63 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 582"
+  Expenses:Food  159.08 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 583"
+  Expenses:Food  156.45 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 584"
+  Expenses:Food  75.18 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 585"
+  Expenses:Food  26.05 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 586"
+  Expenses:Food  348.97 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 587"
+  Expenses:Food  492.69 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 588"
+  Expenses:Food  123.88 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 589"
+  Expenses:Food  60.86 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 590"
+  Expenses:Food  113.4 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 591"
+  Expenses:Food  262.72 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 592"
+  Expenses:Food  339.09 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 593"
+  Expenses:Food  303.37 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 594"
+  Expenses:Food  326.28 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 595"
+  Expenses:Food  161.56 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 596"
+  Expenses:Food  354.87 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 597"
+  Expenses:Food  382.15 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 598"
+  Expenses:Food  65.1 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 599"
+  Expenses:Food  216.26 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 600"
+  Expenses:Food  161.11 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 601"
+  Expenses:Food  283.94 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 602"
+  Expenses:Food  269.87 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 603"
+  Expenses:Food  136.81 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 604"
+  Expenses:Food  154.77 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 605"
+  Expenses:Food  167.59 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 606"
+  Expenses:Food  82 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 607"
+  Expenses:Food  261.16 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 608"
+  Expenses:Food  154.39 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 609"
+  Expenses:Food  355.25 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 610"
+  Expenses:Food  113.7 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 611"
+  Expenses:Food  96.73 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 612"
+  Expenses:Food  414.85 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 613"
+  Expenses:Food  144.73 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 614"
+  Expenses:Food  290.65 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 615"
+  Expenses:Food  129.63 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 616"
+  Expenses:Food  67.15 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 617"
+  Expenses:Food  193.94 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 618"
+  Expenses:Food  118.78 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 619"
+  Expenses:Food  497.58 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 620"
+  Expenses:Food  213.55 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 621"
+  Expenses:Food  30.04 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 622"
+  Expenses:Food  269.04 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 623"
+  Expenses:Food  355.15 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 624"
+  Expenses:Food  116.08 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 625"
+  Expenses:Food  117.35 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 626"
+  Expenses:Food  434.7 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 627"
+  Expenses:Food  320.96 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 628"
+  Expenses:Food  390.27 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 629"
+  Expenses:Food  399.4 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 630"
+  Expenses:Food  407.97 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 631"
+  Expenses:Food  53.32 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 632"
+  Expenses:Food  47.23 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 633"
+  Expenses:Food  367.8 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 634"
+  Expenses:Food  341.61 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 635"
+  Expenses:Food  384.34 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 636"
+  Expenses:Food  228.21 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 637"
+  Expenses:Food  366.24 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 638"
+  Expenses:Food  185.87 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 639"
+  Expenses:Food  408.12 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 640"
+  Expenses:Food  383.32 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 641"
+  Expenses:Food  467.57 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 642"
+  Expenses:Food  345.45 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 643"
+  Expenses:Food  132.01 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 644"
+  Expenses:Food  109.46 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 645"
+  Expenses:Food  19.1 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 646"
+  Expenses:Food  444.41 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 647"
+  Expenses:Food  139.44 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 648"
+  Expenses:Food  186.69 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 649"
+  Expenses:Food  460.89 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 650"
+  Expenses:Food  10.41 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 651"
+  Expenses:Food  432.94 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 652"
+  Expenses:Food  349.5 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 653"
+  Expenses:Food  438.07 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 654"
+  Expenses:Food  159.03 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 655"
+  Expenses:Food  31.39 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 656"
+  Expenses:Food  438.93 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 657"
+  Expenses:Food  400.42 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 658"
+  Expenses:Food  85.84 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 659"
+  Expenses:Food  333.15 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 660"
+  Expenses:Food  120.49 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 661"
+  Expenses:Food  231.36 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 662"
+  Expenses:Food  468.58 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 663"
+  Expenses:Food  259.01 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 664"
+  Expenses:Food  185.38 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 665"
+  Expenses:Food  413.54 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 666"
+  Expenses:Food  476.22 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 667"
+  Expenses:Food  421.19 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 668"
+  Expenses:Food  82.27 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 669"
+  Expenses:Food  158.07 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 670"
+  Expenses:Food  60.53 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 671"
+  Expenses:Food  384.72 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 672"
+  Expenses:Food  210.61 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 673"
+  Expenses:Food  138.47 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 674"
+  Expenses:Food  15.62 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 675"
+  Expenses:Food  22.56 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 676"
+  Expenses:Food  473.82 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 677"
+  Expenses:Food  120.58 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 678"
+  Expenses:Food  233.75 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 679"
+  Expenses:Food  81.26 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 680"
+  Expenses:Food  79.75 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 681"
+  Expenses:Food  118 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 682"
+  Expenses:Food  195.73 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 683"
+  Expenses:Food  330.52 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 684"
+  Expenses:Food  64.33 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 685"
+  Expenses:Food  397.93 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 686"
+  Expenses:Food  239.11 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 687"
+  Expenses:Food  109.65 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 688"
+  Expenses:Food  443.68 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 689"
+  Expenses:Food  495.06 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 690"
+  Expenses:Food  404.83 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 691"
+  Expenses:Food  144.55 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 692"
+  Expenses:Food  200.49 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 693"
+  Expenses:Food  66.18 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 694"
+  Expenses:Food  24.52 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 695"
+  Expenses:Food  370.92 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 696"
+  Expenses:Food  242.08 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 697"
+  Expenses:Food  420.44 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 698"
+  Expenses:Food  352.15 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 699"
+  Expenses:Food  37.85 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 700"
+  Expenses:Food  134.92 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 701"
+  Expenses:Food  49 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 702"
+  Expenses:Food  350.72 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 703"
+  Expenses:Food  91.84 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 704"
+  Expenses:Food  44.26 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 705"
+  Expenses:Food  360.01 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 706"
+  Expenses:Food  189.96 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 707"
+  Expenses:Food  416.38 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 708"
+  Expenses:Food  147.18 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 709"
+  Expenses:Food  196.59 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 710"
+  Expenses:Food  287.01 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 711"
+  Expenses:Food  121.94 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 712"
+  Expenses:Food  218.28 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 713"
+  Expenses:Food  407.61 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 714"
+  Expenses:Food  401.26 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 715"
+  Expenses:Food  401.32 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 716"
+  Expenses:Food  16.8 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 717"
+  Expenses:Food  213.81 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 718"
+  Expenses:Food  417.25 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 719"
+  Expenses:Food  383.08 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 720"
+  Expenses:Food  211.41 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 721"
+  Expenses:Food  362.31 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 722"
+  Expenses:Food  220.39 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 723"
+  Expenses:Food  51.04 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 724"
+  Expenses:Food  308.08 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 725"
+  Expenses:Food  122.39 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 726"
+  Expenses:Food  178.12 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 727"
+  Expenses:Food  73.85 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 728"
+  Expenses:Food  298.81 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 729"
+  Expenses:Food  118.36 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 730"
+  Expenses:Food  432.62 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 731"
+  Expenses:Food  477.61 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 732"
+  Expenses:Food  464.57 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 733"
+  Expenses:Food  439.8 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 734"
+  Expenses:Food  270.61 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 735"
+  Expenses:Food  401.08 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 736"
+  Expenses:Food  16.26 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 737"
+  Expenses:Food  202.61 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 738"
+  Expenses:Food  389.27 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 739"
+  Expenses:Food  484.45 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 740"
+  Expenses:Food  69.12 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 741"
+  Expenses:Food  140.13 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 742"
+  Expenses:Food  116.65 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 743"
+  Expenses:Food  101.11 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 744"
+  Expenses:Food  369.69 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 745"
+  Expenses:Food  219.81 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 746"
+  Expenses:Food  79.03 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 747"
+  Expenses:Food  412.17 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 748"
+  Expenses:Food  282.25 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 749"
+  Expenses:Food  238.78 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 750"
+  Expenses:Food  94.71 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 751"
+  Expenses:Food  286.4 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 752"
+  Expenses:Food  107.98 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 753"
+  Expenses:Food  199.38 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 754"
+  Expenses:Food  127.03 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 755"
+  Expenses:Food  254.16 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 756"
+  Expenses:Food  127.34 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 757"
+  Expenses:Food  424.52 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 758"
+  Expenses:Food  291.04 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 759"
+  Expenses:Food  37.98 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 760"
+  Expenses:Food  221.93 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 761"
+  Expenses:Food  435.8 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 762"
+  Expenses:Food  473.17 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 763"
+  Expenses:Food  266.58 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 764"
+  Expenses:Food  371.48 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 765"
+  Expenses:Food  293.68 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 766"
+  Expenses:Food  82.45 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 767"
+  Expenses:Food  468.85 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 768"
+  Expenses:Food  155.22 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 769"
+  Expenses:Food  150.41 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 770"
+  Expenses:Food  244.31 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 771"
+  Expenses:Food  225.54 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 772"
+  Expenses:Food  362.5 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 773"
+  Expenses:Food  198.89 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 774"
+  Expenses:Food  406.24 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 775"
+  Expenses:Food  31.76 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 776"
+  Expenses:Food  399.2 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 777"
+  Expenses:Food  143.88 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 778"
+  Expenses:Food  27.27 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 779"
+  Expenses:Food  290.68 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 780"
+  Expenses:Food  221.35 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 781"
+  Expenses:Food  290.87 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 782"
+  Expenses:Food  440.18 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 783"
+  Expenses:Food  169.73 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 784"
+  Expenses:Food  231.56 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 785"
+  Expenses:Food  433.9 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 786"
+  Expenses:Food  189.73 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 787"
+  Expenses:Food  449.76 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 788"
+  Expenses:Food  15.44 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 789"
+  Expenses:Food  146.08 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 790"
+  Expenses:Food  432.88 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 791"
+  Expenses:Food  477.5 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 792"
+  Expenses:Food  275.73 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 793"
+  Expenses:Food  17.55 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 794"
+  Expenses:Food  285.86 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 795"
+  Expenses:Food  145.04 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 796"
+  Expenses:Food  11.32 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 797"
+  Expenses:Food  180.83 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 798"
+  Expenses:Food  467.2 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 799"
+  Expenses:Food  35.77 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 800"
+  Expenses:Food  199.83 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 801"
+  Expenses:Food  331.07 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 802"
+  Expenses:Food  49.04 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 803"
+  Expenses:Food  232.04 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 804"
+  Expenses:Food  92.24 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 805"
+  Expenses:Food  201.58 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 806"
+  Expenses:Food  408.84 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 807"
+  Expenses:Food  353.1 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 808"
+  Expenses:Food  158.69 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 809"
+  Expenses:Food  149.43 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 810"
+  Expenses:Food  288.08 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 811"
+  Expenses:Food  326.38 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 812"
+  Expenses:Food  166.8 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 813"
+  Expenses:Food  309.03 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 814"
+  Expenses:Food  83.06 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 815"
+  Expenses:Food  198.78 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 816"
+  Expenses:Food  443.55 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 817"
+  Expenses:Food  131.02 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 818"
+  Expenses:Food  73 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 819"
+  Expenses:Food  109.18 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 820"
+  Expenses:Food  408.11 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 821"
+  Expenses:Food  394.97 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 822"
+  Expenses:Food  437.52 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 823"
+  Expenses:Food  132.95 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 824"
+  Expenses:Food  453.5 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 825"
+  Expenses:Food  13.66 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 826"
+  Expenses:Food  228.73 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 827"
+  Expenses:Food  188.08 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 828"
+  Expenses:Food  280.68 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 829"
+  Expenses:Food  384.67 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 830"
+  Expenses:Food  463.42 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 831"
+  Expenses:Food  60.95 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 832"
+  Expenses:Food  65.26 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 833"
+  Expenses:Food  337.06 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 834"
+  Expenses:Food  129.36 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 835"
+  Expenses:Food  368.02 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 836"
+  Expenses:Food  10.09 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 837"
+  Expenses:Food  353.39 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 838"
+  Expenses:Food  47.17 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 839"
+  Expenses:Food  407.5 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 840"
+  Expenses:Food  374.45 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 841"
+  Expenses:Food  316.4 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 842"
+  Expenses:Food  94.69 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 843"
+  Expenses:Food  242.19 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 844"
+  Expenses:Food  400.63 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 845"
+  Expenses:Food  14.12 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 846"
+  Expenses:Food  17.88 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 847"
+  Expenses:Food  436.59 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 848"
+  Expenses:Food  482.09 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 849"
+  Expenses:Food  331.68 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 850"
+  Expenses:Food  188.58 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 851"
+  Expenses:Food  315.98 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 852"
+  Expenses:Food  17.72 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 853"
+  Expenses:Food  341.68 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 854"
+  Expenses:Food  374.82 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 855"
+  Expenses:Food  480.64 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 856"
+  Expenses:Food  44.25 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 857"
+  Expenses:Food  94.37 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 858"
+  Expenses:Food  136.58 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 859"
+  Expenses:Food  267.85 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 860"
+  Expenses:Food  285.86 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 861"
+  Expenses:Food  104.27 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 862"
+  Expenses:Food  247.85 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 863"
+  Expenses:Food  332.23 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 864"
+  Expenses:Food  54.41 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 865"
+  Expenses:Food  80.83 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 866"
+  Expenses:Food  136.8 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 867"
+  Expenses:Food  249.35 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 868"
+  Expenses:Food  340.75 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 869"
+  Expenses:Food  210.3 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 870"
+  Expenses:Food  198.89 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 871"
+  Expenses:Food  464.25 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 872"
+  Expenses:Food  12.23 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 873"
+  Expenses:Food  260.73 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 874"
+  Expenses:Food  409.56 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 875"
+  Expenses:Food  112.55 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 876"
+  Expenses:Food  106.66 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 877"
+  Expenses:Food  239.3 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 878"
+  Expenses:Food  372.92 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 879"
+  Expenses:Food  30.4 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 880"
+  Expenses:Food  437.3 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 881"
+  Expenses:Food  494.39 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 882"
+  Expenses:Food  379.73 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 883"
+  Expenses:Food  317.24 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 884"
+  Expenses:Food  406.42 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 885"
+  Expenses:Food  430.12 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 886"
+  Expenses:Food  365.31 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 887"
+  Expenses:Food  257.78 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 888"
+  Expenses:Food  376.13 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 889"
+  Expenses:Food  44.58 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 890"
+  Expenses:Food  192.85 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 891"
+  Expenses:Food  383.06 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 892"
+  Expenses:Food  130.76 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 893"
+  Expenses:Food  280.79 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 894"
+  Expenses:Food  271.11 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 895"
+  Expenses:Food  493.45 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 896"
+  Expenses:Food  413.14 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 897"
+  Expenses:Food  375.49 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 898"
+  Expenses:Food  207.06 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 899"
+  Expenses:Food  130.16 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 900"
+  Expenses:Food  390.22 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 901"
+  Expenses:Food  287.05 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 902"
+  Expenses:Food  381.06 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 903"
+  Expenses:Food  13.91 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 904"
+  Expenses:Food  270.64 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 905"
+  Expenses:Food  239.54 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 906"
+  Expenses:Food  234.54 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 907"
+  Expenses:Food  164.62 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 908"
+  Expenses:Food  19.48 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 909"
+  Expenses:Food  199.81 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 910"
+  Expenses:Food  320.45 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 911"
+  Expenses:Food  343.71 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 912"
+  Expenses:Food  499.34 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 913"
+  Expenses:Food  447.9 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 914"
+  Expenses:Food  263.71 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 915"
+  Expenses:Food  255.07 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 916"
+  Expenses:Food  429.43 USD
+  Assets:Bank:Checking
+
+2024-06-22 * "Transaction 917"
+  Expenses:Food  30.62 USD
+  Assets:Bank:Checking
+
+2024-07-23 * "Transaction 918"
+  Expenses:Food  211.46 USD
+  Assets:Bank:Checking
+
+2024-08-24 * "Transaction 919"
+  Expenses:Food  369.38 USD
+  Assets:Bank:Checking
+
+2024-09-25 * "Transaction 920"
+  Expenses:Food  256.54 USD
+  Assets:Bank:Checking
+
+2024-10-26 * "Transaction 921"
+  Expenses:Food  144.67 USD
+  Assets:Bank:Checking
+
+2024-11-27 * "Transaction 922"
+  Expenses:Food  333.66 USD
+  Assets:Bank:Checking
+
+2024-12-28 * "Transaction 923"
+  Expenses:Food  174.15 USD
+  Assets:Bank:Checking
+
+2024-01-01 * "Transaction 924"
+  Expenses:Food  309.66 USD
+  Assets:Bank:Checking
+
+2024-02-02 * "Transaction 925"
+  Expenses:Food  207.16 USD
+  Assets:Bank:Checking
+
+2024-03-03 * "Transaction 926"
+  Expenses:Food  280.19 USD
+  Assets:Bank:Checking
+
+2024-04-04 * "Transaction 927"
+  Expenses:Food  334.78 USD
+  Assets:Bank:Checking
+
+2024-05-05 * "Transaction 928"
+  Expenses:Food  56.04 USD
+  Assets:Bank:Checking
+
+2024-06-06 * "Transaction 929"
+  Expenses:Food  367.41 USD
+  Assets:Bank:Checking
+
+2024-07-07 * "Transaction 930"
+  Expenses:Food  23.28 USD
+  Assets:Bank:Checking
+
+2024-08-08 * "Transaction 931"
+  Expenses:Food  245.32 USD
+  Assets:Bank:Checking
+
+2024-09-09 * "Transaction 932"
+  Expenses:Food  333.69 USD
+  Assets:Bank:Checking
+
+2024-10-10 * "Transaction 933"
+  Expenses:Food  417 USD
+  Assets:Bank:Checking
+
+2024-11-11 * "Transaction 934"
+  Expenses:Food  484.77 USD
+  Assets:Bank:Checking
+
+2024-12-12 * "Transaction 935"
+  Expenses:Food  26.36 USD
+  Assets:Bank:Checking
+
+2024-01-13 * "Transaction 936"
+  Expenses:Food  468.59 USD
+  Assets:Bank:Checking
+
+2024-02-14 * "Transaction 937"
+  Expenses:Food  267.26 USD
+  Assets:Bank:Checking
+
+2024-03-15 * "Transaction 938"
+  Expenses:Food  146.23 USD
+  Assets:Bank:Checking
+
+2024-04-16 * "Transaction 939"
+  Expenses:Food  144.6 USD
+  Assets:Bank:Checking
+
+2024-05-17 * "Transaction 940"
+  Expenses:Food  105.94 USD
+  Assets:Bank:Checking
+
+2024-06-18 * "Transaction 941"
+  Expenses:Food  202.48 USD
+  Assets:Bank:Checking
+
+2024-07-19 * "Transaction 942"
+  Expenses:Food  306.3 USD
+  Assets:Bank:Checking
+
+2024-08-20 * "Transaction 943"
+  Expenses:Food  442.54 USD
+  Assets:Bank:Checking
+
+2024-09-21 * "Transaction 944"
+  Expenses:Food  434.3 USD
+  Assets:Bank:Checking
+
+2024-10-22 * "Transaction 945"
+  Expenses:Food  364.97 USD
+  Assets:Bank:Checking
+
+2024-11-23 * "Transaction 946"
+  Expenses:Food  190.23 USD
+  Assets:Bank:Checking
+
+2024-12-24 * "Transaction 947"
+  Expenses:Food  478.58 USD
+  Assets:Bank:Checking
+
+2024-01-25 * "Transaction 948"
+  Expenses:Food  219.96 USD
+  Assets:Bank:Checking
+
+2024-02-26 * "Transaction 949"
+  Expenses:Food  276.25 USD
+  Assets:Bank:Checking
+
+2024-03-27 * "Transaction 950"
+  Expenses:Food  413.62 USD
+  Assets:Bank:Checking
+
+2024-04-28 * "Transaction 951"
+  Expenses:Food  419.1 USD
+  Assets:Bank:Checking
+
+2024-05-01 * "Transaction 952"
+  Expenses:Food  307.03 USD
+  Assets:Bank:Checking
+
+2024-06-02 * "Transaction 953"
+  Expenses:Food  449.9 USD
+  Assets:Bank:Checking
+
+2024-07-03 * "Transaction 954"
+  Expenses:Food  428.1 USD
+  Assets:Bank:Checking
+
+2024-08-04 * "Transaction 955"
+  Expenses:Food  312.97 USD
+  Assets:Bank:Checking
+
+2024-09-05 * "Transaction 956"
+  Expenses:Food  343.25 USD
+  Assets:Bank:Checking
+
+2024-10-06 * "Transaction 957"
+  Expenses:Food  442.73 USD
+  Assets:Bank:Checking
+
+2024-11-07 * "Transaction 958"
+  Expenses:Food  58.19 USD
+  Assets:Bank:Checking
+
+2024-12-08 * "Transaction 959"
+  Expenses:Food  150.62 USD
+  Assets:Bank:Checking
+
+2024-01-09 * "Transaction 960"
+  Expenses:Food  416.77 USD
+  Assets:Bank:Checking
+
+2024-02-10 * "Transaction 961"
+  Expenses:Food  260.55 USD
+  Assets:Bank:Checking
+
+2024-03-11 * "Transaction 962"
+  Expenses:Food  444.9 USD
+  Assets:Bank:Checking
+
+2024-04-12 * "Transaction 963"
+  Expenses:Food  213.41 USD
+  Assets:Bank:Checking
+
+2024-05-13 * "Transaction 964"
+  Expenses:Food  343.54 USD
+  Assets:Bank:Checking
+
+2024-06-14 * "Transaction 965"
+  Expenses:Food  22.55 USD
+  Assets:Bank:Checking
+
+2024-07-15 * "Transaction 966"
+  Expenses:Food  433.02 USD
+  Assets:Bank:Checking
+
+2024-08-16 * "Transaction 967"
+  Expenses:Food  221.41 USD
+  Assets:Bank:Checking
+
+2024-09-17 * "Transaction 968"
+  Expenses:Food  102.41 USD
+  Assets:Bank:Checking
+
+2024-10-18 * "Transaction 969"
+  Expenses:Food  262.07 USD
+  Assets:Bank:Checking
+
+2024-11-19 * "Transaction 970"
+  Expenses:Food  415.14 USD
+  Assets:Bank:Checking
+
+2024-12-20 * "Transaction 971"
+  Expenses:Food  61.51 USD
+  Assets:Bank:Checking
+
+2024-01-21 * "Transaction 972"
+  Expenses:Food  172.69 USD
+  Assets:Bank:Checking
+
+2024-02-22 * "Transaction 973"
+  Expenses:Food  179.51 USD
+  Assets:Bank:Checking
+
+2024-03-23 * "Transaction 974"
+  Expenses:Food  87.45 USD
+  Assets:Bank:Checking
+
+2024-04-24 * "Transaction 975"
+  Expenses:Food  439.4 USD
+  Assets:Bank:Checking
+
+2024-05-25 * "Transaction 976"
+  Expenses:Food  438.07 USD
+  Assets:Bank:Checking
+
+2024-06-26 * "Transaction 977"
+  Expenses:Food  134.89 USD
+  Assets:Bank:Checking
+
+2024-07-27 * "Transaction 978"
+  Expenses:Food  248.89 USD
+  Assets:Bank:Checking
+
+2024-08-28 * "Transaction 979"
+  Expenses:Food  60.32 USD
+  Assets:Bank:Checking
+
+2024-09-01 * "Transaction 980"
+  Expenses:Food  215.03 USD
+  Assets:Bank:Checking
+
+2024-10-02 * "Transaction 981"
+  Expenses:Food  36.1 USD
+  Assets:Bank:Checking
+
+2024-11-03 * "Transaction 982"
+  Expenses:Food  150.64 USD
+  Assets:Bank:Checking
+
+2024-12-04 * "Transaction 983"
+  Expenses:Food  379.61 USD
+  Assets:Bank:Checking
+
+2024-01-05 * "Transaction 984"
+  Expenses:Food  380.7 USD
+  Assets:Bank:Checking
+
+2024-02-06 * "Transaction 985"
+  Expenses:Food  220.18 USD
+  Assets:Bank:Checking
+
+2024-03-07 * "Transaction 986"
+  Expenses:Food  214.71 USD
+  Assets:Bank:Checking
+
+2024-04-08 * "Transaction 987"
+  Expenses:Food  47.77 USD
+  Assets:Bank:Checking
+
+2024-05-09 * "Transaction 988"
+  Expenses:Food  353.78 USD
+  Assets:Bank:Checking
+
+2024-06-10 * "Transaction 989"
+  Expenses:Food  338.55 USD
+  Assets:Bank:Checking
+
+2024-07-11 * "Transaction 990"
+  Expenses:Food  326.85 USD
+  Assets:Bank:Checking
+
+2024-08-12 * "Transaction 991"
+  Expenses:Food  192.36 USD
+  Assets:Bank:Checking
+
+2024-09-13 * "Transaction 992"
+  Expenses:Food  353.54 USD
+  Assets:Bank:Checking
+
+2024-10-14 * "Transaction 993"
+  Expenses:Food  243.78 USD
+  Assets:Bank:Checking
+
+2024-11-15 * "Transaction 994"
+  Expenses:Food  283.54 USD
+  Assets:Bank:Checking
+
+2024-12-16 * "Transaction 995"
+  Expenses:Food  71.44 USD
+  Assets:Bank:Checking
+
+2024-01-17 * "Transaction 996"
+  Expenses:Food  424.7 USD
+  Assets:Bank:Checking
+
+2024-02-18 * "Transaction 997"
+  Expenses:Food  159.81 USD
+  Assets:Bank:Checking
+
+2024-03-19 * "Transaction 998"
+  Expenses:Food  278.79 USD
+  Assets:Bank:Checking
+
+2024-04-20 * "Transaction 999"
+  Expenses:Food  75.96 USD
+  Assets:Bank:Checking
+
+2024-05-21 * "Transaction 1000"
+  Expenses:Food  26.66 USD
+  Assets:Bank:Checking
+
+2024-12-31 balance Assets:Bank:Checking  0.00 USD
