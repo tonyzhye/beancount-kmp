@@ -103,9 +103,21 @@ fun getWeight(posting: Posting): Amount {
     val units = posting.units ?: return Amount(Decimal.ZERO, "XXX")
     val costSpec = posting.cost
 
-    // If the posting has a cost, use that as the weight.
+    // If the posting has a cost with numberPer, use that as the weight.
     if (costSpec != null && costSpec.numberPer != null && costSpec.currency != null) {
         return Amount(costSpec.numberPer * units.number, costSpec.currency)
+    }
+
+    // If the posting has a cost with numberTotal, infer numberPer.
+    if (costSpec != null && costSpec.numberTotal != null && costSpec.currency != null && !units.number.isZero()) {
+        val inferredPer = costSpec.numberTotal / units.number.abs()
+        return Amount(inferredPer * units.number, costSpec.currency)
+    }
+
+    // If the posting has an empty cost spec (e.g., {} for auto lot matching),
+    // return zero weight. The actual weight will be determined after booking.
+    if (costSpec != null) {
+        return Amount(Decimal.ZERO, costSpec.currency ?: units.currency)
     }
 
     // Otherwise use the units.

@@ -40,6 +40,8 @@ actual class Decimal actual constructor(value: String) : Comparable<Decimal> {
     
     actual fun truncate(): Decimal = Decimal(this.bigDecimal.setScale(0, RoundingMode.DOWN))
     
+    actual fun setScale(newScale: Int): Decimal = Decimal(this.bigDecimal.setScale(newScale, RoundingMode.HALF_UP))
+    
     override actual fun compareTo(other: Decimal): Int = this.bigDecimal.compareTo(other.bigDecimal)
     
     override fun equals(other: Any?): Boolean {

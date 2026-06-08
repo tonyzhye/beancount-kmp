@@ -151,6 +151,18 @@ fun toBqlValue(value: Any?): BqlValue {
         is io.github.tonyzhye.beancount.core.Amount -> BqlAmountValue(value)
         is io.github.tonyzhye.beancount.core.Cost -> BqlCostValue(value)
         is io.github.tonyzhye.beancount.core.Transaction -> BqlTransactionValue(value)
+        is Map<*, *> -> {
+            // Convert map values to BqlValue recursively where possible
+            val convertedMap = value.mapValues { (_, v) ->
+                when (v) {
+                    is String -> v
+                    is Int -> v.toString()
+                    is io.github.tonyzhye.beancount.core.Decimal -> v.toString()
+                    else -> v?.toString() ?: ""
+                }
+            }.mapKeys { it.key.toString() }
+            BqlStringValue(convertedMap.toString())
+        }
         else -> throw IllegalArgumentException("Unsupported type: ${value::class}")
     }
 }

@@ -19,6 +19,7 @@ val BASIC_VALIDATIONS: List<Validation> = listOf(
     ::validateCurrencyConstraints,
     ::validateDuplicateBalances,
     ::validateDuplicateCommodities,
+    ::validateDocumentsPaths,
     ::validateCheckTransactionBalances
 )
 
@@ -318,9 +319,379 @@ fun validateCheckTransactionBalances(entries: List<Directive>, options: Options)
 }
 
 /**
+ * Validate that no account has mixed lots (different costs for the same currency).
+ * Based on beancount.parser.booking.validate_inventory_booking.
+ *
+ * This simulates a simple STRICT-like inventory booking and checks that
+ * for each account+currency, all positions share the same cost basis.
+ */
+fun validateInventoryBooking(
+    entries: List<Directive>,
+    options: Options
+): List<ValidationError> {
+    val errors = mutableListOf<ValidationError>()
+    val accountInventories = mutableMapOf<Account, Inventory>()
+
+    for (entry in entries) {
+        if (entry !is Transaction) continue
+
+        for (posting in entry.postings) {
+            val units = posting.units ?: continue
+            val costSpec = posting.cost ?: continue
+
+            val inventory = accountInventories.getOrPut(posting.account) { Inventory() }
+            val cost = costSpec.toCost(entry.date, units.number)
+                ?: continue
+
+            if (units.number.isPositive()) {
+                // Augmentation - check for mixed lots (compare by number+currency only)
+                val existingPositions = inventory.getPositions(units.currency)
+                if (existingPositions.isNotEmpty()) {
+                    val existingCost = existingPositions[0].cost
+                    if (existingCost != null &&
+                        (existingCost.number != cost.number || existingCost.currency != cost.currency)) {
+                        errors.add(ValidationError(
+                            entry.meta,
+                            "Mixed lot detected for ${posting.account}: " +
+                            "existing ${existingCost.number} ${existingCost.currency} " +
+                            "vs new ${cost.number} ${cost.currency}",
+                            entry
+                        ))
+                    }
+                }
+                inventory.addAmount(units, cost)
+            } else if (units.number.isNegative()) {
+                // Reduction - check if matching cost exists when inventory is non-empty
+                val existingPositions = inventory.getPositions(units.currency)
+                if (existingPositions.isNotEmpty()) {
+                    val matches = inventory.findMatches(units.currency, costSpec)
+                    if (matches.isEmpty()) {
+                        errors.add(ValidationError(
+                            entry.meta,
+                            "Mixed lot detected for ${posting.account}: " +
+                            "reduction cost does not match existing lots",
+                            entry
+                        ))
+                    }
+                }
+                // Apply reduction to inventory (even if error, to track state)
+                inventory.addAmount(units, cost)
+            }
+        }
+    }
+
+    return errors
+}
+
+/**
+ * Perform a sanity check on the types of all entries and their fields.
+ * Based on beancount.core.data.sanity_check_types.
+ *
+ * Validates that:
+ * - All entries have required fields (meta, date)
+ * - All dates are valid (year >= 0, month in 1..12, day in 1..31)
+ * - All accounts are non-empty strings with valid format
+ * - All currencies are non-empty strings
+ * - All amounts have non-null numbers
+ * - Transaction postings have valid accounts
+ * - CostSpec fields are valid
+ *
+ * @param entries A list of directive instances.
+ * @return A list of validation errors.
+ */
+fun sanityCheckTypes(entries: List<Directive>): List<ValidationError> {
+    val errors = mutableListOf<ValidationError>()
+
+    for (entry in entries) {
+        // Check meta is not empty (should contain at least filename and lineno)
+        if (entry.meta.isEmpty()) {
+            errors.add(ValidationError(
+                entry.meta,
+                "Entry has empty metadata",
+                entry
+            ))
+        }
+
+        // Validate date
+        try {
+            val date = entry.date
+            require(date.year >= 0) { "Invalid year: ${date.year}" }
+            require(date.monthNumber in 1..12) { "Invalid month: ${date.monthNumber}" }
+            require(date.dayOfMonth in 1..31) { "Invalid day: ${date.dayOfMonth}" }
+        } catch (e: Exception) {
+            errors.add(ValidationError(
+                entry.meta,
+                "Invalid date for entry: ${e.message}",
+                entry
+            ))
+        }
+
+        // Entry-specific validation
+        when (entry) {
+            is Open -> {
+                if (entry.account.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Open directive has empty account",
+                        entry
+                    ))
+                }
+                if (entry.currencies.any { it.isBlank() }) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Open directive has empty currency",
+                        entry
+                    ))
+                }
+            }
+            is Close -> {
+                if (entry.account.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Close directive has empty account",
+                        entry
+                    ))
+                }
+            }
+            is Commodity -> {
+                if (entry.currency.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Commodity directive has empty currency",
+                        entry
+                    ))
+                }
+            }
+            is Transaction -> {
+                if (entry.postings.isEmpty()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Transaction has no postings",
+                        entry
+                    ))
+                }
+                for (posting in entry.postings) {
+                    if (posting.account.isBlank()) {
+                        errors.add(ValidationError(
+                            entry.meta,
+                            "Posting has empty account",
+                            entry
+                        ))
+                    }
+                    posting.units?.let { amount ->
+                        if (amount.currency.isBlank()) {
+                            errors.add(ValidationError(
+                                entry.meta,
+                                "Posting has empty currency",
+                                entry
+                            ))
+                        }
+                    }
+                    posting.cost?.let { cost ->
+                        if (cost.currency != null && cost.currency.isBlank()) {
+                            errors.add(ValidationError(
+                                entry.meta,
+                                "Posting cost has empty currency",
+                                entry
+                            ))
+                        }
+                    }
+                }
+            }
+            is Balance -> {
+                if (entry.account.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Balance directive has empty account",
+                        entry
+                    ))
+                }
+                if (entry.amount.currency.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Balance directive has empty currency",
+                        entry
+                    ))
+                }
+            }
+            is Pad -> {
+                if (entry.account.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Pad directive has empty account",
+                        entry
+                    ))
+                }
+                if (entry.sourceAccount.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Pad directive has empty source account",
+                        entry
+                    ))
+                }
+            }
+            is Note -> {
+                if (entry.account.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Note directive has empty account",
+                        entry
+                    ))
+                }
+            }
+            is Document -> {
+                if (entry.account.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Document directive has empty account",
+                        entry
+                    ))
+                }
+                if (entry.filename.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Document directive has empty filename",
+                        entry
+                    ))
+                }
+            }
+            is Price -> {
+                if (entry.currency.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Price directive has empty currency",
+                        entry
+                    ))
+                }
+                if (entry.amount.currency.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Price directive has empty amount currency",
+                        entry
+                    ))
+                }
+            }
+            is Event -> {
+                if (entry.type.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Event directive has empty type",
+                        entry
+                    ))
+                }
+            }
+            is Query -> {
+                if (entry.name.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Query directive has empty name",
+                        entry
+                    ))
+                }
+            }
+            is Custom -> {
+                if (entry.type.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Custom directive has empty type",
+                        entry
+                    ))
+                }
+            }
+            is Include -> {
+                if (entry.filename.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "Include directive has empty filename",
+                        entry
+                    ))
+                }
+            }
+            is PushTag -> {
+                if (entry.tag.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "PushTag directive has empty tag",
+                        entry
+                    ))
+                }
+            }
+            is PopTag -> {
+                if (entry.tag.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "PopTag directive has empty tag",
+                        entry
+                    ))
+                }
+            }
+            is PushMeta -> {
+                if (entry.key.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "PushMeta directive has empty key",
+                        entry
+                    ))
+                }
+            }
+            is PopMeta -> {
+                if (entry.key.isBlank()) {
+                    errors.add(ValidationError(
+                        entry.meta,
+                        "PopMeta directive has empty key",
+                        entry
+                    ))
+                }
+            }
+        }
+    }
+
+    return errors
+}
+
+/**
  * Check that all data types are correct.
  * This is a strict validation enabled by bean-check.
  */
+/**
+ * Check that all filenames in Document entries are absolute paths.
+ * Based on beancount.ops.validation.validate_documents_paths.
+ */
+fun validateDocumentsPaths(entries: List<Directive>, options: Options): List<ValidationError> {
+    val errors = mutableListOf<ValidationError>()
+    for (entry in entries) {
+        if (entry is Document) {
+            val filename = entry.filename
+            // Check if path is absolute (Unix-style / or Windows-style X:/ or \\)
+            if (!filename.startsWith("/") && !filename.matches(Regex("^[A-Za-z]:[/\\\\].*")) && !filename.startsWith("\\\\")) {
+                errors.add(ValidationError(
+                    entry.meta,
+                    "Invalid relative path for document: $filename",
+                    entry
+                ))
+            }
+        }
+    }
+    return errors
+}
+
+/**
+ * Perform all standard validations on parsed contents.
+ * Based on beancount.ops.validation.validate.
+ */
+fun validate(
+    entries: List<Directive>,
+    options: Options,
+    extraValidations: List<Validation> = emptyList()
+): List<ValidationError> {
+    val validations = BASIC_VALIDATIONS + extraValidations
+    val errors = mutableListOf<ValidationError>()
+    for (validation in validations) {
+        errors.addAll(validation(entries, options))
+    }
+    return errors
+}
+
 fun validateDataTypes(entries: List<Directive>, options: Options): List<ValidationError> {
     val errors = mutableListOf<ValidationError>()
     

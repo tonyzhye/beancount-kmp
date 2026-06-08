@@ -84,6 +84,40 @@ class BeancountParser : Parser {
                 continue
             }
             
+            // Handle tag/meta stack directives without dates
+            if (peek() is Token.KEYWORD) {
+                val keywordValue = (peek() as Token.KEYWORD).value
+                when (keywordValue) {
+                    "pushtag" -> {
+                        parsePushTagNoDate()
+                        continue
+                    }
+                    "poptag" -> {
+                        parsePopTagNoDate()
+                        continue
+                    }
+                    "pushmeta" -> {
+                        parsePushMetaNoDate()
+                        continue
+                    }
+                    "popmeta" -> {
+                        parsePopMetaNoDate()
+                        continue
+                    }
+                    "include" -> {
+                        val includeEntry = parseIncludeNoDate()
+                        if (includeEntry != null) {
+                            entries.add(includeEntry)
+                        }
+                        continue
+                    }
+                    "plugin" -> {
+                        parsePluginNoDate()
+                        continue
+                    }
+                }
+            }
+            
             val entry = parseDirective()
             if (entry != null) {
                 entries.add(entry)
@@ -91,7 +125,8 @@ class BeancountParser : Parser {
         }
         
         // Build options from collected options
-        val optionsMap = buildOptions()
+        val (optionsMap, optionErrors) = buildOptions()
+        parseErrors.addAll(optionErrors)
         
         return ParseResult(
             entries,
@@ -167,14 +202,11 @@ class BeancountParser : Parser {
     private fun parseOpen(dateToken: Token.DATE): Open {
         consume(Token.KEYWORD::class) // consume "open"
         skipWhitespaceAndComments()
-        
+
         val account = parseAccount()
         val currencies = parseCurrencyList()
-        val booking = if (peek() is Token.KEYWORD && (peek() as Token.KEYWORD).value == "STRICT") {
-            consume(Token.KEYWORD::class)
-            io.github.tonyzhye.beancount.core.Booking.STRICT
-        } else null
-        
+        val booking = parseBookingMethod()
+
         val meta = newMetadata(currentFilename, dateToken.line) + parseMetadata()
 
         return Open(
@@ -184,6 +216,47 @@ class BeancountParser : Parser {
             currencies = currencies,
             booking = booking
         )
+    }
+
+    private fun parseBookingMethod(): io.github.tonyzhye.beancount.core.Booking? {
+        return when (val token = peek()) {
+            is Token.STRING -> {
+                val value = token.value.uppercase()
+                val booking = when (value) {
+                    "STRICT" -> io.github.tonyzhye.beancount.core.Booking.STRICT
+                    "STRICT_WITH_SIZE" -> io.github.tonyzhye.beancount.core.Booking.STRICT_WITH_SIZE
+                    "NONE" -> io.github.tonyzhye.beancount.core.Booking.NONE
+                    "FIFO" -> io.github.tonyzhye.beancount.core.Booking.FIFO
+                    "LIFO" -> io.github.tonyzhye.beancount.core.Booking.LIFO
+                    "HIFO" -> io.github.tonyzhye.beancount.core.Booking.HIFO
+                    "AVERAGE" -> io.github.tonyzhye.beancount.core.Booking.AVERAGE
+                    else -> null
+                }
+                if (booking != null) {
+                    consume(Token.STRING::class)
+                }
+                booking
+            }
+            is Token.KEYWORD -> {
+                // Backward compatibility: accept unquoted booking method names
+                val value = token.value.uppercase()
+                val booking = when (value) {
+                    "STRICT" -> io.github.tonyzhye.beancount.core.Booking.STRICT
+                    "STRICT_WITH_SIZE" -> io.github.tonyzhye.beancount.core.Booking.STRICT_WITH_SIZE
+                    "NONE" -> io.github.tonyzhye.beancount.core.Booking.NONE
+                    "FIFO" -> io.github.tonyzhye.beancount.core.Booking.FIFO
+                    "LIFO" -> io.github.tonyzhye.beancount.core.Booking.LIFO
+                    "HIFO" -> io.github.tonyzhye.beancount.core.Booking.HIFO
+                    "AVERAGE" -> io.github.tonyzhye.beancount.core.Booking.AVERAGE
+                    else -> null
+                }
+                if (booking != null) {
+                    consume(Token.KEYWORD::class)
+                }
+                booking
+            }
+            else -> null
+        }
     }
     
     private fun parseClose(dateToken: Token.DATE): Close {
@@ -271,7 +344,7 @@ class BeancountParser : Parser {
         // Parse postings
         val postings = mutableListOf<Posting>()
 
-        while (peek() is Token.INDENT || peek() is Token.ACCOUNT) {
+        while (peek() is Token.INDENT || peek() is Token.ACCOUNT || peek() is Token.FLAG) {
             if (peek() is Token.INDENT) {
                 consume(Token.INDENT::class)
             }
@@ -310,10 +383,10 @@ class BeancountParser : Parser {
         // Parse amount (optional)
         var units: Amount? = null
         if (peek() is Token.NUMBER) {
-            val number = (consume(Token.NUMBER::class) as Token.NUMBER).value
+            val numberToken = consume(Token.NUMBER::class) as Token.NUMBER
             skipWhitespaceAndComments()
             val currency = parseCurrency()
-            units = Amount(Decimal(number.toString()), currency)
+            units = Amount(Decimal(numberToken.text.replace(",", "")), currency)
             skipWhitespaceAndComments()
         }
 
@@ -326,27 +399,36 @@ class BeancountParser : Parser {
 
         // Parse price (optional): @ price or @@ price
         var price: Amount? = null
+        var missingPriceNumber = false
         var isTotalPrice = false
         if (peek() is Token.AT) {
             consume(Token.AT::class)
             skipInlineWhitespace()
-            val priceNumber = (consume(Token.NUMBER::class) as Token.NUMBER).value
-            skipInlineWhitespace()
-            val priceCurrency = parseCurrency()
-            price = Amount(Decimal(priceNumber.toString()), priceCurrency)
+            if (peek() is Token.NUMBER) {
+                val priceToken = consume(Token.NUMBER::class) as Token.NUMBER
+                skipInlineWhitespace()
+                val priceCurrency = parseCurrency()
+                price = Amount(Decimal(priceToken.text.replace(",", "")), priceCurrency)
+            } else if (peek() is Token.CURRENCY) {
+                // @ USD (missing price number)
+                val priceCurrency = parseCurrency()
+                price = Amount(Decimal.ZERO, priceCurrency)
+                missingPriceNumber = true
+            }
         } else if (peek() is Token.DOUBLE_AT) {
             consume(Token.DOUBLE_AT::class)
             skipInlineWhitespace()
-            val totalPriceNumber = (consume(Token.NUMBER::class) as Token.NUMBER).value
+            val totalPriceToken = consume(Token.NUMBER::class) as Token.NUMBER
             skipInlineWhitespace()
             val totalPriceCurrency = parseCurrency()
             // @@ means total price; convert to per-unit price
             isTotalPrice = true
+            val totalPriceText = totalPriceToken.text.replace(",", "")
             if (units != null && !units.number.isZero()) {
-                val perUnitPrice = Decimal(totalPriceNumber.toString()) / units.number.abs()
+                val perUnitPrice = Decimal(totalPriceText) / units.number.abs()
                 price = Amount(perUnitPrice, totalPriceCurrency)
             } else {
-                price = Amount(Decimal(totalPriceNumber.toString()), totalPriceCurrency)
+                price = Amount(Decimal(totalPriceText), totalPriceCurrency)
             }
         }
 
@@ -359,7 +441,8 @@ class BeancountParser : Parser {
             cost = cost,
             price = price,
             flag = postingFlag,
-            meta = postingMeta.ifEmpty { null }
+            meta = postingMeta.ifEmpty { null },
+            missingPriceNumber = missingPriceNumber
         )
     }
 
@@ -373,6 +456,7 @@ class BeancountParser : Parser {
         var date: LocalDate? = null
         var label: String? = null
         var mergeCost = false
+        val missingFields = mutableSetOf<String>()
 
         // Check for merge flag "*"
         if (peek() is Token.ASTERISK) {
@@ -383,16 +467,28 @@ class BeancountParser : Parser {
 
         // Try to parse cost components
         if (peek() is Token.NUMBER) {
-            val firstNumber = Decimal((consume(Token.NUMBER::class) as Token.NUMBER).value.toString())
+            val firstNumber = Decimal((consume(Token.NUMBER::class) as Token.NUMBER).text.replace(",", ""))
             skipWhitespaceAndComments()
 
             // Check for compound cost syntax: number # total
-            // In our lexer, #total is tokenized as a TAG token with value "total"
-            // So we check if the next token is a TAG whose value is all digits
+            // OR number # (missing total)
             if (peek() is Token.TAG) {
                 val tagToken = peek() as Token.TAG
-                if (tagToken.value.all { it.isDigit() }) {
-                    // This is a compound cost: numberPer # numberTotal
+                if (tagToken.value.isEmpty()) {
+                    // Could be "# total" or just "#" (missing total)
+                    consume(Token.TAG::class) // consume #
+                    skipWhitespaceAndComments()
+                    if (peek() is Token.NUMBER) {
+                        // number # total
+                        val totalToken = consume(Token.NUMBER::class) as Token.NUMBER
+                        numberTotal = Decimal(totalToken.text.replace(",", ""))
+                        skipWhitespaceAndComments()
+                    } else {
+                        // number # (missing total)
+                        missingFields.add("numberTotal")
+                    }
+                } else if (tagToken.value.all { it.isDigit() }) {
+                    // #total (no space between # and total)
                     numberTotal = Decimal(tagToken.value)
                     consume(Token.TAG::class)
                     skipWhitespaceAndComments()
@@ -404,6 +500,38 @@ class BeancountParser : Parser {
             if (peek() is Token.CURRENCY) {
                 currency = parseCurrency()
                 skipWhitespaceAndComments()
+            }
+        } else if (peek() is Token.TAG) {
+            // Could be compound cost starting with # total or just # (missing per)
+            val tagToken = peek() as Token.TAG
+            if (tagToken.value.isEmpty()) {
+                consume(Token.TAG::class) // consume #
+                skipWhitespaceAndComments()
+                if (peek() is Token.NUMBER) {
+                    // # total (missing per)
+                    val numberToken = consume(Token.NUMBER::class) as Token.NUMBER
+                    numberTotal = Decimal(numberToken.text.replace(",", ""))
+                    missingFields.add("numberPer")
+                    skipWhitespaceAndComments()
+                    if (peek() is Token.CURRENCY) {
+                        currency = parseCurrency()
+                        skipWhitespaceAndComments()
+                    }
+                } else if (peek() is Token.CURRENCY) {
+                    // # currency (missing per, no total)
+                    missingFields.add("numberPer")
+                    currency = parseCurrency()
+                    skipWhitespaceAndComments()
+                }
+            } else if (tagToken.value.all { it.isDigit() }) {
+                // #total (no space)
+                numberTotal = Decimal(tagToken.value)
+                consume(Token.TAG::class)
+                skipWhitespaceAndComments()
+                if (peek() is Token.CURRENCY) {
+                    currency = parseCurrency()
+                    skipWhitespaceAndComments()
+                }
             }
         } else if (peek() is Token.CURRENCY) {
             // Cost spec with only currency: {USD}
@@ -445,10 +573,28 @@ class BeancountParser : Parser {
             currency = currency,
             date = date,
             label = label,
-            mergeCost = mergeCost
+            mergeCost = mergeCost,
+            missingFields = missingFields
         )
     }
-    
+
+    private fun parseCompoundCostTotal(): Decimal? {
+        if (peek() is Token.TAG) {
+            val tagToken = peek() as Token.TAG
+            if (tagToken.value.isNotEmpty() && tagToken.value.all { it.isDigit() }) {
+                // #total (no space between # and total)
+                consume(Token.TAG::class)
+                return Decimal(tagToken.value)
+            } else if (tagToken.value.isEmpty() && peek(1) is Token.NUMBER) {
+                // # total (space between # and total)
+                consume(Token.TAG::class)
+                val numberToken = consume(Token.NUMBER::class) as Token.NUMBER
+                return Decimal(numberToken.value.toString())
+            }
+        }
+        return null
+    }
+
     private fun parseBalance(dateToken: Token.DATE): Balance {
         consume(Token.KEYWORD::class) // consume "balance"
         skipWhitespaceAndComments()
@@ -465,8 +611,8 @@ class BeancountParser : Parser {
             consume(Token.TILDE::class)
             skipWhitespaceAndComments()
             if (peek() is Token.NUMBER) {
-                val toleranceValue = (consume(Token.NUMBER::class) as Token.NUMBER).value
-                tolerance = Decimal(toleranceValue.toString())
+                val toleranceToken = consume(Token.NUMBER::class) as Token.NUMBER
+                tolerance = Decimal(toleranceToken.text.replace(",", ""))
                 skipWhitespaceAndComments()
             }
         }
@@ -725,6 +871,90 @@ class BeancountParser : Parser {
         )
     }
 
+    private fun parsePushTagNoDate() {
+        consume(Token.KEYWORD::class) // consume "pushtag"
+        skipWhitespaceAndComments()
+        val tag = (consume(Token.TAG::class) as Token.TAG).value
+        tagStack.add(tag)
+    }
+
+    private fun parsePopTagNoDate() {
+        consume(Token.KEYWORD::class) // consume "poptag"
+        skipWhitespaceAndComments()
+        val tag = (consume(Token.TAG::class) as Token.TAG).value
+        tagStack.remove(tag)
+    }
+
+    private fun parsePushMetaNoDate() {
+        consume(Token.KEYWORD::class) // consume "pushmeta"
+        skipWhitespaceAndComments()
+        val key = (consume(Token.KEY::class) as Token.KEY).value
+        skipWhitespaceAndComments()
+        // Consume colon after key
+        if (peek() is Token.COLON) {
+            consume(Token.COLON::class)
+            skipWhitespaceAndComments()
+        }
+        val value = parseMetadataValue() ?: ""
+        metaStack[key] = value
+    }
+
+    private fun parsePopMetaNoDate() {
+        consume(Token.KEYWORD::class) // consume "popmeta"
+        skipWhitespaceAndComments()
+        val key = (consume(Token.KEY::class) as Token.KEY).value
+        skipWhitespaceAndComments()
+        // Consume colon after key
+        if (peek() is Token.COLON) {
+            consume(Token.COLON::class)
+            skipWhitespaceAndComments()
+        }
+        metaStack.remove(key)
+    }
+
+    private fun parseIncludeNoDate(): Include? {
+        consume(Token.KEYWORD::class) // consume "include"
+        skipWhitespaceAndComments()
+
+        val filename = try {
+            (consume(Token.STRING::class) as Token.STRING).value
+        } catch (e: Exception) {
+            reportError("Expected filename string after include")
+            return null
+        }
+
+        return Include(
+            meta = newMetadata(currentFilename, peek().line),
+            date = LocalDate(1970, 1, 1),
+            filename = filename
+        )
+    }
+
+    private fun parsePluginNoDate() {
+        consume(Token.KEYWORD::class) // consume "plugin"
+        skipWhitespaceAndComments()
+
+        val moduleName = try {
+            (consume(Token.STRING::class) as Token.STRING).value
+        } catch (e: Exception) {
+            reportError("Expected plugin module name string")
+            return
+        }
+        skipWhitespaceAndComments()
+
+        // Optional configuration string
+        val config = if (peek() is Token.STRING) {
+            (consume(Token.STRING::class) as Token.STRING).value
+        } else {
+            null
+        }
+
+        // Store plugin spec
+        @Suppress("UNCHECKED_CAST")
+        val plugins = options.getOrPut("plugins") { mutableListOf<PluginSpec>() } as MutableList<PluginSpec>
+        plugins.add(PluginSpec(moduleName, config))
+    }
+
     private fun parseOptionNoDate() {
         consume(Token.KEYWORD::class) // consume "option"
         skipWhitespaceAndComments()
@@ -738,28 +968,70 @@ class BeancountParser : Parser {
         when (key) {
             "title" -> options["title"] = value
             "operating_currency" -> {
+                @Suppress("UNCHECKED_CAST")
                 val currencies = options.getOrPut("operating_currencies") { mutableListOf<String>() } as MutableList<String>
                 currencies.add(value)
+            }
+            "documents" -> {
+                @Suppress("UNCHECKED_CAST")
+                val docs = options.getOrPut("documents") { mutableListOf<String>() } as MutableList<String>
+                docs.add(value)
+            }
+            "conversion_currency" -> options["conversion_currency"] = value
+            "render_commas" -> options["render_commas"] = value
+            "long_string_maxlines" -> options["long_string_maxlines"] = value
+            "inferred_tolerance_default" -> {
+                @Suppress("UNCHECKED_CAST")
+                val defaults = options.getOrPut("inferred_tolerance_default") { mutableMapOf<String, Decimal>() } as MutableMap<String, Decimal>
+                val parts = value.split(":")
+                if (parts.size == 2) {
+                    try {
+                        defaults[parts[0]] = Decimal(parts[1])
+                    } catch (_: Exception) {
+                        // Invalid decimal, ignore
+                    }
+                }
             }
             else -> options[key] = value
         }
     }
-    
+
     private fun parseOption(dateToken: Token.DATE) {
         consume(Token.KEYWORD::class) // consume "option"
         skipWhitespaceAndComments()
-        
+
         val key = (consume(Token.STRING::class) as Token.STRING).value
         skipWhitespaceAndComments()
-        
+
         val value = (consume(Token.STRING::class) as Token.STRING).value
-        
+
         // Store option
         when (key) {
             "title" -> options["title"] = value
             "operating_currency" -> {
+                @Suppress("UNCHECKED_CAST")
                 val currencies = options.getOrPut("operating_currencies") { mutableListOf<String>() } as MutableList<String>
                 currencies.add(value)
+            }
+            "documents" -> {
+                @Suppress("UNCHECKED_CAST")
+                val docs = options.getOrPut("documents") { mutableListOf<String>() } as MutableList<String>
+                docs.add(value)
+            }
+            "conversion_currency" -> options["conversion_currency"] = value
+            "render_commas" -> options["render_commas"] = value
+            "long_string_maxlines" -> options["long_string_maxlines"] = value
+            "inferred_tolerance_default" -> {
+                @Suppress("UNCHECKED_CAST")
+                val defaults = options.getOrPut("inferred_tolerance_default") { mutableMapOf<String, Decimal>() } as MutableMap<String, Decimal>
+                val parts = value.split(":")
+                if (parts.size == 2) {
+                    try {
+                        defaults[parts[0]] = Decimal(parts[1])
+                    } catch (_: Exception) {
+                        // Invalid decimal, ignore
+                    }
+                }
             }
             else -> options[key] = value
         }
@@ -778,12 +1050,13 @@ class BeancountParser : Parser {
         } else {
             null
         }
-        
+
         // Store plugin spec
+        @Suppress("UNCHECKED_CAST")
         val plugins = options.getOrPut("plugins") { mutableListOf<PluginSpec>() } as MutableList<PluginSpec>
         plugins.add(PluginSpec(moduleName, config))
     }
-    
+
     // Helper methods
     
     /**
@@ -902,37 +1175,86 @@ class BeancountParser : Parser {
     }
     
     private fun parseAmount(): Amount {
-        val number = (consume(Token.NUMBER::class) as Token.NUMBER).value
+        val numberToken = consume(Token.NUMBER::class) as Token.NUMBER
         skipWhitespaceAndComments()
         val currency = parseCurrency()
         
-        return Amount(Decimal(number.toString()), currency)
+        return Amount(Decimal(numberToken.text.replace(",", "")), currency)
     }
     
     private fun parseAmountWithOptionalSign(): Amount {
-        var sign = 1.0
+        var sign = ""
         
         if (peek() is Token.MINUS) {
             consume(Token.MINUS::class)
-            sign = -1.0
+            sign = "-"
         } else if (peek() is Token.PLUS) {
             consume(Token.PLUS::class)
         }
         
-        val number = (consume(Token.NUMBER::class) as Token.NUMBER).value
+        val numberToken = consume(Token.NUMBER::class) as Token.NUMBER
         skipWhitespaceAndComments()
         val currency = parseCurrency()
         
-        return Amount(Decimal((number * sign).toString()), currency)
+        return Amount(Decimal(sign + numberToken.text.replace(",", "")), currency)
     }
     
-    private fun buildOptions(): Options {
+    @Suppress("UNCHECKED_CAST")
+    private fun buildOptions(): Pair<Options, List<BeancountError>> {
+        val optionErrors = mutableListOf<BeancountError>()
+
+        // Parse booking_method option
+        val bookingMethodStr = (options["booking_method"] as? String)?.uppercase()
+        val bookingMethod = when (bookingMethodStr) {
+            null -> io.github.tonyzhye.beancount.core.Booking.STRICT
+            "STRICT" -> io.github.tonyzhye.beancount.core.Booking.STRICT
+            "STRICT_WITH_SIZE" -> io.github.tonyzhye.beancount.core.Booking.STRICT_WITH_SIZE
+            "NONE" -> io.github.tonyzhye.beancount.core.Booking.NONE
+            "AVERAGE" -> io.github.tonyzhye.beancount.core.Booking.AVERAGE
+            "FIFO" -> io.github.tonyzhye.beancount.core.Booking.FIFO
+            "LIFO" -> io.github.tonyzhye.beancount.core.Booking.LIFO
+            "HIFO" -> io.github.tonyzhye.beancount.core.Booking.HIFO
+            else -> {
+                optionErrors.add(LoadError(
+                    newMetadata(currentFilename, 0),
+                    "Invalid booking method: $bookingMethodStr"
+                ))
+                io.github.tonyzhye.beancount.core.Booking.STRICT
+            }
+        }
+
+        // Parse tolerance_multiplier
+        val toleranceMultiplier = (options["tolerance_multiplier"] as? String)?.let {
+            try { Decimal(it) } catch (_: Exception) { Decimal("0.5") }
+        } ?: Decimal("0.5")
+
+        // Parse render_commas
+        val renderCommas = (options["render_commas"] as? String)?.uppercase() == "TRUE"
+        // Parse long_string_maxlines
+        val longStringMaxlines = (options["long_string_maxlines"] as? String)?.let {
+            try { it.toInt() } catch (_: Exception) { 64 }
+        } ?: 64
+
         return Options(
             title = options["title"] as? String ?: "",
             operatingCurrencies = (options["operating_currencies"] as? List<String>) ?: emptyList(),
+            documents = (options["documents"] as? List<String>) ?: emptyList(),
             plugin = (options["plugins"] as? List<PluginSpec>) ?: emptyList(),
+            usePreciseInterpolation = (options["use_precise_interpolation"] as? String)?.uppercase() == "TRUE",
+            bookingMethod = bookingMethod,
+            toleranceMultiplier = toleranceMultiplier,
+            inferToleranceFromCost = (options["infer_tolerance_from_cost"] as? String)?.uppercase() == "TRUE",
+            toleranceMap = (options["inferred_tolerance_default"] as? Map<String, Decimal>) ?: emptyMap(),
+            accountRounding = options["account_rounding"] as? String ?: "Equity:Rounding",
             filename = currentFilename
-        )
+        ).let { base ->
+            base.copy(
+                dcontext = DisplayContext().apply {
+                    updateFrom(base.dcontext)
+                    commas = renderCommas
+                }
+            )
+        } to optionErrors
     }
     
     private fun skipWhitespaceAndComments() {
@@ -966,6 +1288,11 @@ class BeancountParser : Parser {
     
     private fun peek(): Token {
         return if (position < tokens.size) tokens[position] else Token.EOF(0, 0)
+    }
+
+    private fun peek(offset: Int): Token {
+        val idx = position + offset
+        return if (idx in tokens.indices) tokens[idx] else Token.EOF(0, 0)
     }
     
     private fun advance(): Token {

@@ -46,8 +46,9 @@ fun validateBalances(
         }
     }
 
-    // Get open directives for currency validation
-    val openMap = entries.filterIsInstance<Open>().associateBy { it.account }
+    // Get open directives for currency validation (use first occurrence, like validateOpenClose)
+    val openMap = entries.filterIsInstance<Open>().groupBy { it.account }
+        .mapValues { (_, opens) -> opens.first() }
 
     for (entry in entries) {
         when (entry) {

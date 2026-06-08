@@ -172,4 +172,51 @@ class IncludeTest {
         assertEquals(3, result.entries.size)
         assertTrue(result.entries.any { it is Transaction })
     }
+
+    @Test
+    fun `should support include directive without date`() {
+        val mainFile = File(tempDir, "main.bean")
+        val includedFile = File(tempDir, "included.bean")
+
+        mainFile.writeText("""
+            option "title" "Main Ledger"
+            2023-01-01 open Assets:Cash USD
+            include "included.bean"
+            2023-01-02 * "Payment"
+              Assets:Cash  50.00 USD
+              Income:Salary
+        """.trimIndent())
+
+        includedFile.writeText("""
+            2023-01-01 open Income:Salary USD
+            2023-01-01 * "Deposit"
+              Assets:Cash  100.00 USD
+              Income:Salary
+        """.trimIndent())
+
+        val result = loadFile(mainFile.absolutePath)
+
+        assertEquals(0, result.errors.size, "Expected no errors: ${result.errors.map { it.message }}")
+        assertTrue(result.entries.none { it is Include }, "Include should be resolved")
+        assertEquals(4, result.entries.size, "Expected 4 entries")
+        assertEquals(2, result.entries.count { it is Transaction })
+    }
+
+    @Test
+    fun `should support plugin directive without date`() {
+        val mainFile = File(tempDir, "main.bean")
+
+        mainFile.writeText("""
+            plugin "beancount.plugins.auto_accounts"
+            2023-01-01 * "Payment"
+              Assets:Cash  50.00 USD
+              Income:Salary
+        """.trimIndent())
+
+        val result = loadFile(mainFile.absolutePath, autoPluginsEnabled = false)
+
+        // auto_accounts plugin should add Open directives for used accounts
+        assertTrue(result.entries.any { it is Transaction })
+        assertTrue(result.entries.any { it is Open }, "auto_accounts plugin should create Open directives")
+    }
 }

@@ -80,3 +80,11 @@ beanquery-temp/
 *~
 .env
 .env.local
+
+# loading env on windows
+load-env.ps1
+
+# kimi settings
+.kimi-home/
+kimi.toml
+start-kimi.ps1

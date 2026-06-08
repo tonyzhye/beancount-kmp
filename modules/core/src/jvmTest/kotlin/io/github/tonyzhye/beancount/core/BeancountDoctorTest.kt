@@ -202,4 +202,64 @@ class BeancountDoctorTest {
         assertTrue(missing.any { it.account == "Assets:Cash" })
         assertTrue(missing.any { it.account == "Equity:Opening-Balances" })
     }
+
+    @Test
+    fun `listAllOptions should return all available options`() {
+        val doctor = BeancountDoctor()
+        val result = doctor.listAllOptions()
+        assertTrue(result.contains("operating_currency"))
+        assertTrue(result.contains("title"))
+        assertTrue(result.contains("Total:"))
+    }
+
+    @Test
+    fun `listOptions should format options`() {
+        val doctor = BeancountDoctor()
+        val options = Options(
+            filename = "test.beancount",
+            title = "Test Ledger",
+            operatingCurrencies = listOf("USD", "EUR"),
+            plugin = listOf(PluginSpec("beancount.plugins.auto_accounts")),
+            pluginProcessingMode = PluginProcessingMode.DEFAULT
+        )
+        val result = doctor.listOptions(options)
+        assertTrue(result.contains("Test Ledger"))
+        assertTrue(result.contains("USD"))
+        assertTrue(result.contains("auto_accounts"))
+    }
+
+    @Test
+    fun `roundtrip should return formatted entries`() {
+        val doctor = BeancountDoctor()
+        val entries = listOf(
+            Open(emptyMap(), LocalDate(2024, 1, 1), "Assets:Bank", listOf("USD")),
+            Transaction(
+                emptyMap(), LocalDate(2024, 1, 2), "*", narration = "Test",
+                postings = listOf(
+                    Posting("Assets:Bank", Amount(Decimal("100"), "USD")),
+                    Posting("Income:Salary", Amount(Decimal("-100"), "USD"))
+                )
+            )
+        )
+        val result = doctor.roundtrip(entries)
+        assertEquals(2, result.entryCount)
+        assertTrue(result.formattedOutput.isNotEmpty())
+    }
+
+    @Test
+    fun `displayContext should build display context`() {
+        val doctor = BeancountDoctor()
+        val entries = listOf(
+            Open(emptyMap(), LocalDate(2024, 1, 1), "Assets:Bank", listOf("USD")),
+            Transaction(
+                emptyMap(), LocalDate(2024, 1, 2), "*", narration = "Test",
+                postings = listOf(
+                    Posting("Assets:Bank", Amount(Decimal("100.00"), "USD")),
+                    Posting("Income:Salary", Amount(Decimal("-100.00"), "USD"))
+                )
+            )
+        )
+        val result = doctor.displayContext(entries)
+        assertTrue(result.isNotEmpty())
+    }
 }

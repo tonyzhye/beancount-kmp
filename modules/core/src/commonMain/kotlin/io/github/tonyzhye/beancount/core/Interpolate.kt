@@ -25,7 +25,10 @@ const val AUTOMATIC_TOLERANCES = "__tolerances__"
  * Check if tolerance was user-specified.
  */
 fun isToleranceUserSpecified(tolerance: Decimal): Boolean {
-    return tolerance.toPlainString().replace("-", "").replace(".", "").length <= MAX_TOLERANCE_DIGITS
+    val plain = tolerance.toPlainString()
+    // Count significant digits only (like Python's tolerance.as_tuple().digits)
+    val stripped = plain.replace("-", "").replace(".", "").trimStart { it == '0' }
+    return stripped.length <= MAX_TOLERANCE_DIGITS
 }
 
 /**
@@ -47,6 +50,8 @@ fun computeResidual(postings: List<Posting>): Inventory {
         if (posting.meta?.get(AUTOMATIC_RESIDUAL) == true) continue
         // Add to total residual balance
         val weight = getWeight(posting)
+        // Skip missing postings (getWeight returns zero/XXX placeholder)
+        if (weight.currency == "XXX" || weight.number.isZero()) continue
         inventory.addAmount(weight)
     }
     return inventory
@@ -63,9 +68,24 @@ fun computeResidual(postings: List<Posting>): Inventory {
  */
 fun inferTolerances(
     postings: List<Posting>,
+    options: Options,
+    mode: String = "max"
+): Map<Currency, Decimal> {
+    return inferTolerances(
+        postings = postings,
+        toleranceMultiplier = options.toleranceMultiplier,
+        useCost = options.inferToleranceFromCost,
+        mode = mode,
+        defaultTolerances = options.toleranceMap
+    )
+}
+
+fun inferTolerances(
+    postings: List<Posting>,
     toleranceMultiplier: Decimal = Decimal("0.5"),
     useCost: Boolean = false,
-    mode: String = "max"
+    mode: String = "max",
+    defaultTolerances: Map<Currency, Decimal> = emptyMap()
 ): Map<Currency, Decimal> {
     require(mode in setOf("max", "min")) { "mode must be 'max' or 'min'" }
     val agg: (Decimal, Decimal) -> Decimal = if (mode == "max") ::maxOf else ::minOf
@@ -77,7 +97,14 @@ fun inferTolerances(
         posting.price?.currency?.let { seenCurrencies.add(it) }
     }
 
+    // Initialize with default tolerances for seen currencies
     val tolerances = mutableMapOf<Currency, Decimal>()
+    for ((currency, tol) in defaultTolerances) {
+        if (currency == "*" || currency in seenCurrencies) {
+            tolerances[currency] = tol
+        }
+    }
+
     val costTolerances = mutableMapOf<Currency, Decimal>()
 
     for (posting in postings) {
@@ -104,11 +131,17 @@ fun inferTolerances(
 
         if (!useCost) continue
 
-        // Compute cost tolerance
+        // Compute cost tolerance for CostSpec
         val cost = posting.cost
-        if (cost != null && cost.numberPer != null && tolerance != null) {
+        if (cost != null && tolerance != null) {
             val costCurrency = cost.currency ?: continue
-            val costTolerance = minOf(tolerance * cost.numberPer, MAXIMUM_TOLERANCE)
+            var costTolerance = MAXIMUM_TOLERANCE
+            if (cost.numberPer != null) {
+                costTolerance = minOf(costTolerance, tolerance * cost.numberPer)
+            }
+            if (cost.numberTotal != null) {
+                costTolerance = minOf(costTolerance, tolerance * cost.numberTotal)
+            }
             costTolerances[costCurrency] = (costTolerances[costCurrency] ?: Decimal.ZERO) + costTolerance
         }
 
@@ -124,6 +157,12 @@ fun inferTolerances(
     // Merge cost tolerances
     for ((currency, tolerance) in costTolerances) {
         tolerances[currency] = if (currency in tolerances) agg(tolerance, tolerances.getValue(currency)) else tolerance
+    }
+
+    // Handle wildcard default: keep "*" in the map for callers that look it up directly
+    val default = tolerances.remove("*") ?: Decimal.ZERO
+    if (default > Decimal.ZERO) {
+        tolerances["*"] = default
     }
 
     return tolerances
@@ -168,6 +207,18 @@ fun fillResidualPosting(entry: Transaction, accountRounding: Account): Transacti
 }
 
 /**
+ * Insert a posting to absorb residual if necessary, using the rounding account
+ * from options.
+ *
+ * @param entry Transaction to modify
+ * @param options Options containing account_rounding setting
+ * @return Modified transaction (or original if no residual)
+ */
+fun fillResidualPosting(entry: Transaction, options: Options): Transaction {
+    return fillResidualPosting(entry, options.accountRounding)
+}
+
+/**
  * Compute the balance of all postings in a list of entries.
  *
  * @param entries List of directives
@@ -186,7 +237,14 @@ fun computeEntriesBalance(
         if (entry is Transaction) {
             for (posting in entry.postings) {
                 if (prefix == null || posting.account.startsWith(prefix)) {
-                    posting.units?.let { totalBalance.addAmount(it) }
+                    posting.units?.let { units ->
+                        val cost = posting.cost?.let { spec ->
+                            if (spec.numberPer != null && spec.currency != null) {
+                                Cost(spec.numberPer, spec.currency, spec.date ?: entry.date, spec.label)
+                            } else null
+                        }
+                        totalBalance.addAmount(units, cost)
+                    }
                 }
             }
         }
@@ -218,7 +276,18 @@ fun computeEntryContext(
             for (posting in entry.postings) {
                 if (posting.account in contextAccounts) {
                     val balance = contextBefore.getOrPut(posting.account) { Inventory() }
-                    posting.units?.let { balance.addAmount(it) }
+                    posting.units?.let { units ->
+                        val cost = posting.cost?.let { spec ->
+                            if (spec.numberPer != null && spec.currency != null) {
+                                Cost(spec.numberPer, spec.currency, spec.date ?: entry.date, spec.label)
+                            } else null
+                        }
+                        if (cost != null) {
+                            balance.addAmount(units, cost)
+                        } else {
+                            balance.addAmount(units)
+                        }
+                    }
                 }
             }
         }
@@ -229,7 +298,18 @@ fun computeEntryContext(
     if (contextEntry is Transaction) {
         for (posting in contextEntry.postings) {
             val balance = contextAfter.getOrPut(posting.account) { Inventory() }
-            posting.units?.let { balance.addAmount(it) }
+            posting.units?.let { units ->
+                val cost = posting.cost?.let { spec ->
+                    if (spec.numberPer != null && spec.currency != null) {
+                        Cost(spec.numberPer, spec.currency, spec.date ?: contextEntry.date, spec.label)
+                    } else null
+                }
+                if (cost != null) {
+                    balance.addAmount(units, cost)
+                } else {
+                    balance.addAmount(units)
+                }
+            }
         }
     }
 
@@ -249,15 +329,25 @@ fun quantizeWithTolerance(
     currency: Currency,
     number: Decimal
 ): Decimal {
-    val tolerance = tolerances[currency] ?: return number
-    val quantum = tolerance * Decimal("2")
+    val tolerance = tolerances[currency] ?: tolerances["*"] ?: return number
+    // Normalize quantum by stripping trailing zeros (like Python's normalize())
+    val quantum = (tolerance * Decimal("2")).let { q ->
+        val plain = q.toPlainString()
+        val normalized = if (plain.contains('.')) {
+            plain.trimEnd { it == '0' }.trimEnd { it == '.' }
+        } else plain
+        Decimal(normalized)
+    }
     return if (isToleranceUserSpecified(quantum)) {
-        // Quantize to the quantum precision
+        // Quantize to the quantum precision (strip trailing zeros like Python's normalize())
         val plainStr = quantum.toPlainString()
         val dotIndex = plainStr.indexOf('.')
-        val scale = if (dotIndex >= 0) plainStr.length - dotIndex - 1 else 0
+        val scale = if (dotIndex >= 0) {
+            val fraction = plainStr.substring(dotIndex + 1).trimEnd { it == '0' }
+            fraction.length
+        } else 0
         if (scale > 0) {
-            number.scaleByPowerOfTen(-scale)
+            number.setScale(scale)
         } else {
             number
         }

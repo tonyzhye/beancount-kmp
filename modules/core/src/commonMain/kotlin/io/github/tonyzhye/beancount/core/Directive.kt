@@ -228,5 +228,6 @@ val ALL_DIRECTIVES = listOf(
     Pad::class, Balance::class, Transaction::class,
     Note::class, Event::class, Query::class,
     Price::class, Document::class, Custom::class,
+    Include::class,
     PushTag::class, PopTag::class, PushMeta::class, PopMeta::class
 )

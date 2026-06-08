@@ -31,7 +31,7 @@ class Lexer(private val input: String) {
         "balance", "pad", "note", "event", "price",
         "document", "query", "custom", "option",
         "plugin", "include", "pushtag", "poptag",
-        "pushmeta", "popmeta"
+        "pushmeta", "popmeta", "strict"
     )
     
     /**

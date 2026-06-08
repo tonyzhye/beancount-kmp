@@ -3,11 +3,13 @@ package io.github.tonyzhye.beancount.loader
 import io.github.tonyzhye.beancount.core.*
 import io.github.tonyzhye.beancount.loader.plugins.AutoAccountsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.BalancePlugin
+import io.github.tonyzhye.beancount.loader.plugins.CheckAverageCostPlugin
 import io.github.tonyzhye.beancount.loader.plugins.CheckClosingPlugin
 import io.github.tonyzhye.beancount.loader.plugins.CheckCommodityPlugin
 import io.github.tonyzhye.beancount.loader.plugins.CheckDrainedPlugin
 import io.github.tonyzhye.beancount.loader.plugins.CloseTreePlugin
 import io.github.tonyzhye.beancount.loader.plugins.CoherentCostPlugin
+import io.github.tonyzhye.beancount.loader.plugins.CommodityAttrPlugin
 import io.github.tonyzhye.beancount.loader.plugins.CurrencyAccountsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.DocumentsPlugin
 import io.github.tonyzhye.beancount.loader.plugins.ImplicitPricesPlugin
@@ -122,6 +124,8 @@ private fun resolvePlugin(moduleName: String, config: String? = null): Beancount
         "beancount.plugins.onecommodity" -> OneCommodityPluginAdapter()
         "beancount.plugins.pedantic" -> PedanticPluginAdapter()
         "beancount.plugins.auto" -> AutoPluginAdapter()
+        "beancount.plugins.check_average_cost" -> CheckAverageCostPluginAdapter(config)
+        "beancount.plugins.commodity_attr" -> CommodityAttrPluginAdapter(config)
         else -> null // Unknown plugin - skip with warning
     }
 }
@@ -347,6 +351,38 @@ private class CloseTreePluginAdapter : BeancountPlugin {
 
     override fun transform(context: PluginContext): PluginResult {
         val (entries, errors) = CloseTreePlugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class CheckAverageCostPluginAdapter(private val config: String? = null) : BeancountPlugin {
+    override val name = "check_average_cost"
+    override val description = "Validate cost basis in unbooked (NONE) transactions"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val plugin = if (config != null) {
+            CheckAverageCostPlugin.withConfig(config)
+        } else {
+            CheckAverageCostPlugin()
+        }
+        val (entries, errors) = plugin.transform(context.entries, context.options)
+        return PluginResult(entries = entries, errors = errors)
+    }
+}
+
+private class CommodityAttrPluginAdapter(private val config: String? = null) : BeancountPlugin {
+    override val name = "commodity_attr"
+    override val description = "Validate Commodity directive attributes"
+    override val phase = PluginPhase.NORMAL
+
+    override fun transform(context: PluginContext): PluginResult {
+        val plugin = if (config != null) {
+            CommodityAttrPlugin.parseConfig(config)
+        } else {
+            CommodityAttrPlugin(emptyMap())
+        }
+        val (entries, errors) = plugin.transform(context.entries, context.options)
         return PluginResult(entries = entries, errors = errors)
     }
 }

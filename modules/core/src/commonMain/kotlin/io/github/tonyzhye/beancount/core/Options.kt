@@ -322,7 +322,11 @@ data class Options(
     val filename: String = "",
     val line: Int = 0,
     val toleranceMap: Map<Currency, Decimal> = emptyMap(),
+    val toleranceMultiplier: Decimal = Decimal("0.5"),
     val inferToleranceFromCost: Boolean = false,
+    val usePreciseInterpolation: Boolean = false,
+    val bookingMethod: Booking = Booking.STRICT,
     val allowDeprecatedNoneForTagsAndLinks: Boolean = false,
-    val insertPythonpath: Boolean = false
+    val insertPythonpath: Boolean = false,
+    val accountRounding: Account = "Equity:Rounding"
 )

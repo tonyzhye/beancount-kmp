@@ -90,7 +90,7 @@ class QueryExecutor(
                 val rowValues = mutableListOf<BqlValue>()
                 for (target in query.targets) {
                     val value = if (target.node is EvalAggregator) {
-                        val aggregator = target.node as EvalAggregator
+                        val aggregator = target.node
                         val accumulator = aggregator.createAccumulator()
                         for (row in group) {
                             accumulator.update(aggregator.operand.evaluate(row))

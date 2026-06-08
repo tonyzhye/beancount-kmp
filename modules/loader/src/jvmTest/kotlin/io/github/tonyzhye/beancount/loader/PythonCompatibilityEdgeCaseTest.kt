@@ -34,10 +34,27 @@ class PythonCompatibilityEdgeCaseTest {
         println("Python entries: ${pythonResult.entryCount}, errors: ${pythonResult.errorCount}")
         println("Kotlin entries: ${kotlinResult.entries.size}, errors: ${kotlinResult.errors.size}")
 
-        // Both should parse successfully with minimal errors
-        assertTrue(
-            kotlinResult.errors.size <= 2,
-            "Kotlin should have at most 2 errors for edge cases ledger, got ${kotlinResult.errors.size}"
+        // Known compatibility differences:
+        // 1. Kotlin parser supports transactions without explicit flags (defaults to '*'),
+        //    while Python v3 reports a ParserSyntaxError for this syntax.
+        //    This makes Kotlin more forgiving and produces 1 extra entry.
+        // 2. Python rejects the no-flag transaction, causing its balance assertion to fail
+        //    (accumulated -130 vs expected -145). Kotlin accepts all transactions, so the
+        //    balance assertion passes correctly (-145 == -145).
+        //
+        // Therefore Kotlin has 18 entries / 0 errors, while Python has 17 entries / 2 errors.
+        // Both behaviors are correct within their respective parsers' rules.
+
+        // Kotlin should parse without errors (more forgiving parser)
+        assertEquals(
+            0, kotlinResult.errors.size,
+            "Kotlin should parse edge cases ledger without errors, got: ${kotlinResult.errors.map { it.message }}"
+        )
+
+        // Kotlin should have 18 entries (including the no-flag transaction)
+        assertEquals(
+            18, kotlinResult.entries.size,
+            "Kotlin should parse 18 entries, got ${kotlinResult.entries.size}"
         )
 
         println("Kotlin errors: ${kotlinResult.errors.map { it.message }}")

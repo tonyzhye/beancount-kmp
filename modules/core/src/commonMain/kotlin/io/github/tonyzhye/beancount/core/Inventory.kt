@@ -116,6 +116,20 @@ class Inventory : Iterable<Position> {
     }
 
     /**
+     * Get all commodity currencies in this inventory.
+     */
+    fun currencies(): Set<String> {
+        return positions.values.map { it.units.currency }.toSet()
+    }
+
+    /**
+     * Get all cost currencies in this inventory.
+     */
+    fun costCurrencies(): Set<String> {
+        return positions.values.mapNotNull { it.cost?.currency }.toSet()
+    }
+
+    /**
      * Get all positions as a list.
      */
     fun getPositions(): List<Position> = positions.values.toList()
@@ -128,6 +142,19 @@ class Inventory : Iterable<Position> {
         return positions.values.filter { position ->
             position.units.currency == commodity && position.costMatches(spec)
         }
+    }
+
+    /**
+     * Return true if this inventory is reduced by the given amount.
+     * A reduction occurs when the inventory has a position of opposite sign
+     * for the same currency.
+     */
+    fun isReducedBy(amount: Amount): Boolean {
+        val positions = getPositions(amount.currency)
+        if (positions.isEmpty()) return false
+        val total = positions.fold(Decimal.ZERO) { acc, pos -> acc + pos.units.number }
+        return (total.isPositive() && amount.number.isNegative()) ||
+               (total.isNegative() && amount.number.isPositive())
     }
 
     /**
@@ -144,7 +171,6 @@ class Inventory : Iterable<Position> {
      *         position before modification (null if newly created or deleted).
      */
     fun addAmount(units: Amount, cost: Cost? = null): Pair<Position?, MatchResult> {
-        require(units.number != null) { "Units must have a non-null number" }
 
         val key = units.currency to cost
         val existing = positions[key]

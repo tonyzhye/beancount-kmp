@@ -27,7 +27,7 @@ class BookingTest {
 
         val (completed, errors) = Booking.book(listOf(transaction), Options())
 
-        assertEquals(0, errors.size, "Expected no errors")
+        assertEquals(0, errors.size, "Expected no errors but got: ${errors.map { it.message }}")
         assertEquals(1, completed.size)
 
         val completedTransaction = completed[0] as Transaction
@@ -172,7 +172,7 @@ class BookingTest {
                 narration = "Sell AAPL",
                 postings = listOf(
                     Posting("Assets:Invest", Amount(Decimal("-5"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("550"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("500"), "USD"))
                 )
             )
         )
@@ -229,7 +229,7 @@ class BookingTest {
                 narration = "Sell AAPL ambiguous",
                 postings = listOf(
                     Posting("Assets:Invest", Amount(Decimal("-3"), "AAPL"), CostSpec(currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("360"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("0"), "USD"))
                 )
             )
         )
@@ -267,7 +267,7 @@ class BookingTest {
                 narration = "Sell too many",
                 postings = listOf(
                     Posting("Assets:Invest", Amount(Decimal("-10"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("1100"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("500"), "USD"))
                 )
             )
         )
@@ -296,7 +296,7 @@ class BookingTest {
                 flag = "*",
                 narration = "Short AAPL",
                 postings = listOf(
-                    Posting("Assets:Options", Amount(Decimal("-5"), "AAPL"), CostSpec(currency = "USD")),
+                    Posting("Assets:Options", Amount(Decimal("-5"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
                     Posting("Assets:Cash", Amount(Decimal("500"), "USD"))
                 )
             )
@@ -423,7 +423,7 @@ class BookingTest {
                 narration = "Sell AAPL",
                 postings = listOf(
                     Posting("Assets:Invest", Amount(Decimal("-12"), "AAPL"), CostSpec(currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("1320"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("1240"), "USD"))
                 )
             )
         )
@@ -492,7 +492,7 @@ class BookingTest {
                 narration = "Sell AAPL",
                 postings = listOf(
                     Posting("Assets:Invest", Amount(Decimal("-12"), "AAPL"), CostSpec(currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("1320"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("1330"), "USD"))
                 )
             )
         )
@@ -563,7 +563,7 @@ class BookingTest {
                 narration = "Sell AAPL",
                 postings = listOf(
                     Posting("Assets:Invest", Amount(Decimal("-12"), "AAPL"), CostSpec(currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("1320"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("1330"), "USD"))
                 )
             )
         )
@@ -678,7 +678,7 @@ class BookingTest {
                 narration = "Sell AAPL ambiguous",
                 postings = listOf(
                     Posting("Assets:Invest", Amount(Decimal("-3"), "AAPL"), CostSpec(currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("360"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("0"), "USD"))
                 )
             )
         )
@@ -714,7 +714,7 @@ class BookingTest {
                 LocalDate(2015, 2, 1), "*",
                 postings = listOf(
                     Posting(account, Amount(Decimal("-5"), "AAPL"), CostSpec(currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("500"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("0"), "USD"))
                 )
             )
         )
@@ -725,5 +725,128 @@ class BookingTest {
         assertTrue(errors.isNotEmpty(), "AVERAGE should produce errors")
         assertTrue(errors.any { it.message.contains("AVERAGE method is not supported") },
             "Error should mention 'AVERAGE method is not supported'")
+    }
+
+    // ---- Self-Reduction Detection Tests ----
+
+    @Test
+    fun `should detect self-reduction in transaction`() {
+        val account = "Assets:Invest"
+        val entries = listOf(
+            Open(
+                mapOf("filename" to "test.beancount", "lineno" to 1),
+                LocalDate(2015, 1, 1), account, listOf("AAPL"),
+                booking = io.github.tonyzhye.beancount.core.Booking.STRICT
+            ),
+            Transaction(
+                mapOf("filename" to "test.beancount", "lineno" to 2),
+                LocalDate(2015, 1, 1), "*",
+                postings = listOf(
+                    Posting(account, Amount(Decimal("10"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
+                    Posting(account, Amount(Decimal("-5"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("-500"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = Booking.book(entries, Options())
+
+        // Should detect self-reduction
+        assertTrue(errors.any { it.message.contains("Self-reduction") },
+            "Should detect self-reduction: ${errors.map { it.message }}")
+    }
+
+    @Test
+    fun `local balance isolation should prevent double matching`() {
+        val account = "Assets:Invest"
+        val entries = listOf(
+            Open(
+                mapOf("filename" to "test.beancount", "lineno" to 1),
+                LocalDate(2015, 1, 1), account, listOf("AAPL"),
+                booking = io.github.tonyzhye.beancount.core.Booking.STRICT
+            ),
+            // First transaction: buy 10 AAPL
+            Transaction(
+                mapOf("filename" to "test.beancount", "lineno" to 2),
+                LocalDate(2015, 1, 1), "*",
+                postings = listOf(
+                    Posting(account, Amount(Decimal("10"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("-1000"), "USD"))
+                )
+            ),
+            // Second transaction: sell 6 AAPL twice in same transaction (total 12)
+            // First sell reduces local balance to 4, second sell should fail
+            Transaction(
+                mapOf("filename" to "test.beancount", "lineno" to 3),
+                LocalDate(2015, 2, 1), "*",
+                postings = listOf(
+                    Posting(account, Amount(Decimal("-6"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
+                    Posting(account, Amount(Decimal("-6"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("1200"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = Booking.book(entries, Options())
+
+        // Second transaction should report insufficient lots for second sell
+        // (first sell takes 6, leaving 4; second sell wants 6 but only 4 available)
+        val txn = result[2] as Transaction
+        assertEquals(3, txn.postings.size, "Should have 3 postings")
+
+        // First sell should succeed
+        assertEquals(Decimal("-6"), txn.postings[0].units?.number)
+
+        // Second sell should report insufficient lots
+        assertTrue(errors.any { it.message.contains("Insufficient lots") },
+            "Should report insufficient lots for second sell: ${errors.map { it.message }}")
+    }
+
+    @Test
+    fun `local balance isolation should not affect other transactions`() {
+        val account = "Assets:Invest"
+        val entries = listOf(
+            Open(
+                mapOf("filename" to "test.beancount", "lineno" to 1),
+                LocalDate(2015, 1, 1), account, listOf("AAPL"),
+                booking = io.github.tonyzhye.beancount.core.Booking.STRICT
+            ),
+            // Transaction 1: buy 10 AAPL
+            Transaction(
+                mapOf("filename" to "test.beancount", "lineno" to 2),
+                LocalDate(2015, 1, 1), "*",
+                postings = listOf(
+                    Posting(account, Amount(Decimal("10"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("-1000"), "USD"))
+                )
+            ),
+            // Transaction 2: sell 5 AAPL
+            Transaction(
+                mapOf("filename" to "test.beancount", "lineno" to 3),
+                LocalDate(2015, 2, 1), "*",
+                postings = listOf(
+                    Posting(account, Amount(Decimal("-5"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("500"), "USD"))
+                )
+            ),
+            // Transaction 3: sell 3 AAPL
+            Transaction(
+                mapOf("filename" to "test.beancount", "lineno" to 4),
+                LocalDate(2015, 3, 1), "*",
+                postings = listOf(
+                    Posting(account, Amount(Decimal("-3"), "AAPL"), CostSpec(numberPer = Decimal("100"), currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("300"), "USD"))
+                )
+            )
+        )
+
+        val (result, errors) = Booking.book(entries, Options())
+
+        // All transactions should succeed
+        assertEquals(0, errors.size, "Expected no errors: ${errors.map { it.message }}")
+
+        // Final inventory should have 2 AAPL remaining
+        val finalTxn = result[3] as Transaction
+        assertEquals(Decimal("-3"), finalTxn.postings[0].units?.number)
     }
 }

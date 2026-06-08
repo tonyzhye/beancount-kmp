@@ -10,6 +10,7 @@ import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import io.github.tonyzhye.beancount.core.HARDCORE_VALIDATIONS
+import io.github.tonyzhye.beancount.loader.LoadTimingsLogger
 import io.github.tonyzhye.beancount.loader.cache.JsonFileCache
 import io.github.tonyzhye.beancount.loader.loadFile
 
@@ -55,6 +56,10 @@ class BeanCheckCommand : CliktCommand(
         }
 
         val startTime = System.currentTimeMillis()
+        val timingEvents = mutableListOf<Pair<String, Long>>()
+        val logger = LoadTimingsLogger { operation, _ ->
+            timingEvents.add(operation to System.currentTimeMillis())
+        }
 
         // Check environment variable and flags for cache configuration
         val disableCache = System.getenv("BEANCOUNT_DISABLE_LOAD_CACHE") != null || noCache
@@ -70,7 +75,9 @@ class BeanCheckCommand : CliktCommand(
         val result = loadFile(
             filename = filename.absolutePath,
             extraValidations = HARDCORE_VALIDATIONS,
-            cache = cache
+            autoPluginsEnabled = auto,
+            cache = cache,
+            logTimings = logger
         )
 
         val loadTime = System.currentTimeMillis() - startTime
@@ -78,6 +85,13 @@ class BeanCheckCommand : CliktCommand(
         if (verbose) {
             echo("Load time: ${loadTime}ms")
             echo("Entries: ${result.entries.size}")
+            // Print per-stage timings
+            var lastTime = startTime
+            for ((operation, time) in timingEvents) {
+                val elapsed = time - lastTime
+                echo("  $operation: ${elapsed}ms")
+                lastTime = time
+            }
         }
 
         if (result.errors.isNotEmpty()) {

@@ -167,7 +167,7 @@ class BqlParser(private val input: String) {
         val keywords = setOf(
             "SELECT", "FROM", "WHERE", "GROUP", "BY", "ORDER", "LIMIT",
             "DISTINCT", "ASC", "DESC", "AS", "AND", "OR", "NOT",
-            "TRUE", "FALSE", "NULL", "OPEN", "CLOSE", "CLEAR",
+            "TRUE", "FALSE", "NULL", "OPEN", "CLOSE", "CLEAR", "ON",
             "HAVING", "IN", "BETWEEN", "PIVOT", "JOURNAL", "DEFINE"
         )
         return value.uppercase() in keywords
@@ -401,7 +401,12 @@ class BqlParser(private val input: String) {
 
         if (consumeKeyword("CLOSE")) {
             if (consumeKeyword("ON")) {
-                closeDate = parseDateLiteral()
+                if (matchKeyword("TRUE")) {
+                    advance()
+                    closeAll = true
+                } else {
+                    closeDate = parseDateLiteral()
+                }
             } else if (matchKeyword("TRUE")) {
                 advance()
                 closeAll = true

@@ -156,7 +156,6 @@ private fun groupPostingsByAccount(
                     is Balance -> entry.account
                     is Note -> entry.account
                     is Document -> entry.account
-                    else -> throw IllegalStateException()
                 }
                 postingsMap
                     .getOrPut(account) { mutableListOf() }
@@ -227,11 +226,11 @@ fun computeBalance(realAccount: RealAccount, leafOnly: Boolean = false): Invento
     return if (leafOnly) {
         realAccount.iterateLeaves()
             .map { it.balance }
-            .fold(Inventory()) { acc, balance -> acc.addInventory(balance); acc }
+            .fold(Inventory()) { acc, balance -> acc.addInventory(balance) }
     } else {
         realAccount.iterate()
             .map { it.balance }
-            .fold(Inventory()) { acc, balance -> acc.addInventory(balance); acc }
+            .fold(Inventory()) { acc, balance -> acc.addInventory(balance) }
     }
 }
 
@@ -302,13 +301,4 @@ data class BalanceIteration(
     val balance: Inventory
 )
 
-/**
- * Extension function to add one inventory to another.
- */
-private fun Inventory.addInventory(other: Inventory): Inventory {
-    val result = this.copy()
-    other.forEach { position ->
-        result.addAmount(position.units, position.cost)
-    }
-    return result
-}
+

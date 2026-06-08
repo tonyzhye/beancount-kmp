@@ -219,6 +219,82 @@ class PluginApiTest {
         assertEquals(options, context.options)
     }
 
+    @Test
+    fun `should register multiple plugins at once`() {
+        val registry = PluginRegistry()
+        val plugin1 = TestPlugin("plugin1")
+        val plugin2 = TestPlugin("plugin2")
+
+        registry.registerAll(plugin1, plugin2)
+
+        assertEquals(2, registry.size)
+        assertTrue(registry.contains("plugin1"))
+        assertTrue(registry.contains("plugin2"))
+    }
+
+    @Test
+    fun `should filter plugins by phase with multiple matches`() {
+        val registry = PluginRegistry()
+        registry.register(TestPlugin("p1", PluginPhase.PRE))
+        registry.register(TestPlugin("p2", PluginPhase.POST))
+        registry.register(TestPlugin("p3", PluginPhase.POST))
+
+        assertEquals(1, registry.pluginsByPhase(PluginPhase.PRE).size)
+        assertEquals(2, registry.pluginsByPhase(PluginPhase.POST).size)
+        assertEquals(0, registry.pluginsByPhase(PluginPhase.NORMAL).size)
+    }
+
+    @Test
+    fun `should clear all plugins`() {
+        val registry = PluginRegistry()
+        registry.register(TestPlugin("test"))
+
+        registry.clear()
+
+        assertTrue(registry.isEmpty())
+        assertEquals(0, registry.size)
+        assertNull(registry.resolve("test"))
+    }
+
+    @Test
+    fun `should return all registered plugins`() {
+        val registry = PluginRegistry()
+        registry.register(TestPlugin("p1"))
+        registry.register(TestPlugin("p2"))
+
+        val all = registry.allPlugins()
+        assertEquals(2, all.size)
+        assertTrue(all.any { it.name == "p1" })
+        assertTrue(all.any { it.name == "p2" })
+    }
+
+    @Test
+    fun `PluginNotFoundException should carry message`() {
+        val ex = PluginNotFoundException("plugin missing")
+        assertEquals("plugin missing", ex.message)
+    }
+
+    @Test
+    fun `PluginException should carry plugin name and cause`() {
+        val cause = RuntimeException("root")
+        val ex = PluginException("failed", "my-plugin", cause)
+        assertEquals("failed", ex.message)
+        assertEquals("my-plugin", ex.pluginName)
+        assertEquals(cause, ex.cause)
+    }
+
+    @Test
+    fun `PluginResult should have correct values count`() {
+        val entries = listOf(
+            Transaction(meta = emptyMap(), date = LocalDate(2024, 1, 1), flag = "*", narration = "Test")
+        )
+        val result = PluginResult(entries, errors = emptyList(), warnings = emptyList())
+
+        assertEquals(1, result.entries.size)
+        assertTrue(result.errors.isEmpty())
+        assertTrue(result.warnings.isEmpty())
+    }
+
     // Test helpers
 
     private class TestPlugin(

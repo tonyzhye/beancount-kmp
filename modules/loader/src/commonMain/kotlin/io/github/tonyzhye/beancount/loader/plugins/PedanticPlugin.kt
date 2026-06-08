@@ -31,11 +31,13 @@ import io.github.tonyzhye.beancount.core.*
  *
  * Plugins included:
  * - CheckCommodityPlugin: Validates all commodities have Commodity directives
+ * - CheckDrainedPlugin: Inserts balance=0 checks before closing accounts
  * - CoherentCostPlugin: Validates cost consistency
  * - LeafOnlyPlugin: Ensures only leaf accounts have postings
  * - NoDuplicatesPlugin: Ensures no duplicate transactions
  * - NoUnusedPlugin: Ensures all open accounts are used
  * - OneCommodityPlugin: Ensures accounts use only one commodity
+ * - SellGainsPlugin: Validates sell gains against prices on lot sales
  * - UniquePricesPlugin: Ensures unique prices per day
  */
 object PedanticPlugin {
@@ -55,6 +57,11 @@ object PedanticPlugin {
         val (entries0, errors0) = CheckCommodityPlugin.transform(currentEntries, options)
         currentEntries = entries0
         allErrors.addAll(errors0)
+
+        // Run check drained validation
+        val (entries0b, errors0b) = CheckDrainedPlugin.transform(currentEntries, options)
+        currentEntries = entries0b
+        allErrors.addAll(errors0b)
 
         // Run coherent cost validation
         val (entries1, errors1) = CoherentCostPlugin.transform(currentEntries, options)
@@ -80,6 +87,11 @@ object PedanticPlugin {
         val (entries5, errors5) = OneCommodityPlugin.transform(currentEntries, options)
         currentEntries = entries5
         allErrors.addAll(errors5)
+
+        // Run sell gains validation
+        val (entries5b, errors5b) = SellGainsPlugin.transform(currentEntries, options)
+        currentEntries = entries5b
+        allErrors.addAll(errors5b)
 
         // Run unique prices validation
         val (entries6, errors6) = UniquePricesPlugin.transform(currentEntries, options)

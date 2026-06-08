@@ -611,4 +611,117 @@ object Beancount {
     fun sameSign(a: Decimal, b: Decimal): Boolean {
         return io.github.tonyzhye.beancount.core.sameSign(a, b)
     }
+
+    // ------------------------------------------------------------------
+    // Basic Operations (tags, links, filtering)
+    // ------------------------------------------------------------------
+
+    /**
+     * Filter entries by tag.
+     */
+    @JvmStatic
+    fun filterByTag(entries: List<Directive>, tag: String): List<Directive> {
+        return io.github.tonyzhye.beancount.core.filterTag(tag, entries)
+    }
+
+    /**
+     * Filter entries by link.
+     */
+    @JvmStatic
+    fun filterByLink(entries: List<Directive>, link: String): List<Directive> {
+        return io.github.tonyzhye.beancount.core.filterLink(link, entries)
+    }
+
+    /**
+     * Group entries by link.
+     */
+    @JvmStatic
+    fun groupEntriesByLink(entries: List<Directive>): Map<String, List<Directive>> {
+        return io.github.tonyzhye.beancount.core.groupEntriesByLink(entries)
+    }
+
+    /**
+     * Find the entry closest to a given filename and line number.
+     */
+    @JvmStatic
+    fun findClosest(entries: List<Directive>, filename: String, lineno: Int): Directive? {
+        return io.github.tonyzhye.beancount.core.findClosest(entries, filename, lineno)
+    }
+
+    /**
+     * Filter entries by date window.
+     */
+    @JvmStatic
+    fun filterByDateWindow(entries: List<Directive>, startDate: LocalDate, endDate: LocalDate): List<Directive> {
+        return entries.filter { it.date >= startDate && it.date < endDate }
+    }
+
+    /**
+     * Remove postings for a specific account from transactions.
+     */
+    @JvmStatic
+    fun removeAccountPostings(entries: List<Directive>, account: Account): List<Directive> {
+        return entries.map { entry ->
+            when (entry) {
+                is Transaction -> entry.copy(
+                    postings = entry.postings.filter { it.account != account }
+                )
+                else -> entry
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Input Hash
+    // ------------------------------------------------------------------
+
+    /**
+     * Compute MD5 hash of a file for cache invalidation.
+     */
+    @JvmStatic
+    fun computeInputHash(filename: String): String? {
+        return io.github.tonyzhye.beancount.loader.computeInputHash(filename)
+    }
+
+    /**
+     * Compute MD5 hash of a string for cache invalidation.
+     */
+    @JvmStatic
+    fun computeContentHash(content: String): String {
+        return io.github.tonyzhye.beancount.loader.computeContentHash(content)
+    }
+
+    // ------------------------------------------------------------------
+    // Data Type Sanity Check
+    // ------------------------------------------------------------------
+
+    /**
+     * Perform sanity check on data types of all entries.
+     */
+    @JvmStatic
+    fun sanityCheckTypes(entries: List<Directive>): List<ValidationError> {
+        return io.github.tonyzhye.beancount.core.sanityCheckTypes(entries)
+    }
+
+    // ------------------------------------------------------------------
+    // Comparison Testing
+    // ------------------------------------------------------------------
+
+    /**
+     * Compare two lists of entries for structural equality.
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun compareEntries(entries1: List<Directive>, entries2: List<Directive>, ignoreMeta: Boolean = true): Boolean {
+        return io.github.tonyzhye.beancount.parser.CmpTest.compareEntries(entries1, entries2, ignoreMeta)
+    }
+
+    /**
+     * Find differences between two lists of entries.
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun findDifferences(entries1: List<Directive>, entries2: List<Directive>, ignoreMeta: Boolean = true): List<String> {
+        return io.github.tonyzhye.beancount.parser.CmpTest.findDifferences(entries1, entries2, ignoreMeta)
+    }
 }

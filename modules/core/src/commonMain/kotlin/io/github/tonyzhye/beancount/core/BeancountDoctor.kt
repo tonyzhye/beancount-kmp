@@ -203,7 +203,7 @@ class BeancountDoctor {
                             dcontext.update(price.number, price.currency)
                         }
                         posting.cost?.numberPer?.let { costNumber ->
-                            dcontext.update(costNumber, posting.cost?.currency ?: "")
+                            dcontext.update(costNumber, posting.cost.currency ?: "")
                         }
                     }
                 }

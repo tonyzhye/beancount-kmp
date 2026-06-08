@@ -140,8 +140,11 @@ fun getAccountOpenClose(entries: List<Directive>): Map<Account, Pair<Open?, Clos
 fun getAllTags(entries: List<Directive>): List<String> {
     val allTags = mutableSetOf<String>()
     for (entry in entries) {
-        if (entry is Transaction && entry.tags.isNotEmpty()) {
-            allTags.addAll(entry.tags)
+        when (entry) {
+            is Transaction -> allTags.addAll(entry.tags)
+            is Note -> entry.tags?.let { allTags.addAll(it) }
+            is Document -> entry.tags?.let { allTags.addAll(it) }
+            else -> {}
         }
     }
     return allTags.sorted()
@@ -174,8 +177,11 @@ fun getAllPayees(entries: List<Directive>): List<String> {
 fun getAllLinks(entries: List<Directive>): List<String> {
     val allLinks = mutableSetOf<String>()
     for (entry in entries) {
-        if (entry is Transaction && entry.links.isNotEmpty()) {
-            allLinks.addAll(entry.links)
+        when (entry) {
+            is Transaction -> allLinks.addAll(entry.links)
+            is Note -> entry.links?.let { allLinks.addAll(it) }
+            is Document -> entry.links?.let { allLinks.addAll(it) }
+            else -> {}
         }
     }
     return allLinks.sorted()
@@ -287,4 +293,109 @@ fun getLeafAccounts(accountNames: List<Account>): List<Account> {
         // An account is a leaf if no other account starts with "account:"
         accountSet.none { it.startsWith("$account:") }
     }
+}
+
+/**
+ * Return a nested map of all unique account components.
+ * Account names are labelled with a special root marker.
+ * Based on beancount.core.getters.get_dict_accounts.
+ *
+ * @param accountNames An iterable of account names.
+ * @return A nested map representing account hierarchy.
+ */
+fun getDictAccounts(accountNames: Iterable<Account>): Map<String, Any> {
+    val ACCOUNT_LABEL = "__root__"
+    val result = mutableMapOf<String, Any>()
+    for (accountName in accountNames) {
+        var nested = result
+        val components = accountSplit(accountName)
+        for (component in components) {
+            val existing = nested[component]
+            if (existing is MutableMap<*, *>) {
+                @Suppress("UNCHECKED_CAST")
+                nested = existing as MutableMap<String, Any>
+            } else {
+                val newMap = mutableMapOf<String, Any>()
+                nested[component] = newMap
+                nested = newMap
+            }
+        }
+        nested[ACCOUNT_LABEL] = true
+    }
+    return result
+}
+
+/**
+ * Get a map of metadata values from a map of entries.
+ * Based on beancount.core.getters.get_values_meta.
+ *
+ * @param nameToEntriesMap A map of keys to directive instances (or null).
+ * @param metaKeys A list of metadata keys to fetch.
+ * @param default The default value to use if metadata is not available.
+ * @return A mapping of the keys to the metadata values.
+ */
+fun getValuesMeta(
+    nameToEntriesMap: Map<String, Directive?>,
+    vararg metaKeys: String,
+    default: Any? = null
+): Map<String, Any?> {
+    return nameToEntriesMap.mapValues { (_, entry) ->
+        if (entry == null || metaKeys.isEmpty()) {
+            default
+        } else {
+            val values = metaKeys.map { key ->
+                entry.meta[key] ?: default
+            }
+            if (values.size == 1) values[0] else values
+        }
+    }
+}
+
+/**
+ * Find the entry closest to the given filename and line number.
+ * Based on beancount.core.data.find_closest.
+ *
+ * @param entries A list of directive instances.
+ * @param filename The filename to search for.
+ * @param lineno The line number to search near.
+ * @return The closest entry, or null if none match the filename.
+ */
+fun findClosest(entries: List<Directive>, filename: String, lineno: Int): Directive? {
+    val matchingEntries = entries.filter {
+        it.meta["filename"] == filename
+    }
+    if (matchingEntries.isEmpty()) return null
+
+    return matchingEntries.minByOrNull {
+        val entryLine = (it.meta["lineno"] as? Int) ?: 0
+        kotlin.math.abs(entryLine - lineno)
+    }
+}
+
+/**
+ * Iterate over entries grouped by date windows.
+ * Based on beancount.core.data.iter_entry_dates.
+ *
+ * Yields pairs of (date, list of entries on that date).
+ *
+ * @param entries A sorted list of directive instances.
+ * @return A list of pairs (date, entries_on_date).
+ */
+fun iterEntryDates(entries: List<Directive>): List<Pair<LocalDate, List<Directive>>> {
+    if (entries.isEmpty()) return emptyList()
+
+    val result = mutableListOf<Pair<LocalDate, List<Directive>>>()
+    var currentDate = entries[0].date
+    var currentEntries = mutableListOf<Directive>()
+
+    for (entry in entries) {
+        if (entry.date != currentDate) {
+            result.add(currentDate to currentEntries)
+            currentDate = entry.date
+            currentEntries = mutableListOf()
+        }
+        currentEntries.add(entry)
+    }
+    result.add(currentDate to currentEntries)
+    return result
 }

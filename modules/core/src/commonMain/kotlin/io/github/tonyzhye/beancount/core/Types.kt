@@ -47,6 +47,12 @@ expect class Decimal : Comparable<Decimal> {
      */
     fun truncate(): Decimal
     
+    /**
+     * Returns a Decimal rounded to the specified number of decimal places
+     * using HALF_UP rounding mode.
+     */
+    fun setScale(newScale: Int): Decimal
+    
     override fun compareTo(other: Decimal): Int
     
     companion object {

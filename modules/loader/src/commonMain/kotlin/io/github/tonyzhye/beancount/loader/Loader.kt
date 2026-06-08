@@ -6,6 +6,7 @@ import io.github.tonyzhye.beancount.parser.BeancountParser
 import io.github.tonyzhye.beancount.parser.Booking
 import io.github.tonyzhye.beancount.parser.Parser
 import java.io.File
+import java.security.MessageDigest
 
 /**
  * Timing logger interface for load operations.
@@ -149,13 +150,38 @@ private fun loadFileInternal(
 
 /**
  * Merge options from included files into the base options.
+ * Based on beancount.loader.aggregate_options_map.
+ *
+ * Merging rules:
+ * - Title: included overrides base if non-empty
+ * - Operating currencies: union of both lists, preserving order
+ * - Documents: concatenate lists
+ * - Plugins: concatenate lists
+ * - Display context: merge both contexts
+ * - Tolerance map: merge both maps
  */
 private fun mergeOptions(base: Options, included: Options): Options {
+    val mergedDcontext = DisplayContext().apply {
+        updateFrom(base.dcontext)
+        updateFrom(included.dcontext)
+    }
+
+    val mergedToleranceMap = base.toleranceMap.toMutableMap().apply {
+        putAll(included.toleranceMap)
+    }
+
     return base.copy(
         title = included.title.takeIf { it.isNotEmpty() } ?: base.title,
-        operatingCurrencies = base.operatingCurrencies + included.operatingCurrencies,
+        operatingCurrencies = (base.operatingCurrencies + included.operatingCurrencies).distinct(),
         documents = base.documents + included.documents,
-        plugin = base.plugin + included.plugin
+        include = base.include + included.include,
+        plugin = base.plugin + included.plugin,
+        dcontext = mergedDcontext,
+        toleranceMap = mergedToleranceMap,
+        toleranceMultiplier = included.toleranceMultiplier.takeIf { it != Decimal("0.5") } ?: base.toleranceMultiplier,
+        inferToleranceFromCost = base.inferToleranceFromCost || included.inferToleranceFromCost,
+        allowDeprecatedNoneForTagsAndLinks = base.allowDeprecatedNoneForTagsAndLinks || included.allowDeprecatedNoneForTagsAndLinks,
+        insertPythonpath = base.insertPythonpath || included.insertPythonpath
     )
 }
 
@@ -267,4 +293,35 @@ private fun resolveIncludes(
     }
 
     return Triple(resolvedEntries, errors, mergedOptions)
+}
+
+/**
+ * Compute an MD5 hash of the input file contents for cache invalidation detection.
+ * Based on beancount.loader.compute_input_hash.
+ *
+ * @param filename The name of the file to hash.
+ * @return A hex string of the MD5 hash, or null if the file cannot be read.
+ */
+fun computeInputHash(filename: String): String? {
+    return try {
+        val file = File(filename)
+        if (!file.exists()) return null
+        val digest = MessageDigest.getInstance("MD5")
+        digest.update(file.readBytes())
+        digest.digest().joinToString("") { "%02x".format(it) }
+    } catch (e: Exception) {
+        null
+    }
+}
+
+/**
+ * Compute an MD5 hash of a string content for cache invalidation detection.
+ *
+ * @param content The string content to hash.
+ * @return A hex string of the MD5 hash.
+ */
+fun computeContentHash(content: String): String {
+    val digest = MessageDigest.getInstance("MD5")
+    digest.update(content.toByteArray(Charsets.UTF_8))
+    return digest.digest().joinToString("") { "%02x".format(it) }
 }

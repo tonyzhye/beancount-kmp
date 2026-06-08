@@ -105,7 +105,7 @@ fun main() {
     }
     
     // Calculate averages
-    val resultsWithSpeedup = results.filter { it.speedup != null && it.speedup!! < Double.POSITIVE_INFINITY }
+    val resultsWithSpeedup = results.filter { it.speedup != null && it.speedup < Double.POSITIVE_INFINITY }
     if (resultsWithSpeedup.isNotEmpty()) {
         val avgSpeedup = resultsWithSpeedup.map { it.speedup!! }.average()
         println("-".repeat(80))

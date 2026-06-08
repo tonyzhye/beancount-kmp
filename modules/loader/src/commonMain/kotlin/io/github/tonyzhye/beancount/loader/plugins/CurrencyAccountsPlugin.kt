@@ -151,7 +151,7 @@ object CurrencyAccountsPlugin {
             var totalNumber = Decimal.ZERO
             for (posting in postings) {
                 val weight = getWeight(posting)
-                if (weight != null && weight.currency == currency) {
+                if (weight.currency == currency) {
                     totalNumber += weight.number
                 }
             }

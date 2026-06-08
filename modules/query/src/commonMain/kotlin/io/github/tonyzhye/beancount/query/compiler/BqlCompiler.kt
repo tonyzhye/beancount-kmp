@@ -17,7 +17,7 @@ class BqlCompiler(private val table: io.github.tonyzhye.beancount.query.tables.T
      * Compile a complete query.
      */
     fun compileQuery(query: AstQuery): CompiledQuery {
-        val targetNodes = if (query.targets.any { it.expression is AstIdentifier && (it.expression as AstIdentifier).name == "*" }) {
+        val targetNodes = if (query.targets.any { it.expression is AstIdentifier && it.expression.name == "*" }) {
             // Expand wildcard to all wildcard columns
             table.wildcardColumns.map { colName ->
                 val col = table.columns[colName]!!

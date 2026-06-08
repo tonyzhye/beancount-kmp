@@ -227,4 +227,14 @@ class InventoryTest {
         assertEquals(createAmount("5", "AAPL"), inv.getPositions()[1].units)
         assertEquals("USD", inv.getPositions()[1].cost?.currency)
     }
+
+    @Test
+    fun `costMatches should match cost spec`() {
+        val pos = Position(createAmount("10", "AAPL"), createCost("150", "USD"))
+        val matchingSpec = CostSpec(Decimal("150"), null, "USD", null, null)
+        val nonMatchingSpec = CostSpec(Decimal("200"), null, "USD", null, null)
+
+        assertTrue(pos.costMatches(matchingSpec))
+        assertFalse(pos.costMatches(nonMatchingSpec))
+    }
 }

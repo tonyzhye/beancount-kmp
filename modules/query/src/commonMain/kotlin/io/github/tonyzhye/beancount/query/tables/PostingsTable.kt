@@ -97,26 +97,31 @@ class PostingsTable(
         put("cost_number", SimpleColumn(BqlType.Decimal) {
             val posting = it.posting
             val cost = posting?.cost
-            if (cost != null && cost is Cost) BqlDecimalValue(cost.number) else BqlNullValue()
+            val numberPer = cost?.numberPer
+            if (numberPer != null) BqlDecimalValue(numberPer) else BqlNullValue()
         })
         put("cost_currency", SimpleColumn(BqlType.String) {
             val posting = it.posting
             val cost = posting?.cost
-            if (cost != null && cost is Cost) BqlStringValue(cost.currency) else BqlNullValue()
+            val currency = cost?.currency
+            if (currency != null) BqlStringValue(currency) else BqlNullValue()
         })
         put("cost_date", SimpleColumn(BqlType.Date) {
             val posting = it.posting
             val cost = posting?.cost
-            if (cost != null && cost is Cost) BqlDateValue(cost.date) else BqlNullValue()
+            val date = cost?.date
+            if (date != null) BqlDateValue(date) else BqlNullValue()
         })
         put("cost_label", SimpleColumn(BqlType.String) {
             val posting = it.posting
             val cost = posting?.cost
-            if (cost != null && cost is Cost) BqlStringValue(cost.label ?: "") else BqlNullValue()
+            val label = cost?.label
+            if (cost != null) BqlStringValue(label ?: "") else BqlNullValue()
         })
         put("position", SimpleColumn(BqlType.Position) {
             val posting = it.posting
-            BqlPositionValue(Position(posting!!.units!!, posting.cost as? Cost))
+            val units = posting?.units
+            if (units != null) BqlPositionValue(Position(units, null)) else BqlNullValue()
         })
         put("price", SimpleColumn(BqlType.Amount) {
             val posting = it.posting
@@ -201,8 +206,10 @@ class BalanceColumn : Column {
         val postingsContext = context as PostingsRowContext
         if (postingsContext.rowid != lastRowid) {
             postingsContext.balance = postingsContext.balance.copy()
-            val posting = postingsContext.posting!!
-            postingsContext.balance.addPosition(Position(posting.units!!, posting.cost as? Cost))
+            val units = postingsContext.posting.units
+            if (units != null) {
+                postingsContext.balance.addPosition(Position(units, null))
+            }
             lastRowid = postingsContext.rowid
         }
         return BqlInventoryValue(postingsContext.balance.copy())

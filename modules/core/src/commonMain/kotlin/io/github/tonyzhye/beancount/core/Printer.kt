@@ -318,7 +318,7 @@ private class EntryPrinter(
         entry.tags.sorted().forEach { parts.add("#$it") }
         entry.links.sorted().forEach { parts.add("^$it") }
 
-        val flagStr = entry.flag?.let { "$it " } ?: ""
+        val flagStr = entry.flag.let { "$it " }
         writer.write("${entry.date} ${flagStr}${parts.joinToString(" ")}\n")
 
         // Metadata

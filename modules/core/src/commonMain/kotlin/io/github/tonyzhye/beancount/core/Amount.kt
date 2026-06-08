@@ -35,7 +35,8 @@ data class CostSpec(
     val currency: Currency? = null,
     val date: LocalDate? = null,
     val label: String? = null,
-    val mergeCost: Boolean = false
+    val mergeCost: Boolean = false,
+    val missingFields: Set<String> = emptySet()
 )
 
 /**
@@ -46,11 +47,7 @@ data class CostSpec(
 data class Position(
     val units: Amount,
     val cost: Cost? = null
-) {
-    init {
-        require(units.number != null) { "Position units must have a non-null number" }
-    }
-}
+)
 
 /**
  * Posting represents a single leg of a transaction.
@@ -64,7 +61,8 @@ data class Posting(
     val cost: CostSpec? = null,
     val price: Amount? = null,
     val flag: Flag? = null,
-    val meta: Meta? = null
+    val meta: Meta? = null,
+    val missingPriceNumber: Boolean = false
 )
 
 /**

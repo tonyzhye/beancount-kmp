@@ -34,7 +34,7 @@ class PythonCompatibilityBookingTest {
             )
         )
 
-    private fun createSell(account: String, units: String, date: LocalDate, costSpec: CostSpec = CostSpec(currency = "USD")) =
+    private fun createSell(account: String, units: String, date: LocalDate, costSpec: CostSpec = CostSpec(currency = "USD"), cash: String = "0") =
         Transaction(
             meta = mapOf("filename" to "test.beancount", "lineno" to 1),
             date = date,
@@ -42,7 +42,7 @@ class PythonCompatibilityBookingTest {
             narration = "Sell",
             postings = listOf(
                 Posting(account, Amount(Decimal("-$units"), "HOOL"), costSpec),
-                Posting("Assets:Cash", Amount(Decimal("1000"), "USD"))  // dummy cash amount
+                Posting("Assets:Cash", Amount(Decimal(cash), "USD"))
             )
         )
 
@@ -61,7 +61,7 @@ class PythonCompatibilityBookingTest {
 
         val (result, errors) = Booking.book(entries, Options())
 
-        assertEquals(0, errors.size)
+        assertEquals(0, errors.size, "Expected no errors but got: ${errors.map { it.message }}")
 
         // Check final inventory still has all 3 lots
         val finalTxn = result[4] as Transaction
@@ -76,12 +76,12 @@ class PythonCompatibilityBookingTest {
             createBuy(account, "5", "111.11", date = LocalDate(2015, 10, 2)),
             createBuy(account, "4", "100.00", date = LocalDate(2015, 10, 1)),
             createBuy(account, "6", "122.22", date = LocalDate(2015, 10, 3)),
-            createSell(account, "2", date = LocalDate(2015, 2, 22))
+            createSell(account, "2", date = LocalDate(2015, 2, 22), cash = "200.00")
         )
 
         val (result, errors) = Booking.book(entries, Options())
 
-        assertEquals(0, errors.size)
+        assertEquals(0, errors.size, "Expected no errors but got: ${errors.map { it.message }}")
 
         val sellTxn = result[4] as Transaction
         val sellPostings = sellTxn.postings.filter { it.account == account }
@@ -100,12 +100,12 @@ class PythonCompatibilityBookingTest {
             createBuy(account, "5", "111.11", date = LocalDate(2015, 10, 2)),
             createBuy(account, "4", "100.00", date = LocalDate(2015, 10, 1)),
             createBuy(account, "6", "122.22", date = LocalDate(2015, 10, 3)),
-            createSell(account, "4", date = LocalDate(2015, 2, 22))
+            createSell(account, "4", date = LocalDate(2015, 2, 22), cash = "400.00")
         )
 
         val (result, errors) = Booking.book(entries, Options())
 
-        assertEquals(0, errors.size)
+        assertEquals(0, errors.size, "Expected no errors but got: ${errors.map { it.message }}")
 
         val sellTxn = result[4] as Transaction
         val sellPostings = sellTxn.postings.filter { it.account == account }
@@ -124,12 +124,12 @@ class PythonCompatibilityBookingTest {
             createBuy(account, "5", "111.11", date = LocalDate(2015, 10, 2)),
             createBuy(account, "4", "100.00", date = LocalDate(2015, 10, 1)),
             createBuy(account, "6", "122.22", date = LocalDate(2015, 10, 3)),
-            createSell(account, "7", date = LocalDate(2015, 2, 22))
+            createSell(account, "7", date = LocalDate(2015, 2, 22), cash = "733.33")
         )
 
         val (result, errors) = Booking.book(entries, Options())
 
-        assertEquals(0, errors.size)
+        assertEquals(0, errors.size, "Expected no errors but got: ${errors.map { it.message }}")
 
         val sellTxn = result[4] as Transaction
         val sellPostings = sellTxn.postings.filter { it.account == account }
@@ -150,12 +150,12 @@ class PythonCompatibilityBookingTest {
             createBuy(account, "5", "111.11", date = LocalDate(2015, 10, 2)),
             createBuy(account, "4", "100.00", date = LocalDate(2015, 10, 1)),
             createBuy(account, "6", "122.22", date = LocalDate(2015, 10, 3)),
-            createSell(account, "9", date = LocalDate(2015, 2, 22))
+            createSell(account, "9", date = LocalDate(2015, 2, 22), cash = "955.55")
         )
 
         val (result, errors) = Booking.book(entries, Options())
 
-        assertEquals(0, errors.size)
+        assertEquals(0, errors.size, "Expected no errors but got: ${errors.map { it.message }}")
 
         val sellTxn = result[4] as Transaction
         val sellPostings = sellTxn.postings.filter { it.account == account }
@@ -176,12 +176,12 @@ class PythonCompatibilityBookingTest {
             createBuy(account, "5", "111.11", date = LocalDate(2015, 10, 2)),
             createBuy(account, "4", "100.00", date = LocalDate(2015, 10, 1)),
             createBuy(account, "6", "122.22", date = LocalDate(2015, 10, 3)),
-            createSell(account, "12", date = LocalDate(2015, 2, 22))
+            createSell(account, "12", date = LocalDate(2015, 2, 22), cash = "1322.21")
         )
 
         val (result, errors) = Booking.book(entries, Options())
 
-        assertEquals(0, errors.size)
+        assertEquals(0, errors.size, "Expected no errors but got: ${errors.map { it.message }}")
 
         val sellTxn = result[4] as Transaction
         val sellPostings = sellTxn.postings.filter { it.account == account }
@@ -206,12 +206,12 @@ class PythonCompatibilityBookingTest {
             createBuy(account, "5", "111.11", date = LocalDate(2015, 10, 2)),
             createBuy(account, "4", "100.00", date = LocalDate(2015, 10, 1)),
             createBuy(account, "6", "122.22", date = LocalDate(2015, 10, 3)),
-            createSell(account, "2", date = LocalDate(2015, 2, 22))
+            createSell(account, "2", date = LocalDate(2015, 2, 22), cash = "244.44")
         )
 
         val (result, errors) = Booking.book(entries, Options())
 
-        assertEquals(0, errors.size)
+        assertEquals(0, errors.size, "Expected no errors but got: ${errors.map { it.message }}")
 
         val sellTxn = result[4] as Transaction
         val sellPostings = sellTxn.postings.filter { it.account == account }
@@ -230,12 +230,12 @@ class PythonCompatibilityBookingTest {
             createBuy(account, "5", "111.11", date = LocalDate(2015, 10, 2)),
             createBuy(account, "4", "100.00", date = LocalDate(2015, 10, 1)),
             createBuy(account, "6", "122.22", date = LocalDate(2015, 10, 3)),
-            createSell(account, "6", date = LocalDate(2015, 2, 22))
+            createSell(account, "6", date = LocalDate(2015, 2, 22), cash = "733.32")
         )
 
         val (result, errors) = Booking.book(entries, Options())
 
-        assertEquals(0, errors.size)
+        assertEquals(0, errors.size, "Expected no errors but got: ${errors.map { it.message }}")
 
         val sellTxn = result[4] as Transaction
         val sellPostings = sellTxn.postings.filter { it.account == account }
@@ -254,12 +254,12 @@ class PythonCompatibilityBookingTest {
             createBuy(account, "5", "111.11", date = LocalDate(2015, 10, 2)),
             createBuy(account, "4", "100.00", date = LocalDate(2015, 10, 1)),
             createBuy(account, "6", "122.22", date = LocalDate(2015, 10, 3)),
-            createSell(account, "8", date = LocalDate(2015, 2, 22))
+            createSell(account, "8", date = LocalDate(2015, 2, 22), cash = "955.54")
         )
 
         val (result, errors) = Booking.book(entries, Options())
 
-        assertEquals(0, errors.size)
+        assertEquals(0, errors.size, "Expected no errors but got: ${errors.map { it.message }}")
 
         val sellTxn = result[4] as Transaction
         val sellPostings = sellTxn.postings.filter { it.account == account }
@@ -302,7 +302,7 @@ class PythonCompatibilityBookingTest {
                     Posting(account, Amount(Decimal("-40"), "HOOL"), CostSpec(currency = "USD")),
                     Posting(account, Amount(Decimal("-35"), "HOOL"), CostSpec(currency = "USD")),
                     Posting(account, Amount(Decimal("-30"), "HOOL"), CostSpec(currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("10000"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("12120"), "USD"))
                 )
             )
         )
@@ -337,7 +337,7 @@ class PythonCompatibilityBookingTest {
     // ---- Python: TestStrict ----
 
     @Test
-    fun `STRICT should allow exact total match of ambiguous lots`() {
+    fun `STRICT should report error for ambiguous matches`() {
         val account = "Assets:Account"
         val entries = listOf(
             createOpen(account, io.github.tonyzhye.beancount.core.Booking.STRICT),
@@ -350,7 +350,7 @@ class PythonCompatibilityBookingTest {
                     Posting(account, Amount(Decimal("7"), "HOOL"), CostSpec(numberPer = Decimal("115.00"), currency = "USD", date = LocalDate(2016, 1, 15))),
                     Posting(account, Amount(Decimal("4"), "HOOL"), CostSpec(numberPer = Decimal("115.00"), currency = "USD", date = LocalDate(2016, 1, 16))),
                     Posting(account, Amount(Decimal("3"), "HOOL"), CostSpec(numberPer = Decimal("117.00"), currency = "USD", date = LocalDate(2016, 1, 15))),
-                    Posting("Assets:Cash", Amount(Decimal("-2006"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("-1616"), "USD"))
                 )
             ),
             Transaction(
@@ -359,21 +359,18 @@ class PythonCompatibilityBookingTest {
                 flag = "*",
                 narration = "Sell",
                 postings = listOf(
-                    Posting(account, Amount(Decimal("-11"), "HOOL"), CostSpec(numberPer = Decimal("115.00"), currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("1000"), "USD"))
+                    Posting(account, Amount(Decimal("-10"), "HOOL"), CostSpec(numberPer = Decimal("115.00"), currency = "USD")),
+                    Posting("Assets:Cash", Amount(Decimal("1150"), "USD"))
                 )
             )
         )
 
         val (result, errors) = Booking.book(entries, Options())
 
-        // STRICT: 11 matches the total of 7+4=11 at 115.00, should succeed
-        assertEquals(0, errors.size, "Expected no errors: ${errors.map { it.message }}")
-
-        val sellTxn = result[2] as Transaction
-        val sellPostings = sellTxn.postings.filter { it.account == account }
-
-        assertEquals(2, sellPostings.size)
+        // Python v3: STRICT with multiple matching lots should report ambiguous match error
+        // even if total of all matches equals required amount
+        assertTrue(errors.any { it.message.contains("Ambiguous matches") },
+            "Expected ambiguous match error: ${errors.map { it.message }}")
     }
 
     @Test
@@ -399,7 +396,7 @@ class PythonCompatibilityBookingTest {
                 postings = listOf(
                     Posting(account, Amount(Decimal("-4"), "HOOL"), CostSpec(numberPer = Decimal("115.00"), currency = "USD")),
                     Posting(account, Amount(Decimal("-4"), "HOOL"), CostSpec(numberPer = Decimal("115.00"), currency = "USD")),
-                    Posting("Assets:Cash", Amount(Decimal("1000"), "USD"))
+                    Posting("Assets:Cash", Amount(Decimal("920"), "USD"))
                 )
             )
         )
