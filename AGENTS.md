@@ -251,8 +251,8 @@ For multi-step tasks, state a brief plan:
 ```
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
-### 5. Git Commit Rules
-- **Do not auto-commit** - Never proactively execute `git commit` or `git push`
-- **Do not ask about committing** - Do not proactively ask the user if they want to commit code
-- **Wait for explicit request** - Only execute commit operations when the user explicitly requests "commit"
-- User explicitly said: "I will ask when needed"
+### 5. Git Commit Rules (Strict)
+- **NEVER auto-commit** - Do NOT proactively execute `git commit`, `git push`, or any git mutation.
+- **NEVER ask about committing** - Do NOT ask "do you want to commit?" or similar.
+- **Wait for EXPLICIT request** - Only run `git commit` when the user explicitly says words like "commit", "提交", "git commit", etc.
+- **No exceptions** - Even if changes seem complete or urgent, still wait for the user's explicit instruction to commit.
