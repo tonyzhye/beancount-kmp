@@ -70,6 +70,7 @@ yarn.lock
 # Test outputs
 *.output
 *.picklecache
+*.kcache
 
 # Temporary Python reference clones
 beanquery-temp/
