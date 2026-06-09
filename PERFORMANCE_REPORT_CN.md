@@ -93,7 +93,7 @@ Kotlin 展示了**相对于 Python 更好的线性扩展性**。
 | `SELECT date, account, position, balance WHERE account ~ "Expenses"` | 30.7 | 19 | **1.6x** |
 | `SELECT date, type, flag FROM entries` | — | 9 | — |
 
-**观察**: 对于简单的表扫描（`FROM entries`），Kotlin 非常快。对于 `WHERE account ~` 正则过滤，Python 的成熟正则引擎目前优于 Kotlin 的实现。然而，对于带有账户过滤的 `position` / `balance` 列投影，Kotlin 具有竞争力。
+**观察**: 对于简单的表扫描（`FROM entries`），Kotlin 非常快。对于 `WHERE account ~` 正则过滤，Python 的正则引擎目前优于 Kotlin 的实现。这主要是因为 Python 的 `re` 模块使用 C 语言实现，即使在面对 JVM 正则时也能保持优秀的基础匹配性能。然而，对于带有账户过滤的 `position` / `balance` 列投影，Kotlin 具有竞争力。
 
 ---
 

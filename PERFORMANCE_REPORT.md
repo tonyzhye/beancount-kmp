@@ -93,7 +93,7 @@ Throughput degradation from 256KB → 1MB: **33%** (ratio 0.67), well above the 
 | `SELECT date, account, position, balance WHERE account ~ "Expenses"` | 30.7 | 19 | **1.6x** |
 | `SELECT date, type, flag FROM entries` | — | 9 | — |
 
-**Observation**: For simple table scans (`FROM entries`), Kotlin is very fast. For `WHERE account ~` regex filtering, Python's mature regex engine currently outperforms Kotlin's implementation. However, for `position` / `balance` column projections with account filtering, Kotlin is competitive.
+**Observation**: For simple table scans (`FROM entries`), Kotlin is very fast. For `WHERE account ~` regex filtering, Python's regex engine currently outperforms Kotlin's implementation. This is largely because Python's `re` module is implemented in C, giving it strong baseline matching performance even against JVM regex. However, for `position` / `balance` column projections with account filtering, Kotlin is competitive.
 
 ---
 
