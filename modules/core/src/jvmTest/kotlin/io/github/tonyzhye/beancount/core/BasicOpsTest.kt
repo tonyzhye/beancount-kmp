@@ -66,49 +66,37 @@ class BasicOpsTest {
     }
 
     @Test
-    fun `filterByTag should return entries with matching tags`() {
+    fun `filterTag should return entries with matching tags`() {
         val tx1 = createTransaction(tags = setOf("food", "monthly"))
         val tx2 = createTransaction(tags = setOf("travel"))
         val tx3 = createTransaction(tags = emptySet())
 
         val entries = listOf(tx1, tx2, tx3)
-        val filtered = filterByTag(entries, setOf("food"))
+        val filtered = filterTag("food", entries)
 
         assertEquals(1, filtered.size)
         assertEquals(tx1, filtered[0])
     }
 
     @Test
-    fun `filterByTag should return entries with any matching tag`() {
-        val tx1 = createTransaction(tags = setOf("food"))
-        val tx2 = createTransaction(tags = setOf("travel"))
-        val tx3 = createTransaction(tags = setOf("food", "travel"))
-
-        val entries = listOf(tx1, tx2, tx3)
-        val filtered = filterByTag(entries, setOf("food", "travel"))
-
-        assertEquals(3, filtered.size)
-    }
-
-    @Test
-    fun `filterByTag should include notes with tags`() {
+    fun `filterTag should include notes with tags`() {
         val tx = createTransaction(tags = setOf("food"))
         val note = createNote(tags = setOf("important"))
 
         val entries = listOf(tx, note)
-        val filtered = filterByTag(entries, setOf("important"))
+        val filtered = filterTag("important", entries)
 
         assertEquals(1, filtered.size)
         assertTrue(filtered[0] is Note)
     }
 
     @Test
-    fun `filterByLink should return entries with matching links`() {
+    fun `filterLink should return entries with matching links`() {
         val tx1 = createTransaction(links = setOf("invoice-2024-001"))
         val tx2 = createTransaction(links = setOf("invoice-2024-002"))
 
         val entries = listOf(tx1, tx2)
-        val filtered = filterByLink(entries, setOf("invoice-2024-001"))
+        val filtered = filterLink("invoice-2024-001", entries)
 
         assertEquals(1, filtered.size)
         assertEquals(tx1, filtered[0])
@@ -165,35 +153,20 @@ class BasicOpsTest {
     }
 
     @Test
-    fun `findClosest should find closest entry to date`() {
-        val tx1 = createTransaction().copy(date = LocalDate(2024, 1, 1))
-        val tx2 = createTransaction().copy(date = LocalDate(2024, 6, 1))
-        val tx3 = createTransaction().copy(date = LocalDate(2024, 12, 1))
+    fun `findClosest should find closest entry by filename and lineno`() {
+        val tx1 = createTransaction().copy(meta = mapOf("filename" to "test.beancount", "lineno" to 10))
+        val tx2 = createTransaction().copy(meta = mapOf("filename" to "test.beancount", "lineno" to 25))
+        val tx3 = createTransaction().copy(meta = mapOf("filename" to "test.beancount", "lineno" to 50))
 
-        val closest = findClosest(listOf(tx1, tx2, tx3), LocalDate(2024, 5, 15))
+        val closest = findClosest(listOf(tx1, tx2, tx3), "test.beancount", 24)
         assertEquals(tx2, closest)
-    }
-
-    @Test
-    fun `filterByDateWindow should return entries in range`() {
-        val tx1 = createTransaction().copy(date = LocalDate(2024, 1, 1))
-        val tx2 = createTransaction().copy(date = LocalDate(2024, 6, 1))
-        val tx3 = createTransaction().copy(date = LocalDate(2024, 12, 1))
-
-        val filtered = filterByDateWindow(
-            listOf(tx1, tx2, tx3),
-            LocalDate(2024, 3, 1),
-            LocalDate(2024, 9, 1)
-        )
-        assertEquals(1, filtered.size)
-        assertEquals(tx2, filtered[0])
     }
 
     @Test
     fun `removeAccountPostings should remove postings for account`() {
         val tx = createTransaction()
         val entries = listOf(tx)
-        val filtered = removeAccountPostings(entries, "Income:Salary")
+        val filtered = removeAccountPostings("Income:Salary", entries)
 
         val result = filtered[0] as Transaction
         assertEquals(1, result.postings.size)

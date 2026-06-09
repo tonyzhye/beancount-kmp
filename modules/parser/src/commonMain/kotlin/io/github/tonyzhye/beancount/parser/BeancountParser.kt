@@ -344,6 +344,7 @@ class BeancountParser : Parser {
         // Parse postings
         val postings = mutableListOf<Posting>()
 
+        skipWhitespaceAndComments()
         while (peek() is Token.INDENT || peek() is Token.ACCOUNT || peek() is Token.FLAG) {
             if (peek() is Token.INDENT) {
                 consume(Token.INDENT::class)
@@ -352,6 +353,9 @@ class BeancountParser : Parser {
             val posting = parsePosting()
             if (posting != null) {
                 postings.add(posting)
+            } else {
+                // Invalid posting — stop parsing postings for this transaction
+                break
             }
 
             skipWhitespaceAndComments()
@@ -378,6 +382,13 @@ class BeancountParser : Parser {
         }
 
         val account = parseAccount()
+        if (account.isEmpty()) {
+            // Invalid posting — skip remaining tokens on this line to avoid cascade errors
+            while (!isAtEnd() && peek() !is Token.EOL) {
+                advance()
+            }
+            return null
+        }
         skipWhitespaceAndComments()
 
         // Parse amount (optional)
@@ -459,8 +470,10 @@ class BeancountParser : Parser {
         val missingFields = mutableSetOf<String>()
 
         // Check for merge flag "*"
-        if (peek() is Token.ASTERISK) {
-            consume(Token.ASTERISK::class)
+        // Lexer emits FLAG("*") for asterisk, so accept both ASTERISK and FLAG("*").
+        val mergeToken = peek()
+        if (mergeToken is Token.ASTERISK || (mergeToken is Token.FLAG && mergeToken.value == "*")) {
+            advance()
             mergeCost = true
             skipWhitespaceAndComments()
         }
@@ -1062,27 +1075,42 @@ class BeancountParser : Parser {
     /**
      * Parse optional metadata (indented key-value pairs).
      * Returns a map of metadata entries.
+     *
+     * Uses look-ahead to avoid consuming tokens that don't belong to metadata
+     * (e.g., next posting's indent or next directive's date).
      */
     private fun parseMetadata(): Meta {
         val meta = mutableMapOf<String, Any>()
 
-        // Metadata lines start with indentation and have key: value format
         while (true) {
-            // Skip any EOLs between entries
-            while (peek() is Token.EOL) {
-                consume(Token.EOL::class)
+            // Look ahead to check if this is a metadata line.
+            // A metadata line is: [EOL]* [INDENT [INDENT|EOL]*] KEY
+            var offset = 0
+            while (peek(offset) is Token.EOL) {
+                offset++
             }
-
-            // Check if next token is an indent or key (indicating a metadata line)
-            // Indent may have been consumed by skipWhitespaceAndComments() elsewhere
-            if (peek() is Token.INDENT) {
-                consume(Token.INDENT::class)
-                skipWhitespaceAndComments()
-            } else if (peek() !is Token.KEY) {
+            if (peek(offset) is Token.INDENT) {
+                offset++
+                while (peek(offset) is Token.INDENT || peek(offset) is Token.EOL) {
+                    offset++
+                }
+                if (peek(offset) !is Token.KEY) {
+                    break
+                }
+            } else if (peek(offset) !is Token.KEY) {
                 break
             }
 
-            // Check for metadata key
+            // Confirmed metadata line — now consume it
+            while (peek() is Token.EOL) {
+                consume(Token.EOL::class)
+            }
+            if (peek() is Token.INDENT) {
+                consume(Token.INDENT::class)
+                skipWhitespaceAndComments()
+            }
+
+            // Parse key
             if (peek() is Token.KEY) {
                 val key = (consume(Token.KEY::class) as Token.KEY).value
                 skipWhitespaceAndComments()
@@ -1113,8 +1141,6 @@ class BeancountParser : Parser {
                     meta[key] = value
                 }
             } else {
-                // Not metadata, might be next posting or directive
-                // We need to 'unread' the indent, but since we can't, we just break
                 break
             }
         }

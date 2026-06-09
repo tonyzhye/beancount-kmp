@@ -9,12 +9,12 @@
 
 ## Overview
 
-Beancount JVM is a complete migration of Python Beancount accounting system to the JVM ecosystem using Kotlin Multiplatform (KMP). It maintains semantic compatibility with Python Beancount 3.2.3 while delivering **10x+ performance improvement**.
+Beancount JVM is a complete migration of Python Beancount accounting system to the JVM ecosystem using Kotlin Multiplatform (KMP). It maintains semantic compatibility with Python Beancount 3.2.3 while delivering **up to 2.2x performance improvement on large ledgers**.
 
 ### Key Features
 
 - **Full Compatibility**: Parses and processes all valid Beancount v3.2.3 files
-- **High Performance**: 10.67x average speedup over Python (see [benchmarks](PERFORMANCE_REPORT.md))
+- **High Performance**: Up to 2.2x faster than Python on large ledgers (see [benchmarks](PERFORMANCE_REPORT.md))
 - **Zero Runtime Dependencies**: Core library only needs kotlinx-datetime
 - **Bilingual API**: Kotlin-first with Java-compatible static methods via `@JvmStatic`
 - **Complete CLI**: All Python beancount commands (bean-check, bean-doctor, bean-format, etc.)
@@ -199,18 +199,30 @@ cli (depends on api, loader, query)
 - [ ] bean-report (excluded per design)
 - [ ] bean-price (excluded per design)
 
-See [MISSING_FEATURES_REPORT.md](MISSING_FEATURES_REPORT.md) for detailed analysis.
+All 18 built-in plugins and the complete BQL query engine are implemented.
+
+## Python Compatibility
+
+Compared against Python Beancount 3.2.3:
+
+- **98 test classes** — all PASS
+- **9 end-to-end files** (starter, basic, example, 50KB–10MB) — zero errors on both Python and Kotlin
+- **All 18 built-in plugins** produce identical results
+
+*Full comparison report: [CONSISTENCY_REPORT.md](CONSISTENCY_REPORT.md)*
 
 ## Performance
 
-Compared to Python Beancount 3.2.3:
+Compared to Python Beancount 3.2.3 (load + book + validate):
 
-| File Size | Python Time | Kotlin Time | Speedup | Python Memory | Kotlin Memory |
-|-----------|------------|------------|---------|---------------|---------------|
-| 15 KB | 23ms | 2ms | **10.67x** | 15.5 MB | 18.6 MB |
-| 72 KB | 50ms | 8ms | **6.25x** | 72.2 MB | 74.3 MB |
-| 146 KB | 90ms | 10ms | **9.00x** | 146.3 MB | 138.1 MB |
-| 1.4 MB | 390ms | 63ms | **6.19x** | 416.3 MB | 373.2 MB |
+| File Size | Python (ms) | Kotlin (ms) | Speedup |
+|-----------|-------------|-------------|---------|
+| Example (340 KB) | 87 | 77 | **1.1x** |
+| 1 MB | 161 | 154 | **1.0x** |
+| 5 MB | 1,467 | 781 | **1.9x** |
+| 10 MB | 3,423 | 1,543 | **2.2x** |
+
+Kotlin scales better as file size grows — from roughly equivalent on small files to **2.2x faster on 10 MB ledgers**.
 
 *Full benchmark report: [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md)*
 
@@ -279,7 +291,7 @@ Recommended: IntelliJ IDEA with Kotlin plugin
 - [Architecture Overview](AGENTS.md) - Project structure and conventions
 - [CI/CD Guide](.github/CI_CD_GUIDE.md) - GitHub Actions setup
 - [Performance Report](PERFORMANCE_REPORT.md) - Detailed benchmarks
-- [Missing Features](MISSING_FEATURES_REPORT.md) - Python parity analysis
+- [Consistency Report](CONSISTENCY_REPORT.md) - Python parity verification
 - [Changelog](CHANGELOG.md) - Version history
 
 ## Contributing

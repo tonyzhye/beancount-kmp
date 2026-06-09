@@ -53,6 +53,21 @@ class Lexer(private val input: String) {
             return readIndent()
         }
         
+        // Handle org-mode headings at start of line: "* " or "** " etc.
+        if (column == 1 && peek() == '*') {
+            val nextChar = if (position + 1 < input.length) input[position + 1] else '\u0000'
+            if (nextChar == ' ' || nextChar == '\t') {
+                // Skip this line as a comment (org-mode heading)
+                while (!isAtEnd() && peek() != '\n' && peek() != '\r') {
+                    advance()
+                }
+                if (peek() == '\n' || peek() == '\r') {
+                    return readEOL()
+                }
+                return Token.EOF(line, column)
+            }
+        }
+        
         // Skip whitespace (not at start of line, not newlines)
         skipWhitespace()
         skipComments()

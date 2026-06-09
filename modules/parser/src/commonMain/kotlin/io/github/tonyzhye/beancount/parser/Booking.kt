@@ -82,8 +82,8 @@ object Booking {
     ): Pair<Transaction, List<BeancountError>> {
         val errors = mutableListOf<BeancountError>()
 
-        // Step 1: Check for self-reduction
-        val selfReductionAccounts = detectSelfReduction(transaction.postings)
+        // Step 1: Check for self-reduction (skip Booking.NONE accounts)
+        val selfReductionAccounts = detectSelfReduction(transaction.postings, accountBookingMethods)
         if (selfReductionAccounts.isNotEmpty()) {
             errors.add(LoadError(
                 transaction.meta,
@@ -797,12 +797,19 @@ object Booking {
      * postings for the same account with the same currency and cost basis.
      * This matches Python beancount's has_self_reduction() check.
      */
-    internal fun detectSelfReduction(postings: List<Posting>): List<Account> {
+    internal fun detectSelfReduction(
+        postings: List<Posting>,
+        accountBookingMethods: Map<Account, io.github.tonyzhye.beancount.core.Booking> = emptyMap()
+    ): List<Account> {
         val accountCurrencyPairs = mutableMapOf<Pair<Account, Currency>, Pair<Boolean, Boolean>>()
 
         for (posting in postings) {
             val units = posting.units ?: continue
             val costSpec = posting.cost ?: continue // Only check postings with cost basis
+
+            // Skip Booking.NONE accounts (same as Python's has_self_reduction)
+            val method = accountBookingMethods[posting.account]
+            if (method == io.github.tonyzhye.beancount.core.Booking.NONE) continue
 
             val key = posting.account to units.currency
             val isReduction = units.number.isNegative()

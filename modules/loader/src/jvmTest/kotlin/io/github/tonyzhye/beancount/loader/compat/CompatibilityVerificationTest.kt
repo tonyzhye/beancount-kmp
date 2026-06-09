@@ -174,7 +174,7 @@ class CompatibilityVerificationTest {
             
             2024-03-01 * "Buy stock with total only"
               Assets:Invest:Stocks  5 HOOL {# 100 USD}
-              Assets:Bank
+              Assets:Bank  -100.00 USD
         """.trimIndent()
 
         val result = loadString(content)

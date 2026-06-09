@@ -79,3 +79,22 @@ fun getCommonAccounts(entry1: Directive, entry2: Directive): Set<Account> {
     val accounts2 = getEntryAccounts(entry2)
     return accounts1.intersect(accounts2)
 }
+
+/**
+ * Remove all postings with the given account.
+ * Based on beancount.core.data.remove_account_postings.
+ *
+ * @param account The account name whose postings to remove.
+ * @param entries A list of directive instances.
+ * @return A list of entries without postings for the given account.
+ */
+fun removeAccountPostings(account: Account, entries: List<Directive>): List<Directive> {
+    return entries.map { entry ->
+        when (entry) {
+            is Transaction -> entry.copy(
+                postings = entry.postings.filter { it.account != account }
+            )
+            else -> entry
+        }
+    }
+}
