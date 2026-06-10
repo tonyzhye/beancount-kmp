@@ -44,7 +44,11 @@ fun loadFile(
             path.replace("$$key", value)
         }).let { File(it.path.replace("~", System.getProperty("user.home") ?: "~")) }
         if (expanded.isAbsolute) expanded else File(File(".").absolutePath, expanded.path)
-    }.canonicalPath
+    }.let {
+        // canonicalPath may throw IOException on Windows (e.g. temp files with 8.3 short names),
+        // so fall back to absolutePath when it fails.
+        try { it.canonicalPath } catch (_: java.io.IOException) { it.absolutePath }
+    }
 
     // Try cache first
     if (cache != null) {
@@ -102,7 +106,7 @@ private fun loadFileInternal(
     autoPluginsEnabled: Boolean = false
 ): LoadResult {
     // Prevent circular includes
-    val canonicalFile = File(filename).canonicalPath
+    val canonicalFile = try { File(filename).canonicalPath } catch (_: java.io.IOException) { File(filename).absolutePath }
     if (canonicalFile in visitedFiles) {
         return LoadResult(
             entries = emptyList(),
