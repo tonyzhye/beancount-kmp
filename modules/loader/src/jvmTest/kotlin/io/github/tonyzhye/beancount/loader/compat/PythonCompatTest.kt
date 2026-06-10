@@ -40,6 +40,26 @@ import java.io.File
  */
 class PythonCompatTest {
 
+    companion object {
+        /** True if Python beancount is available (used to skip tests on runners without it) */
+        private val pythonAvailable: Boolean = run {
+            try {
+                val process = ProcessBuilder("python", "-c", "import beancount").start()
+                process.waitFor() == 0
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.BeforeEach
+    fun checkPythonAvailable() {
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+            pythonAvailable,
+            "Python beancount not available - skipping compatibility tests"
+        )
+    }
+
     private val json = Json { ignoreUnknownKeys = true; prettyPrint = true }
     private val pythonScript = File(System.getProperty("user.dir")).let {
         // user.dir is modules/loader when running from loader module tests

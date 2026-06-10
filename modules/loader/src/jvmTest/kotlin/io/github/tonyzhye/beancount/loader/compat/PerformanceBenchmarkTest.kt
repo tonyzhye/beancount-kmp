@@ -41,6 +41,26 @@ import java.util.concurrent.TimeUnit
  */
 class PerformanceBenchmarkTest {
 
+    companion object {
+        /** True if Python beancount is available (used to skip tests on runners without it) */
+        private val pythonAvailable: Boolean = run {
+            try {
+                val process = ProcessBuilder("python", "-c", "import beancount").start()
+                process.waitFor() == 0
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.BeforeEach
+    fun checkPythonAvailable() {
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+            pythonAvailable,
+            "Python beancount not available - skipping performance benchmark tests"
+        )
+    }
+
     private val json = Json { ignoreUnknownKeys = true }
     private val projectDir = File(System.getProperty("user.dir")).let {
         // If running from modules/loader, go up two levels to project root
