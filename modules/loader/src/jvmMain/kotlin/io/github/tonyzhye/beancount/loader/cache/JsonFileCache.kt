@@ -63,7 +63,9 @@ class JsonFileCache(
         val sourceFiles = mutableMapOf<String, Long>()
         val mainFile = File(filename)
         if (mainFile.exists()) {
-            sourceFiles[mainFile.canonicalPath] = mainFile.lastModified()
+            // canonicalPath may throw IOException on Windows (8.3 short names); fall back to absolutePath
+            val key = try { mainFile.canonicalPath } catch (_: java.io.IOException) { mainFile.absolutePath }
+            sourceFiles[key] = mainFile.lastModified()
         }
 
         // Collect include files from the result
@@ -71,7 +73,9 @@ class JsonFileCache(
         for (includeFile in includeFiles) {
             val file = File(includeFile)
             if (file.exists()) {
-                sourceFiles[file.canonicalPath] = file.lastModified()
+                // canonicalPath may throw IOException on Windows; fall back to absolutePath
+                val key = try { file.canonicalPath } catch (_: java.io.IOException) { file.absolutePath }
+                sourceFiles[key] = file.lastModified()
             }
         }
 

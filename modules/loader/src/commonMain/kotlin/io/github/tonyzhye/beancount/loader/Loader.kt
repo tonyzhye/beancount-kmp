@@ -42,7 +42,17 @@ fun loadFile(
     val normalizedFilename = File(filename).let { file ->
         val expanded = File(System.getenv().entries.fold(file.path) { path, (key, value) ->
             path.replace("$$key", value)
-        }).let { File(it.path.replace("~", System.getProperty("user.home") ?: "~")) }
+        }).let {
+            // Only expand leading '~' as home directory; do NOT replace '~' inside
+            // Windows 8.3 short names (e.g. RUNNER~1) which would corrupt the path.
+            val home = System.getProperty("user.home") ?: "~"
+            val expandedPath = if (it.path.startsWith("~")) {
+                home + it.path.substring(1)
+            } else {
+                it.path
+            }
+            File(expandedPath)
+        }
         if (expanded.isAbsolute) expanded else File(File(".").absolutePath, expanded.path)
     }.let {
         // canonicalPath may throw IOException on Windows (e.g. temp files with 8.3 short names),

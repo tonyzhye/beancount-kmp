@@ -36,7 +36,8 @@ class BeanDepsCommand : CliktCommand(
         val visited = mutableSetOf<String>()
 
         fun collectDeps(file: File, indent: String = "") {
-            val canonicalPath = file.canonicalPath
+            // canonicalPath may throw IOException on Windows (8.3 short names); fall back to absolutePath
+            val canonicalPath = try { file.canonicalPath } catch (_: java.io.IOException) { file.absolutePath }
             if (canonicalPath in visited) {
                 echo("${indent}${file.name} (already shown)")
                 return
@@ -60,7 +61,10 @@ class BeanDepsCommand : CliktCommand(
                     }
                 }
                 .filter { it.exists() }
-                .map { it.canonicalPath }
+                .map {
+                    // canonicalPath may throw IOException on Windows (8.3 short names); fall back to absolutePath
+                    try { it.canonicalPath } catch (_: java.io.IOException) { it.absolutePath }
+                }
 
             val shouldRecurse = !noRecursive
             includes.forEach { includePath ->
