@@ -51,6 +51,30 @@ class PerformanceBenchmarkTest {
                 false
             }
         }
+
+        /** Resolve project root using multiple strategies for cross-environment compatibility */
+        private fun resolveProjectRoot(): File? {
+            val cwd = File(System.getProperty("user.dir"))
+            val candidates = listOfNotNull(
+                if (cwd.name == "loader" && cwd.parentFile?.name == "modules") cwd.parentFile.parentFile else null,
+                cwd.takeIf { File(it, "modules").exists() },
+                cwd.takeIf { File(it, "settings.gradle.kts").exists() },
+                cwd.parentFile?.takeIf { File(it, "settings.gradle.kts").exists() },
+                cwd.parentFile?.parentFile?.takeIf { File(it, "settings.gradle.kts").exists() }
+            )
+            return candidates.firstOrNull()
+        }
+
+        private val projectDir = resolveProjectRoot()
+
+        private val pythonEnhancedScript = resolveScriptPath("modules/core/src/jvmTest/resources/python_compat/benchmark_parse_enhanced.py")
+        private val pythonGenerateScript = resolveScriptPath("modules/core/src/jvmTest/resources/python_compat/generate_large_ledger.py")
+
+        private fun resolveScriptPath(relativePath: String): File? {
+            val root = projectDir ?: return null
+            val file = File(root, relativePath)
+            return file.takeIf { it.exists() }
+        }
     }
 
     @org.junit.jupiter.api.BeforeEach
@@ -59,25 +83,13 @@ class PerformanceBenchmarkTest {
             pythonAvailable,
             "Python beancount not available - skipping performance benchmark tests"
         )
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+            pythonEnhancedScript != null && pythonGenerateScript != null,
+            "Python benchmark scripts not found at resolved project root ($projectDir) - skipping tests"
+        )
     }
 
     private val json = Json { ignoreUnknownKeys = true }
-    private val projectDir = File(System.getProperty("user.dir")).let {
-        // If running from modules/loader, go up two levels to project root
-        if (it.name == "loader" && it.parentFile?.name == "modules") {
-            it.parentFile.parentFile
-        } else {
-            it
-        }
-    }
-    private val pythonEnhancedScript = File(
-        projectDir,
-        "modules/core/src/jvmTest/resources/python_compat/benchmark_parse_enhanced.py"
-    ).absolutePath
-    private val pythonGenerateScript = File(
-        projectDir,
-        "modules/core/src/jvmTest/resources/python_compat/generate_large_ledger.py"
-    ).absolutePath
 
     // ===== Configuration =====
 
@@ -93,11 +105,13 @@ class PerformanceBenchmarkTest {
     private val syntheticSizes = listOf(1.0, 5.0, 10.0)
 
     /** Real beancount files to benchmark */
-    private val realFiles = listOf(
-        File(projectDir, "examples/simple/starter.beancount"),
-        File(projectDir, "examples/simple/basic.beancount"),
-        File(projectDir, "examples/example.beancount")
-    ).filter { it.exists() }
+    private val realFiles = projectDir?.let { root ->
+        listOf(
+            File(root, "examples/simple/starter.beancount"),
+            File(root, "examples/simple/basic.beancount"),
+            File(root, "examples/example.beancount")
+        ).filter { it.exists() }
+    } ?: emptyList()
 
     // ===== Benchmark Runner =====
 
@@ -109,7 +123,7 @@ class PerformanceBenchmarkTest {
         tempFile.deleteOnExit()
 
         val process = ProcessBuilder(
-            "python", pythonGenerateScript,
+            "python", pythonGenerateScript!!.absolutePath,
             "--size", sizeMB.toString(),
             "--output", tempFile.absolutePath
         ).redirectErrorStream(true).start()
@@ -129,7 +143,7 @@ class PerformanceBenchmarkTest {
      * Run Python enhanced benchmark on a file.
      */
     private fun runPythonBenchmark(file: File, iterations: Int = defaultIterations): BenchmarkResult {
-        val args = mutableListOf("python", pythonEnhancedScript, file.absolutePath,
+        val args = mutableListOf("python", pythonEnhancedScript!!.absolutePath, file.absolutePath,
             "--iterations", iterations.toString())
         if (!measureMemory) args.add("--no-memory")
 

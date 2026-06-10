@@ -50,6 +50,31 @@ class PythonCompatTest {
                 false
             }
         }
+
+        /** Resolve project root using multiple strategies for cross-environment compatibility */
+        private fun resolveProjectRoot(): File? {
+            val cwd = File(System.getProperty("user.dir"))
+            val candidates = listOfNotNull(
+                if (cwd.name == "loader" && cwd.parentFile?.name == "modules") cwd.parentFile.parentFile else null,
+                cwd.takeIf { File(it, "modules").exists() },
+                cwd.takeIf { File(it, "settings.gradle.kts").exists() },
+                cwd.parentFile?.takeIf { File(it, "settings.gradle.kts").exists() },
+                cwd.parentFile?.parentFile?.takeIf { File(it, "settings.gradle.kts").exists() }
+            )
+            return candidates.firstOrNull()
+        }
+
+        private val projectDir = resolveProjectRoot()
+
+        private val pythonScript = resolveScriptPath("modules/core/src/jvmTest/resources/python_compat/parse_beancount.py")
+        private val balanceScript = resolveScriptPath("modules/core/src/jvmTest/resources/python_compat/compute_balances.py")
+        private val queryScript = resolveScriptPath("modules/core/src/jvmTest/resources/python_compat/run_query.py")
+
+        private fun resolveScriptPath(relativePath: String): File? {
+            val root = projectDir ?: return null
+            val file = File(root, relativePath)
+            return file.takeIf { it.exists() }
+        }
     }
 
     @org.junit.jupiter.api.BeforeEach
@@ -58,13 +83,13 @@ class PythonCompatTest {
             pythonAvailable,
             "Python beancount not available - skipping compatibility tests"
         )
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+            pythonScript != null && balanceScript != null && queryScript != null,
+            "Python compat scripts not found at resolved project root ($projectDir) - skipping tests"
+        )
     }
 
     private val json = Json { ignoreUnknownKeys = true; prettyPrint = true }
-    private val pythonScript = File(System.getProperty("user.dir")).let {
-        // user.dir is modules/loader when running from loader module tests
-        File(it.parentFile, "core/src/jvmTest/resources/python_compat/parse_beancount.py")
-    }.absolutePath
 
     /**
      * Run Python beancount parser on a string and return parsed results.
@@ -87,7 +112,7 @@ class PythonCompatTest {
      */
     private fun runPythonParser(file: File): PythonResult {
         val process = ProcessBuilder(
-            "python", pythonScript, file.absolutePath
+            "python", pythonScript!!.absolutePath, file.absolutePath
         ).redirectErrorStream(true).start()
 
         val output = process.inputStream.bufferedReader().readText()
@@ -255,16 +280,13 @@ class PythonCompatTest {
 
     // ===== Balance computation verification =====
 
-    private val balanceScript = File(File(System.getProperty("user.dir")).parentFile,
-        "core/src/jvmTest/resources/python_compat/compute_balances.py").absolutePath
-
     private fun runPythonBalance(content: String): PythonBalanceResult {
         val tempFile = File.createTempFile("beancount_balance_", ".beancount")
         tempFile.writeText(content, Charsets.UTF_8)
         tempFile.deleteOnExit()
 
         return try {
-            val process = ProcessBuilder("python", balanceScript, tempFile.absolutePath)
+            val process = ProcessBuilder("python", balanceScript!!.absolutePath, tempFile.absolutePath)
                 .redirectErrorStream(true).start()
             val output = process.inputStream.bufferedReader().readText()
             val exitCode = process.waitFor()
@@ -333,16 +355,13 @@ class PythonCompatTest {
 
     // ===== BQL Query verification =====
 
-    private val queryScript = File(File(System.getProperty("user.dir")).parentFile,
-        "core/src/jvmTest/resources/python_compat/run_query.py").absolutePath
-
     private fun runPythonQuery(content: String, queryStr: String): PythonQueryResult {
         val tempFile = File.createTempFile("beancount_query_", ".beancount")
         tempFile.writeText(content, Charsets.UTF_8)
         tempFile.deleteOnExit()
 
         return try {
-            val process = ProcessBuilder("python", queryScript, tempFile.absolutePath, queryStr)
+            val process = ProcessBuilder("python", queryScript!!.absolutePath, tempFile.absolutePath, queryStr)
                 .redirectErrorStream(true).start()
             val output = process.inputStream.bufferedReader().readText()
             val exitCode = process.waitFor()

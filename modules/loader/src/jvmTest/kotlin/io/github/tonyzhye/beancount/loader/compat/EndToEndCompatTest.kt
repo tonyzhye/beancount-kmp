@@ -49,6 +49,36 @@ class EndToEndCompatTest {
                 false
             }
         }
+
+        /** Resolve project root using multiple strategies for cross-environment compatibility */
+        private fun resolveProjectRoot(): File? {
+            val cwd = File(System.getProperty("user.dir"))
+            val candidates = listOfNotNull(
+                // Strategy 1: From modules/loader, go up two levels
+                if (cwd.name == "loader" && cwd.parentFile?.name == "modules") cwd.parentFile.parentFile else null,
+                // Strategy 2: cwd contains modules directory
+                cwd.takeIf { File(it, "modules").exists() },
+                // Strategy 3: cwd is project root (has build.gradle.kts or gradlew)
+                cwd.takeIf { File(it, "settings.gradle.kts").exists() },
+                // Strategy 4: Go up one level
+                cwd.parentFile?.takeIf { File(it, "settings.gradle.kts").exists() },
+                // Strategy 5: Go up two levels
+                cwd.parentFile?.parentFile?.takeIf { File(it, "settings.gradle.kts").exists() }
+            )
+            return candidates.firstOrNull()
+        }
+
+        private val projectDir = resolveProjectRoot()
+
+        private val pythonParseScript = resolveScriptPath("modules/core/src/jvmTest/resources/python_compat/parse_beancount.py")
+        private val pythonQueryScript = resolveScriptPath("modules/core/src/jvmTest/resources/python_compat/run_query.py")
+        private val pythonBalanceScript = resolveScriptPath("modules/core/src/jvmTest/resources/python_compat/compute_balances.py")
+
+        private fun resolveScriptPath(relativePath: String): File? {
+            val root = projectDir ?: return null
+            val file = File(root, relativePath)
+            return file.takeIf { it.exists() }
+        }
     }
 
     @org.junit.jupiter.api.BeforeEach
@@ -57,22 +87,13 @@ class EndToEndCompatTest {
             pythonAvailable,
             "Python beancount not available - skipping end-to-end compatibility tests"
         )
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+            pythonParseScript != null && pythonQueryScript != null && pythonBalanceScript != null,
+            "Python compat scripts not found at resolved project root ($projectDir) - skipping tests"
+        )
     }
 
     private val json = Json { ignoreUnknownKeys = true; prettyPrint = true }
-    private val projectDir = File(System.getProperty("user.dir")).let {
-        if (it.name == "loader" && it.parentFile?.name == "modules") {
-            it.parentFile.parentFile
-        } else {
-            it
-        }
-    }
-    private val pythonParseScript = File(projectDir,
-        "modules/core/src/jvmTest/resources/python_compat/parse_beancount.py").absolutePath
-    private val pythonQueryScript = File(projectDir,
-        "modules/core/src/jvmTest/resources/python_compat/run_query.py").absolutePath
-    private val pythonBalanceScript = File(projectDir,
-        "modules/core/src/jvmTest/resources/python_compat/compute_balances.py").absolutePath
 
     // ===== Helper Methods =====
 
@@ -82,7 +103,7 @@ class EndToEndCompatTest {
         tempFile.deleteOnExit()
 
         return try {
-            val process = ProcessBuilder("python", pythonParseScript, tempFile.absolutePath)
+            val process = ProcessBuilder("python", pythonParseScript!!.absolutePath, tempFile.absolutePath)
                 .redirectErrorStream(true).start()
             val output = process.inputStream.bufferedReader().readText()
             val exitCode = process.waitFor()
@@ -101,7 +122,7 @@ class EndToEndCompatTest {
         tempFile.deleteOnExit()
 
         return try {
-            val process = ProcessBuilder("python", pythonQueryScript, tempFile.absolutePath, queryStr)
+            val process = ProcessBuilder("python", pythonQueryScript!!.absolutePath, tempFile.absolutePath, queryStr)
                 .redirectErrorStream(true).start()
             val output = process.inputStream.bufferedReader().readText()
             val exitCode = process.waitFor()
