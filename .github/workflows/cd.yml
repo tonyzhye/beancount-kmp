@@ -99,7 +99,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '21'
-        distribution: 'oracle-graalvm'
+        distribution: 'graalvm'
 
     - name: Setup MSVC (Windows)
       if: runner.os == 'Windows'
