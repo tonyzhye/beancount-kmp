@@ -461,9 +461,12 @@ class TreeifyTest {
             ).redirectErrorStream(true).start()
             
             val output = process.inputStream.bufferedReader().readText()
-            process.waitFor()
+            val exitCode = process.waitFor()
             
-            if (output.contains("NO_COLUMN_FOUND")) {
+            if (exitCode != 0) {
+                println("Python treeify failed (exit=$exitCode): $output")
+                null
+            } else if (output.contains("NO_COLUMN_FOUND")) {
                 null
             } else {
                 output
