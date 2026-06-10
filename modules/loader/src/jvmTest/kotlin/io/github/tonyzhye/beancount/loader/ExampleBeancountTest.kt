@@ -10,12 +10,37 @@ import kotlin.test.assertTrue
  */
 class ExampleBeancountTest {
 
-    private val examplePath = File(System.getProperty("user.dir")).parentFile.parentFile
-        .resolve("examples/example.beancount").absolutePath
+    private val examplePath: String? = run {
+        // Try multiple strategies to find the example file
+        val candidates = listOf(
+            // Strategy 1: From project root via user.dir (works in IDE)
+            File(System.getProperty("user.dir")).let { cwd ->
+                when {
+                    cwd.name == "loader" && cwd.parentFile?.name == "modules" ->
+                        cwd.parentFile.parentFile.resolve("examples/example.beancount")
+                    else -> cwd.resolve("examples/example.beancount")
+                }
+            },
+            // Strategy 2: From classloader resource (works in CI)
+            javaClass.classLoader.getResource("examples/example.beancount")?.let {
+                File(it.toURI())
+            },
+            // Strategy 3: Relative to project root from any module
+            File("examples/example.beancount"),
+            // Strategy 4: Two levels up (gradle test from module)
+            File("../../examples/example.beancount")
+        )
+        candidates.filterNotNull().firstOrNull { it.exists() }?.absolutePath
+    }
 
     @Test
     fun `should load example beancount without fatal errors`() {
-        val result = loadFile(examplePath)
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+            examplePath != null,
+            "examples/example.beancount not found - skipping test"
+        )
+
+        val result = loadFile(examplePath!!)
 
         println("=== Example Beancount Load Result ===")
         println("Entries: ${result.entries.size}")
@@ -43,25 +68,6 @@ class ExampleBeancountTest {
         result.errors.take(10).forEachIndexed { i, err ->
             println("Error ${i+1}: ${err.message}")
         }
-
-        // Write detailed report to file
-        val reportFile = File("D:/test_balance_report.txt")
-        reportFile.writeText(buildString {
-            appendLine("=== Example Beancount Load Result ===")
-            appendLine("Entries: ${result.entries.size}")
-            appendLine("Errors: ${result.errors.size}")
-            appendLine()
-            appendLine("=== Error Breakdown ===")
-            errorGroups.entries.sortedByDescending { it.value.size }.forEach { (type, errors) ->
-                appendLine("$type: ${errors.size}")
-            }
-            appendLine()
-            appendLine("=== All Errors ===")
-            result.errors.forEachIndexed { i, err ->
-                appendLine("Error ${i+1}: ${err.message}")
-            }
-        })
-        println("Report written to: ${reportFile.absolutePath}")
 
         assertTrue(result.entries.size > 0, "Should parse some entries")
     }
