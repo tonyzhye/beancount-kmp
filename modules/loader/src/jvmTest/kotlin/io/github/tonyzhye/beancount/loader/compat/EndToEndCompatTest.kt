@@ -39,6 +39,26 @@ import java.util.concurrent.TimeUnit
 @Timeout(value = 120, unit = TimeUnit.SECONDS)
 class EndToEndCompatTest {
 
+    companion object {
+        /** True if Python beancount is available (used to skip tests on runners without it) */
+        private val pythonAvailable: Boolean = run {
+            try {
+                val process = ProcessBuilder("python", "-c", "import beancount").start()
+                process.waitFor() == 0
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.BeforeEach
+    fun checkPythonAvailable() {
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+            pythonAvailable,
+            "Python beancount not available - skipping end-to-end compatibility tests"
+        )
+    }
+
     private val json = Json { ignoreUnknownKeys = true; prettyPrint = true }
     private val projectDir = File(System.getProperty("user.dir")).let {
         if (it.name == "loader" && it.parentFile?.name == "modules") {
