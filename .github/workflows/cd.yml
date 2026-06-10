@@ -83,3 +83,44 @@ jobs:
         path: |
           modules/cli/build/distributions/*.zip
           modules/cli/build/distributions/*.tar
+
+  publish-native-image:
+    name: Build Native Image (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    needs: publish
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up GraalVM JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'oracle-graalvm'
+
+    - name: Setup MSVC (Windows)
+      if: runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Build Native Images
+      run: ./gradlew :cli:nativeCompile :cli:nativeBeanqueryCompile --no-configuration-cache
+
+    - name: Package Native Images
+      shell: bash
+      run: |
+        mkdir -p native-release
+        cp modules/cli/build/native/nativeCompile/beancount* native-release/ || true
+        cp modules/cli/build/native/nativeBeanqueryCompile/beanquery* native-release/ || true
+        cd native-release && zip -r "../beancount-native-${{ matrix.os }}.zip" .
+
+    - name: Upload to GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: beancount-native-${{ matrix.os }}.zip

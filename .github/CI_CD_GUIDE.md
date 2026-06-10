@@ -20,6 +20,15 @@
 | `ci.yml` | 持续集成 | Push 到 main/develop、Pull Request |
 | `cd.yml` | 持续部署 | 推送 tag (v*)、手动触发 |
 
+### Native Image 构建
+
+除常规 JVM 构建外，CI/CD 还支持 **GraalVM Native Image** 编译，生成无需 JRE 的独立可执行文件：
+
+| 工作流 | Job | 平台 | 产物 |
+|--------|-----|------|------|
+| `ci.yml` | `native-image` | Ubuntu/Windows/macOS | `native-image-<os>` artifact |
+| `cd.yml` | `publish-native-image` | Ubuntu/Windows/macOS | `beancount-native-<os>.zip` (Release 附件) |
+
 ## CI 工作流
 
 ### 测试矩阵 (`test`)
@@ -91,6 +100,24 @@ pip install beancount==3.2.3
 **产物：**
 - `beancount-cli-<version>.zip`
 - `beancount-cli-<version>.tar`
+
+### Native Image 构建 (`native-image` / `publish-native-image`)
+
+**构建平台：** Ubuntu、Windows、macOS（三平台并行）。
+
+**JDK 要求：** 使用 **GraalVM JDK**（`oracle-graalvm` distribution），非 Temurin。
+
+**Windows 特殊要求：** GitHub Actions Windows runner 预装 Visual Studio 2022，通过 `ilammy/msvc-dev-cmd@v1` action 自动激活 MSVC 环境。Native Image 编译需要 `cl.exe` / `link.exe`。
+
+**产物：**
+- `beancount` / `beancount.exe` — 主 CLI 二进制文件
+- `beanquery` / `beanquery.exe` — BQL 查询工具二进制文件
+- 产物通过 `actions/upload-artifact` 上传为 CI artifact
+
+**CD Release 产物：**
+- `beancount-native-ubuntu-latest.zip`
+- `beancount-native-windows-latest.zip`
+- `beancount-native-macos-latest.zip`
 
 ## 配置方法
 
@@ -177,6 +204,26 @@ git push origin v3.2.4
 ./gradlew :cli:distZip
 ```
 
+### 验证 Native Image 构建
+
+```bash
+# 安装 GraalVM JDK（通过 SDKMAN 或 scoop）
+sdk install java 21.0.5-graalce
+
+# 或在 Windows 上通过 scoop
+scoop install graalvm21
+
+# 编译 Native Image（Linux/macOS）
+./gradlew :cli:nativeCompile :cli:nativeBeanqueryCompile
+
+# Windows 需要先初始化 MSVC 环境
+cmd //c "C:/Program^ Files/Microsoft^ Visual^ Studio/2022/Community/VC/Auxiliary/Build/vcvarsall.bat x64 && gradlew :cli:nativeCompile :cli:nativeBeanqueryCompile"
+
+# 运行编译产物
+./modules/cli/build/native/nativeCompile/beancount bean-check examples/example.beancount
+./modules/cli/build/native/nativeBeanqueryCompile/beanquery bean-query examples/example.beancount "SELECT date, narration FROM entries"
+```
+
 ### 验证发布配置
 
 ```bash
@@ -213,6 +260,33 @@ ls ~/.m2/repository/io/github/tonyzhye/beancount/
 open modules/core/build/reports/kover/html/index.html
 ```
 
+### 问题：Native Image 编译失败（Windows）
+
+**错误：** `native-image.cmd wasn't found` 或 `cl.exe wasn't found`
+
+**原因：** Windows 上 GraalVM Native Image 需要 Visual Studio C++ 工具链。
+
+**解决：**
+1. 确保已安装 GraalVM JDK（`java -version` 应显示 GraalVM）
+2. 在 Git Bash 中，先运行 MSVC 环境初始化脚本：
+   ```bash
+   cmd //c "C:/Program^ Files/Microsoft^ Visual^ Studio/2022/Community/VC/Auxiliary/Build/vcvarsall.bat x64"
+   ```
+3. 或在 PowerShell / CMD 中直接编译（已自动激活 MSVC）
+
+### 问题：Native Image 编译失败（Gradle Configuration Cache）
+
+**错误：** `error writing value of type 'DefaultLegacyConfiguration'`
+
+**原因：** GraalVM Build Tools 插件与 Gradle Configuration Cache 不兼容。
+
+**解决：** 编译时添加 `--no-configuration-cache` 参数：
+```bash
+./gradlew :cli:nativeCompile --no-configuration-cache
+```
+
+CI/CD 工作流中已默认包含此参数。
+
 ### 问题：Gradle 缓存导致构建不一致
 
 ```bash
@@ -238,4 +312,4 @@ rm -rf ~/.gradle/caches/
 
 ---
 
-*最后更新：2026-06-05*
+*最后更新：2026-06-09*

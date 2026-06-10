@@ -1,0 +1,12 @@
+# GraalVM installation path for Native Image compilation.
+# Copy this file to local.properties and update the path for your environment.
+# This file is NOT required if GraalVM is already your default Java (java -version shows GraalVM).
+#
+# Windows (scoop):
+# graalvm.home=C:/scoop/apps/graalvm-oracle-21jdk/current
+#
+# macOS (Homebrew):
+# graalvm.home=/Library/Java/JavaVirtualMachines/graalvm-21.jdk/Contents/Home
+#
+# Linux (manual):
+# graalvm.home=/usr/lib/jvm/graalvm-21
