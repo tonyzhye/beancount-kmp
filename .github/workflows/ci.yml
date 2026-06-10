@@ -16,6 +16,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
     
     - name: Set up JDK ${{ matrix.java-version }}
       uses: actions/setup-java@v4
@@ -53,6 +56,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
     
     - name: Set up JDK 21
       uses: actions/setup-java@v4
@@ -80,6 +86,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
     
     - name: Set up JDK 21
       uses: actions/setup-java@v4
@@ -105,6 +114,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
     
     - name: Set up JDK 21
       uses: actions/setup-java@v4
@@ -136,6 +148,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
 
     - name: Set up GraalVM JDK 21
       uses: actions/setup-java@v4
