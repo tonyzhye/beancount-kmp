@@ -27,9 +27,7 @@ jobs:
         distribution: 'temurin'
     
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-home-cache-cleanup: true
+      uses: gradle/actions/setup-gradle@v4
     
     - name: Run tests
       run: ./gradlew test
@@ -67,7 +65,7 @@ jobs:
         distribution: 'temurin'
     
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
     
     - name: Build all modules
       run: ./gradlew build
@@ -97,7 +95,7 @@ jobs:
         distribution: 'temurin'
     
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
     
     - name: Verify coverage thresholds
       run: ./gradlew koverVerify
@@ -133,7 +131,7 @@ jobs:
       run: pip install beancount==3.2.3
     
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
     
     - name: Run compatibility tests
       run: ./gradlew :loader:jvmTest --tests "*CompatTest" --tests "*CompatibilityVerificationTest"
@@ -163,7 +161,7 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
 
     - name: Build Native Images
       run: ./gradlew :cli:nativeCompile :cli:nativeBeanqueryCompile --no-configuration-cache

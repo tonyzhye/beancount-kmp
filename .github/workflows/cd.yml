@@ -25,7 +25,7 @@ jobs:
         distribution: 'temurin'
     
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
     
     - name: Decode signing key
       run: |
@@ -71,7 +71,7 @@ jobs:
         distribution: 'temurin'
     
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
     
     - name: Build CLI distribution
       run: ./gradlew :cli:distZip :cli:distTar
@@ -106,7 +106,7 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
 
     - name: Build Native Images
       run: ./gradlew :cli:nativeCompile :cli:nativeBeanqueryCompile --no-configuration-cache
