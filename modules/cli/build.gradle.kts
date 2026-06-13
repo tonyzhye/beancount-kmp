@@ -13,6 +13,11 @@ kotlin {
 
 application {
     mainClass.set("io.github.tonyzhye.beancount.cli.MainKt")
+    applicationName = "beancount"
+}
+
+tasks.named<Jar>("jar") {
+    archiveFileName.set("beancount.jar")
 }
 
 // Load local.properties (gitignored) once for both GraalVM and VC config
@@ -60,6 +65,10 @@ tasks.register<JavaExec>("runBeanquery") {
     classpath = configurations.runtimeClasspath.get() + sourceSets["main"].output
     mainClass.set("io.github.tonyzhye.beancount.cli.BeanQueryMainKt")
     args = project.findProperty("beanqueryArgs")?.toString()?.split(" ") ?: emptyList()
+}
+
+tasks.named<Jar>("jar") {
+    archiveFileName.set("beancount.jar")
 }
 
 tasks.test {

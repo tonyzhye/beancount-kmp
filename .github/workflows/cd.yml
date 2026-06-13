@@ -75,29 +75,21 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build CLI distribution
-        run: ./gradlew :cli:distZip
+        run: ./gradlew :cli:distZip --no-configuration-cache
 
-      - name: Rename CLI artifacts with OS suffix
+      - name: Rename CLI artifact with version and OS suffix
         shell: bash
         run: |
           OS="${{ matrix.os }}"
           OS_SHORT=$(echo "$OS" | sed -E 's/-latest$//')
-          for f in modules/cli/build/distributions/*.zip; do
-            if [ -f "$f" ]; then
-              base="${f##*/}"
-              # Insert OS suffix before extension, e.g. beancount-cli-3.2.4-ubuntu.zip
-              ext="${base##*.}"
-              name="${base%.*}"
-              newname="${name}-${OS_SHORT}.${ext}"
-              mv "$f" "modules/cli/build/distributions/${newname}"
-            fi
-          done
+          VERSION="${{ steps.version.outputs.version }}"
+          mv "modules/cli/build/distributions/beancount.zip" "modules/cli/build/distributions/beancount-cli-${VERSION}-${OS_SHORT}.zip"
 
       - name: Upload CLI artifacts
         uses: actions/upload-artifact@v4
         with:
           name: cli-${{ matrix.os }}
-          path: modules/cli/build/distributions/*.zip
+          path: modules/cli/build/distributions/beancount-cli-*.zip
 
   build-native-image:
     name: Build Native Image (${{ matrix.os }})
