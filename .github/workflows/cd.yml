@@ -77,6 +77,25 @@ jobs:
       - name: Build CLI distribution
         run: ./gradlew :cli:distZip :cli:distTar
 
+      - name: Rename CLI artifacts with OS suffix
+        shell: bash
+        run: |
+          OS="${{ matrix.os }}"
+          for f in modules/cli/build/distributions/*; do
+            if [ -f "$f" ]; then
+              base="${f##*/}"
+              # Insert OS suffix before extension, e.g. beancount-cli-3.2.4-linux.zip
+              if [[ "$base" =~ \. ]]; then
+                ext="${base##*.}"
+                name="${base%.*}"
+                newname="${name}-${OS}.${ext}"
+              else
+                newname="${base}-${OS}"
+              fi
+              mv "$f" "modules/cli/build/distributions/${newname}"
+            fi
+          done
+
       - name: Upload CLI artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -120,7 +139,8 @@ jobs:
           mkdir -p native-release
           cp modules/cli/build/native/nativeCompile/beancount* native-release/ || true
           cp modules/cli/build/native/nativeBeanqueryCompile/beanquery* native-release/ || true
-          cd native-release && zip -r "../beancount-native-${{ matrix.os }}.zip" .
+          OS="${{ matrix.os }}"
+          cd native-release && zip -r "../beancount-native-${OS}.zip" .
 
       - name: Upload Native Image artifacts
         uses: actions/upload-artifact@v4
