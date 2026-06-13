@@ -7,51 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Full Phase 1-3 feature migration from Python Beancount 3.2.3
-- KMP (Kotlin Multiplatform) support with JVM target
-- Complete parser with recursive descent lexer
-- 18 built-in plugins (auto_accounts, implicit_prices, etc.)
-- BQL query engine with 60+ functions
-- CLI tools: bean-check, bean-doctor, bean-example, bean-format, beanquery
-- Performance benchmarks showing 10x+ speedup over Python
-- End-to-end compatibility tests with Python Beancount
-- GitHub Actions CI/CD pipeline
-
-## [3.2.3] - 2026-06-05
+## [3.2.3] - 2026-06-13
 
 ### Added
-- **Core Models**: All 12 directive types, Amount, Cost, Position, Inventory
-- **Parser**: Lexer + recursive descent parser supporting full Beancount syntax
-- **Booking**: FIFO, LIFO, HIFO, STRICT, STRICT_WITH_SIZE, NONE methods
-- **Loader**: Full loading pipeline with includes, plugins, validation
-- **Plugins**: 18/18 built-in plugins from Python Beancount v3
-- **Query Engine**: BQL parser, compiler, and executor
-- **CLI**: Complete CLI suite matching Python beancount commands
-- **Tests**: 500+ tests across all modules with 80%+ coverage
-- **API**: Unified `Beancount` singleton object with 60+ static methods
-- **Cache**: JsonFileCache for loading optimization
-- **Compatibility**: Cross-validation with Python Beancount 3.2.3
+- **Core**: Full JVM implementation of Beancount core models (Amount, Position, Inventory, all directive types)
+- **Parser**: Complete Beancount syntax parser with recursive-descent lexer
+- **Loader**: File loading pipeline with includes, plugins, validation, and JSON cache
+- **Booking**: Full-cost booking methods including FIFO, LIFO, HIFO, STRICT, STRICT_WITH_SIZE, and NONE
+- **Plugins**: 18 built-in plugins ported from Python Beancount 3.2.3
+- **Query Engine**: BQL (Beancount Query Language) parser, compiler, and executor
+- **API**: Unified `Beancount` entry point exposing parser, loader, price, and query APIs
+- **CLI**: Complete command-line tools — `bean-check`, `bean-doctor`, `bean-example`, `bean-format`, and `beanquery`
+- **Compatibility**: End-to-end validation against Python Beancount 3.2.3 for parser output, balances, and BQL results
+- **Performance**: Benchmark suite showing multi-fold speedup over Python Beancount on large ledgers
+- **Native Image**: GraalVM Native Image build support for `beancount` and `beanquery` CLI binaries
+- **CI/CD**: GitHub Actions workflows for testing, coverage, compatibility verification, native-image builds, Maven Central publishing, and automated GitHub Releases
 
-### Performance
-- 10.67x average speedup compared to Python Beancount 3.2.3
-- Lower memory usage for large files (>1MB)
-- Throughput: ~13,000 KB/s for large ledgers
+### Changed
+- N/A
 
-### Documentation
-- Comprehensive architecture documents in `doc/`
-- Performance benchmark reports (English & Chinese)
-- Missing features analysis report
-- CI/CD configuration guide
+### Deprecated
+- N/A
 
-## [0.1.0] - Initial Release (Pre-alpha)
+### Removed
+- N/A
 
-### Added
-- Basic project structure with KMP modules
-- Core data types (Decimal, Amount, Directive hierarchy)
-- Simple lexer and parser
-- Basic CLI skeleton
+### Fixed
+- N/A
+
+### Security
+- N/A
 
 [Unreleased]: https://github.com/tonyzhye/beancount-kmp/compare/v3.2.3...HEAD
-[3.2.3]: https://github.com/tonyzhye/beancount-kmp/compare/v0.1.0...v3.2.3
-[0.1.0]: https://github.com/tonyzhye/beancount-kmp/releases/tag/v0.1.0
+[3.2.3]: https://github.com/tonyzhye/beancount-kmp/releases/tag/v3.2.3
