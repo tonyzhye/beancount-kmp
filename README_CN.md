@@ -4,6 +4,7 @@
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/gpl-2.0)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20-blue.svg?logo=kotlin)](https://kotlinlang.org)
 [![JDK](https://img.shields.io/badge/JDK-21-orange.svg)](https://openjdk.org/projects/jdk/21/)
+[![klibs.io](https://img.shields.io/badge/klibs.io-Beancount%20JVM-blue?logo=kotlin)](https://klibs.io/projects/tonyzhye/beancount-kmp)
 
 > [Beancount](https://github.com/beancount/beancount) v3.2.3 的 Kotlin 多平台实现，兼容 Java 和 Kotlin。
 
@@ -23,6 +24,8 @@ Beancount JVM 是使用 Kotlin Multiplatform（KMP）将 Python Beancount 会计
 ## 快速开始
 
 ### Maven 坐标
+
+已发布到 **Maven Central**，并可在 **[klibs.io](https://klibs.io/projects/tonyzhye/beancount-kmp)** 上发现。
 
 **KMP 项目（commonMain）：**
 ```kotlin
