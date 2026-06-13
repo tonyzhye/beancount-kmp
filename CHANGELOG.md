@@ -23,20 +23,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Native Image**: GraalVM Native Image build support for `beancount` and `beanquery` CLI binaries
 - **CI/CD**: GitHub Actions workflows for testing, coverage, compatibility verification, native-image builds, Maven Central publishing, and automated GitHub Releases
 
-### Changed
-- N/A
-
-### Deprecated
-- N/A
-
-### Removed
-- N/A
-
-### Fixed
-- N/A
-
-### Security
-- N/A
-
 [Unreleased]: https://github.com/tonyzhye/beancount-kmp/compare/v3.2.3...HEAD
 [3.2.3]: https://github.com/tonyzhye/beancount-kmp/releases/tag/v3.2.3
