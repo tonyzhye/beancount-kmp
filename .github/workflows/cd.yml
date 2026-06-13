@@ -75,23 +75,20 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build CLI distribution
-        run: ./gradlew :cli:distZip :cli:distTar
+        run: ./gradlew :cli:distZip
 
       - name: Rename CLI artifacts with OS suffix
         shell: bash
         run: |
           OS="${{ matrix.os }}"
-          for f in modules/cli/build/distributions/*; do
+          OS_SHORT=$(echo "$OS" | sed -E 's/-latest$//')
+          for f in modules/cli/build/distributions/*.zip; do
             if [ -f "$f" ]; then
               base="${f##*/}"
-              # Insert OS suffix before extension, e.g. beancount-cli-3.2.4-linux.zip
-              if [[ "$base" =~ \. ]]; then
-                ext="${base##*.}"
-                name="${base%.*}"
-                newname="${name}-${OS}.${ext}"
-              else
-                newname="${base}-${OS}"
-              fi
+              # Insert OS suffix before extension, e.g. beancount-cli-3.2.4-ubuntu.zip
+              ext="${base##*.}"
+              name="${base%.*}"
+              newname="${name}-${OS_SHORT}.${ext}"
               mv "$f" "modules/cli/build/distributions/${newname}"
             fi
           done
@@ -100,9 +97,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cli-${{ matrix.os }}
-          path: |
-            modules/cli/build/distributions/*.zip
-            modules/cli/build/distributions/*.tar
+          path: modules/cli/build/distributions/*.zip
 
   build-native-image:
     name: Build Native Image (${{ matrix.os }})
@@ -130,6 +125,17 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Extract version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Publishing version: $VERSION"
+
       - name: Build Native Images
         run: ./gradlew :cli:nativeCompile :cli:nativeBeanqueryCompile --no-configuration-cache
 
@@ -140,13 +146,15 @@ jobs:
           cp modules/cli/build/native/nativeCompile/beancount* native-release/ || true
           cp modules/cli/build/native/nativeBeanqueryCompile/beanquery* native-release/ || true
           OS="${{ matrix.os }}"
-          cd native-release && zip -r "../beancount-native-${OS}.zip" .
+          OS_SHORT=$(echo "$OS" | sed -E 's/-latest$//')
+          VERSION="${{ steps.version.outputs.version }}"
+          cd native-release && zip -r "../beancount-native-${VERSION}-${OS_SHORT}.zip" .
 
       - name: Upload Native Image artifacts
         uses: actions/upload-artifact@v4
         with:
           name: native-${{ matrix.os }}
-          path: beancount-native-${{ matrix.os }}.zip
+          path: beancount-native-*.zip
 
   publish-maven:
     name: Publish to Maven Central
