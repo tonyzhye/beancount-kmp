@@ -200,8 +200,9 @@ jobs:
 
       - name: Decode signing key
         run: |
-          printf '%s' '${{ secrets.SIGNING_KEY }}' | base64 -d > ${{ github.workspace }}/signing-key.gpg
+          printf '%s' '${{ secrets.SIGNING_KEY }}' | base64 -d | gpg --dearmor > ${{ github.workspace }}/signing-key.gpg
           ls -l ${{ github.workspace }}/signing-key.gpg
+          gpg --list-packets ${{ github.workspace }}/signing-key.gpg | head -5
 
       - name: Publish to Maven Central
         env:
