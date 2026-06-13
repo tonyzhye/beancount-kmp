@@ -7,6 +7,12 @@
 
 > Kotlin Multiplatform implementation of [Beancount](https://github.com/beancount/beancount) v3.2.3, compatible with both Java and Kotlin.
 
+[![CI](https://github.com/tonyzhye/beancount-kmp/actions/workflows/ci.yml/badge.svg)](https://github.com/tonyzhye/beancount-kmp/actions/workflows/ci.yml)
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/gpl-2.0)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20-blue.svg?logo=kotlin)](https://kotlinlang.org)
+[![JDK](https://img.shields.io/badge/JDK-21-orange.svg)](https://openjdk.org/projects/jdk/21/)
+[![klibs.io](https://img.shields.io/badge/klibs.io-Beancount%20JVM-blue?logo=kotlin)](https://klibs.io/projects/tonyzhye/beancount-kmp)
+
 ## Overview
 
 Beancount JVM is a complete migration of Python Beancount accounting system to the JVM ecosystem using Kotlin Multiplatform (KMP). It maintains semantic compatibility with Python Beancount 3.2.3 while delivering **up to 2.2x performance improvement on large ledgers**.
@@ -23,6 +29,8 @@ Beancount JVM is a complete migration of Python Beancount accounting system to t
 ## Quick Start
 
 ### Maven Coordinates
+
+Published to **Maven Central** and discoverable on **[klibs.io](https://klibs.io/projects/tonyzhye/beancount-kmp)**.
 
 **For KMP projects (commonMain):**
 ```kotlin

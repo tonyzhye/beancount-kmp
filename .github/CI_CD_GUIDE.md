@@ -182,13 +182,32 @@ gpg --export-secret-keys YOUR_KEY_ID | base64 > signing-key.txt
 - `maven-publish` 和 `signing` 插件在 `build.gradle.kts` 的 `subprojects` 块中自动应用
 - POM 信息（许可证、开发者、SCM）已统一配置
 - 版本号支持通过 `-Pversion=X.Y.Z` 动态覆盖
+- `gradle.properties` 中添加了 `library.*` 元数据，便于 klibs.io 等发现工具索引
 
 **本地验证发布配置：**
 ```bash
 ./gradlew publishToMavenLocal -Pversion=3.2.4
 ```
 
-### 4. 发布新版本
+### 4. klibs.io 收录说明
+
+[klibs.io](https://klibs.io) 是 JetBrains 维护的 Kotlin Multiplatform 库目录，自动从 Maven Central 抓取 KMP 库。
+
+本项目已满足被 klibs.io 索引的条件：
+1. 发布到 Maven Central（`io.github.tonyzhye.beancount`）
+2. 使用 Kotlin Multiplatform 插件生成 `-kotlinMultiplatform` metadata artifact
+3. 包含 JVM target（`core-jvm`、`parser-jvm` 等）
+4. POM 中包含许可证、SCM、开发者信息
+5. README 中有 KMP 坐标说明
+
+收录后项目页面类似：
+```
+https://klibs.io/projects/tonyzhye/beancount-kmp
+```
+
+klibs.io 不需要额外提交，通常在新版本发布到 Maven Central 后 24-48 小时内自动同步。
+
+### 5. 发布新版本
 
 **版本号管理：**
 - `build.gradle.kts` 中默认版本为 `3.2.3-SNAPSHOT`
@@ -443,7 +462,8 @@ rm -rf ~/.gradle/caches/
 - [Gradle 构建缓存](https://docs.gradle.org/current/userguide/build_cache.html)
 - [Maven Central 发布指南](https://central.sonatype.org/publish/publish-guide/)
 - [Kotlin Multiplatform 发布](https://kotlinlang.org/docs/multiplatform-publish-lib.html)
+- [klibs.io](https://klibs.io) - Kotlin Multiplatform 库目录
 
 ---
 
-*最后更新：2026-06-10*
+*最后更新：2026-06-13*

@@ -27,6 +27,13 @@ subprojects {
 
             configure<PublishingExtension> {
                 publications.withType<MavenPublication>().configureEach {
+                    // Add Kotlin target metadata for klibs.io discovery
+                    pom.withXml {
+                        val root = asNode()
+                        root.appendNode("properties").apply {
+                            appendNode("kotlin.version", "2.3.20")
+                        }
+                    }
                     pom {
                         name.set("beancount-kmp-${project.name}")
                         description.set("Beancount JVM - A JVM implementation of Beancount")
