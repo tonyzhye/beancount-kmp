@@ -139,6 +139,18 @@ jobs:
         run: ./gradlew :cli:nativeCompile :cli:nativeBeanqueryCompile --no-configuration-cache
 
       - name: Package Native Images
+        shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
+        run: |
+          $OS = "${{ matrix.os }}"
+          $OS_SHORT = $OS -replace '-latest$',''
+          $VERSION = "${{ steps.version.outputs.version }}"
+          New-Item -ItemType Directory -Force -Path native-release | Out-Null
+          Copy-Item -Path modules/cli/build/native/nativeCompile/beancount* -Destination native-release -ErrorAction SilentlyContinue
+          Copy-Item -Path modules/cli/build/native/nativeBeanqueryCompile/beanquery* -Destination native-release -ErrorAction SilentlyContinue
+          Compress-Archive -Path native-release/* -DestinationPath "beancount-native-${VERSION}-${OS_SHORT}.zip" -Force
+        if: runner.os == 'Windows'
+
+      - name: Package Native Images
         shell: bash
         run: |
           mkdir -p native-release
@@ -148,6 +160,7 @@ jobs:
           OS_SHORT=$(echo "$OS" | sed -E 's/-latest$//')
           VERSION="${{ steps.version.outputs.version }}"
           cd native-release && zip -r "../beancount-native-${VERSION}-${OS_SHORT}.zip" .
+        if: runner.os != 'Windows'
 
       - name: Upload Native Image artifacts
         uses: actions/upload-artifact@v4
