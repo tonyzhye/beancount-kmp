@@ -310,7 +310,7 @@ Kotlin 随文件大小增长扩展性更好——从小文件的基本持平到 
 
 本项目采用 **GNU General Public License v2.0 only (GPL-2.0-only)** 许可证。
 
-Copyright (C) 2026 Beancount JVM Contributors
+Copyright (C) 2026 Tony Ye
 
 基于 [Beancount](https://github.com/beancount/beancount)（Martin Blais 创作，GPL-2.0-only 许可）。
 

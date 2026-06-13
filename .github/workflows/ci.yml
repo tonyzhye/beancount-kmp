@@ -3,8 +3,26 @@ name: CI
 on:
   push:
     branches: [ main, dev ]
+    paths-ignore:
+      - '**.md'
+      - 'doc/**'
+      - 'examples/**'
+      - 'README*'
+      - 'CHANGELOG*'
+      - 'LICENSE'
+      - '.editorconfig'
+      - '.gitignore'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'doc/**'
+      - 'examples/**'
+      - 'README*'
+      - 'CHANGELOG*'
+      - 'LICENSE'
+      - '.editorconfig'
+      - '.gitignore'
 
 jobs:
   test:

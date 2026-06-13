@@ -310,7 +310,7 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 
 This project is licensed under the **GNU General Public License v2.0 only (GPL-2.0-only)**.
 
-Copyright (C) 2026 Beancount JVM Contributors
+Copyright (C) 2026 Tony Ye
 
 Based on [Beancount](https://github.com/beancount/beancount) by Martin Blais, licensed under GPL-2.0-only.
 
