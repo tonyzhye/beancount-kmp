@@ -7,6 +7,7 @@
 - [概述](#概述)
 - [CI 工作流](#ci-工作流)
 - [CD 工作流](#cd-工作流)
+- [GitHub Release 与 Maven Central 发布命令](#github-release-与-maven-central-发布命令)
 - [配置方法](#配置方法)
 - [本地验证](#本地验证)
 - [故障排除](#故障排除)
@@ -221,6 +222,106 @@ git push origin v3.2.4
 3. 点击 "Run workflow"
 4. 输入版本号（如 `3.2.4`）
 5. 工作流执行完整发布流程
+
+## GitHub Release 与 Maven Central 发布命令
+
+### 触发发布
+
+#### 方式一：推送 tag（推荐）
+
+```bash
+# 1. 确保 CHANGELOG.md 已更新
+git add CHANGELOG.md
+git commit -m "docs: prepare release v3.2.4"
+git push origin main
+
+# 2. 打标签并推送
+git tag -a v3.2.4 -m "Release version 3.2.4"
+git push origin v3.2.4
+```
+
+推送 tag 后，`.github/workflows/cd.yml` 自动触发，依次执行：
+
+```
+validate → build-cli → build-native-image → publish-maven → create-release
+```
+
+#### 方式二：手动触发
+
+进入 GitHub 仓库 → **Actions** → **CD - Publish Release** → **Run workflow**，输入版本号（如 `3.2.4`），点击运行。
+
+### 工作流中的核心命令
+
+#### 构建 CLI 分发包
+
+```bash
+./gradlew :cli:distZip --no-configuration-cache
+```
+
+产物：`modules/cli/build/distributions/beancount.zip`，内含：
+
+```
+beancount/
+├── bin/
+│   ├── beancount        # Linux/macOS 启动脚本
+│   └── beancount.bat    # Windows 启动脚本
+└── lib/
+    ├── beancount.jar
+    └── 依赖 jar
+```
+
+#### 构建 Native Image
+
+```bash
+# Linux/macOS
+./gradlew :cli:nativeCompile :cli:nativeBeanqueryCompile --no-configuration-cache
+
+# Windows（需先激活 MSVC 环境）
+cmd //c "C:/Program^ Files/Microsoft^ Visual^ Studio/2022/Community/VC/Auxiliary/Build/vcvarsall.bat x64 && gradlew :cli:nativeCompile :cli:nativeBeanqueryCompile --no-configuration-cache"
+```
+
+产物：
+- `modules/cli/build/native/nativeCompile/beancount` / `beancount.exe`
+- `modules/cli/build/native/nativeBeanqueryCompile/beanquery` / `beanquery.exe`
+
+#### 发布到 Maven Central
+
+```bash
+./gradlew publishToMavenCentral -Pversion=3.2.4
+```
+
+本地验证（不实际上传）：
+
+```bash
+./gradlew publishToMavenLocal -Pversion=3.2.4
+```
+
+#### 创建 GitHub Release
+
+工作流内部使用 `gh` CLI：
+
+```bash
+gh release create "v3.2.4" \
+  --title "v3.2.4" \
+  --generate-notes \
+  beancount-cli-3.2.4-jar.zip \
+  beancount-native-3.2.4-ubuntu.zip \
+  beancount-native-3.2.4-windows.zip \
+  beancount-native-3.2.4-macos.zip
+```
+
+### 必需 Secrets
+
+发布前确保已在仓库 `Settings → Secrets and variables → Actions` 中配置：
+
+| Secret | 说明 |
+|--------|------|
+| `MAVEN_CENTRAL_USERNAME` | Sonatype User Token 用户名 |
+| `MAVEN_CENTRAL_PASSWORD` | Sonatype User Token 密码 |
+| `SIGNING_KEY_ID` | GPG 密钥 ID（16 位） |
+| `SIGNING_PASSWORD` | GPG 密钥密码 |
+| `SIGNING_KEY` | Base64 编码的 GPG 私钥 |
+| `GITHUB_TOKEN` | 由 GitHub 自动生成，无需手动配置 |
 
 ## 本地验证
 
