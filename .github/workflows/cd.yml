@@ -196,7 +196,7 @@ jobs:
           ORG_GRADLE_PROJECT_signing.password: ${{ secrets.SIGNING_PASSWORD }}
           ORG_GRADLE_PROJECT_signing.secretKeyRingFile: signing-key.gpg
         run: |
-          ./gradlew publishToMavenCentral -Pversion=${{ steps.version.outputs.version }}
+          ./gradlew publishAllPublicationsToMavenCentralRepository -Pversion=${{ steps.version.outputs.version }} --no-configuration-cache
 
   create-release:
     name: Create GitHub Release

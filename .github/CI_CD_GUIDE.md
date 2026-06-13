@@ -306,7 +306,7 @@ cmd //c "C:/Program^ Files/Microsoft^ Visual^ Studio/2022/Community/VC/Auxiliary
 #### 发布到 Maven Central
 
 ```bash
-./gradlew publishToMavenCentral -Pversion=3.2.4
+./gradlew publishAllPublicationsToMavenCentralRepository -Pversion=3.2.4
 ```
 
 本地验证（不实际上传）：
