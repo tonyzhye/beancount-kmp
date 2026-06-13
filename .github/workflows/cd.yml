@@ -53,12 +53,9 @@ jobs:
         run: ./gradlew :loader:jvmTest --tests "*CompatTest" --tests "*CompatibilityVerificationTest"
 
   build-cli:
-    name: Build CLI (${{ matrix.os }})
+    name: Build CLI Distribution
     needs: validate
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -74,21 +71,30 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Extract version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building CLI version: $VERSION"
+
       - name: Build CLI distribution
         run: ./gradlew :cli:distZip --no-configuration-cache
 
-      - name: Rename CLI artifact with version and OS suffix
+      - name: Rename CLI artifact with version
         shell: bash
         run: |
-          OS="${{ matrix.os }}"
-          OS_SHORT=$(echo "$OS" | sed -E 's/-latest$//')
           VERSION="${{ steps.version.outputs.version }}"
-          mv "modules/cli/build/distributions/beancount.zip" "modules/cli/build/distributions/beancount-cli-${VERSION}-${OS_SHORT}.zip"
+          mv "modules/cli/build/distributions/beancount.zip" "modules/cli/build/distributions/beancount-cli-${VERSION}.zip"
 
-      - name: Upload CLI artifacts
+      - name: Upload CLI artifact
         uses: actions/upload-artifact@v4
         with:
-          name: cli-${{ matrix.os }}
+          name: cli-distribution
           path: modules/cli/build/distributions/beancount-cli-*.zip
 
   build-native-image:
@@ -210,11 +216,10 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Creating release for version: $VERSION"
 
-      - name: Download CLI artifacts
+      - name: Download CLI artifact
         uses: actions/download-artifact@v4
         with:
-          pattern: cli-*
-          merge-multiple: true
+          name: cli-distribution
           path: release-artifacts
 
       - name: Download Native Image artifacts
