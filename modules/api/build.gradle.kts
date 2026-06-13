@@ -1,5 +1,14 @@
 plugins {
     kotlin("multiplatform")
+    id("com.vanniktech.maven.publish")
+}
+
+mavenPublishing {
+    coordinates(
+        groupId = "io.github.tonyzhye.beancount",
+        artifactId = "api",
+        version = project.version.toString()
+    )
 }
 
 kotlin {

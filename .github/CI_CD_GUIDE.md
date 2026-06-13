@@ -123,6 +123,8 @@ validate ───┬──→ build-cli ───┐
 
 **平台选择：** `ubuntu-latest`（项目当前仅 JVM 目标，无需 macOS）。
 
+**发布方式：** 使用 [Maven Central Publisher Portal](https://central.sonatype.com/)（新 Portal API），通过 `com.vanniktech.maven.publish` 插件自动上传并发布。
+
 **版本号自动提取：**
 - Tag 触发：从 `refs/tags/v3.2.4` 提取 `3.2.4`
 - 手动触发：使用输入的版本号
@@ -131,8 +133,8 @@ validate ───┬──→ build-cli ───┐
 **发布步骤：**
 1. 检出代码
 2. 提取版本号
-3. 解码 GPG 签名密钥
-4. 发布到 Maven Central（`./gradlew publishToMavenCentral -Pversion=X.Y.Z`）
+3. 使用 Sonatype User Token 和 In-Memory GPG 签名
+4. 发布到 Maven Central（`./gradlew publishAndReleaseToMavenCentral -Pversion=X.Y.Z`）
 
 ### 5. GitHub Release 创建 (`create-release`)
 
@@ -229,9 +231,9 @@ git push origin v3.2.4
 
 推送 tag 后，CD 工作流自动执行：
 1. 运行验证测试
-2. 并行构建 CLI 分发包（三平台）
+2. 构建 CLI 分发包（跨平台 JVM zip）
 3. 并行构建 Native Image（三平台）
-4. 发布到 Maven Central
+4. 通过 Maven Central Publisher Portal 自动发布
 5. 创建 GitHub Release（自动附带 Release Notes 和全部产物）
 6. 自动更新 `CHANGELOG.md` 并提交回仓库
 
@@ -306,8 +308,13 @@ cmd //c "C:/Program^ Files/Microsoft^ Visual^ Studio/2022/Community/VC/Auxiliary
 #### 发布到 Maven Central
 
 ```bash
-./gradlew publishAllPublicationsToMavenCentralRepository -Pversion=3.2.4
+./gradlew publishAndReleaseToMavenCentral -Pversion=3.2.4 --no-configuration-cache
 ```
+
+发布到新的 [Maven Central Publisher Portal](https://central.sonatype.com/)，需要先完成：
+1. 在 [central.sonatype.com](https://central.sonatype.com/) 注册并验证 namespace `io.github.tonyzhye`
+2. 生成 **User Token**（不是登录密码）
+3. 生成 GPG 密钥并上传公钥到密钥服务器
 
 本地验证（不实际上传）：
 
@@ -335,12 +342,22 @@ gh release create "v3.2.4" \
 
 | Secret | 说明 |
 |--------|------|
-| `MAVEN_CENTRAL_USERNAME` | Sonatype User Token 用户名 |
-| `MAVEN_CENTRAL_PASSWORD` | Sonatype User Token 密码 |
-| `SIGNING_KEY_ID` | GPG 密钥 ID（16 位） |
+| `MAVEN_CENTRAL_USERNAME` | Sonatype **User Token** 用户名（不是登录邮箱） |
+| `MAVEN_CENTRAL_PASSWORD` | Sonatype **User Token** 密码（不是登录密码） |
+| `SIGNING_KEY_ID` | GPG 密钥 ID（16 位或 8 位短 ID） |
 | `SIGNING_PASSWORD` | GPG 密钥密码 |
-| `SIGNING_KEY` | Base64 编码的 GPG 私钥 |
+| `SIGNING_KEY` | **Base64 编码的 GPG 私钥**（vanniktech 插件使用 In-Memory 签名） |
 | `GITHUB_TOKEN` | 由 GitHub 自动生成，无需手动配置 |
+
+**获取 User Token：**
+1. 登录 [https://central.sonatype.com/](https://central.sonatype.com/)
+2. 点击右上角头像 → **View Account** → **Generate User Token**
+3. 保存 `Username` 和 `Password` 到 GitHub Secrets
+
+**生成 Base64 签名密钥：**
+```bash
+gpg --export-secret-keys YOUR_KEY_ID | base64 -w 0
+```
 
 ## 本地验证
 
@@ -401,9 +418,11 @@ ls ~/.m2/repository/io/github/tonyzhye/beancount/
 ### 问题：Maven Central 发布失败
 
 **常见原因：**
-1. GPG 签名错误 → 检查 `SIGNING_KEY` 是否正确编码
-2. 401 未授权 → 检查 Maven Central 凭据
-3. 网络超时 → 重试或检查代理设置
+1. **402 Payment Required** → 使用了旧的 OSSRH API（`s01.oss.sonatype.org`）。本项目已迁移到新的 Maven Central Publisher Portal，请确保使用 `publishAndReleaseToMavenCentral` 任务。
+2. **401 未授权** → 检查 `MAVEN_CENTRAL_USERNAME` / `MAVEN_CENTRAL_PASSWORD` 是否为 **User Token**，不是登录密码。
+3. **Namespace 未验证** → 在 [central.sonatype.com](https://central.sonatype.com/) 上验证 `io.github.tonyzhye`。
+4. **GPG 签名错误** → 检查 `SIGNING_KEY` 是否为 Base64 编码的完整私钥，`SIGNING_KEY_ID` 是否正确。
+5. **版本已存在** → Maven Central 不允许覆盖已发布版本，需要提升版本号。
 
 ### 问题：覆盖率检查失败
 
@@ -460,7 +479,8 @@ rm -rf ~/.gradle/caches/
 
 - [GitHub Actions 文档](https://docs.github.com/en/actions)
 - [Gradle 构建缓存](https://docs.gradle.org/current/userguide/build_cache.html)
-- [Maven Central 发布指南](https://central.sonatype.org/publish/publish-guide/)
+- [Maven Central Publisher Portal](https://central.sonatype.com/)
+- [com.vanniktech.maven.publish 插件文档](https://vanniktech.github.io/gradle-maven-publish-plugin/)
 - [Kotlin Multiplatform 发布](https://kotlinlang.org/docs/multiplatform-publish-lib.html)
 - [klibs.io](https://klibs.io) - Kotlin Multiplatform 库目录
 
