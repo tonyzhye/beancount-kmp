@@ -89,13 +89,13 @@ jobs:
         shell: bash
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          mv "modules/cli/build/distributions/beancount.zip" "modules/cli/build/distributions/beancount-cli-${VERSION}.zip"
+          mv "modules/cli/build/distributions/beancount.zip" "modules/cli/build/distributions/beancount-cli-jar-${VERSION}.zip"
 
       - name: Upload CLI artifact
         uses: actions/upload-artifact@v4
         with:
           name: cli-distribution
-          path: modules/cli/build/distributions/beancount-cli-*.zip
+          path: modules/cli/build/distributions/beancount-cli-jar-*.zip
 
   build-native-image:
     name: Build Native Image (${{ matrix.os }})
