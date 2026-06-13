@@ -27,7 +27,9 @@
 | 工作流 | Job | 平台 | 产物 |
 |--------|-----|------|------|
 | `ci.yml` | `native-image` | Ubuntu/Windows/macOS | `native-image-<os>` artifact |
-| `cd.yml` | `publish-native-image` | Ubuntu/Windows/macOS | `beancount-native-<os>.zip` (Release 附件) |
+| `cd.yml` | `build-cli` | `ubuntu-latest` | `beancount-cli-{version}-jar.zip` (Release 附件) |
+| `cd.yml` | `build-native-image` | Ubuntu/Windows/macOS | `beancount-native-{version}-{os}.zip` (Release 附件) |
+| `cd.yml` | `publish-maven` | `ubuntu-latest` | 发布到 Maven Central |
 
 ## CI 工作流
 
@@ -98,15 +100,15 @@ validate ───┬──→ build-cli ───┐
 
 ### 2. CLI 分发构建 (`build-cli`)
 
-**多平台并行构建：** Ubuntu、Windows、macOS 同时构建。
+**平台选择：** `ubuntu-latest`（JVM 应用跨平台，无需按 OS 重复构建）。
 
 **产物：**
-- `cli-<os>` artifact（ZIP/TAR）
+- `cli-distribution` artifact（单个 ZIP）
 - 最终通过 `create-release` job 附加到 GitHub Release
 
 ### 3. Native Image 构建 (`build-native-image`)
 
-**多平台并行构建：** Ubuntu、Windows、macOS 同时构建。
+**多平台并行构建：** Ubuntu、Windows、macOS 同时构建。Native Image 是平台相关二进制，必须分平台。
 
 **JDK 要求：** 使用 **GraalVM JDK**（`graalvm` distribution）。
 
@@ -136,14 +138,14 @@ validate ───┬──→ build-cli ───┐
 **触发条件：** `build-cli`、`build-native-image`、`publish-maven` 全部成功后执行。
 
 **功能：**
-1. 下载所有 artifact（CLI + Native Image，三平台共 6 个）
+1. 下载所有 artifact（1 个 CLI + 3 个 Native Image）
 2. 使用 `gh release create` CLI 创建 Release（替代已归档的 `softprops/action-gh-release`）
 3. 自动生成 Release Notes（`--generate-notes`）
 4. 自动更新 `CHANGELOG.md` 并提交回仓库
 
 **Release 附件：**
-- CLI 分发包（3 平台 × 2 格式 = 6 个文件）
-- Native Image 包（3 平台 × 1 zip = 3 个文件）
+- CLI 分发包（1 个跨平台 JVM zip）：`beancount-cli-{version}-jar.zip`
+- Native Image 包（3 平台）：`beancount-native-{version}-{os}.zip`
 
 ## 配置方法
 
